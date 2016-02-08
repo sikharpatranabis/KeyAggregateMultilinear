@@ -1,0 +1,131 @@
+\section{Preliminaries}
+\label{sec:prelims}
+
+\subsection{Identity-Based Key-Aggregate Cryptosystem}
+
+We begin by formally defining the identity-based key-aggregate cryptosystem~(KAC) framework. KAC is an ensemble of siz randomized algorithms that are described next:\\
+
+\noindent\textbf{SetUp}($\mathcal{ID}$): A data owner can classifying her data into one or more classes belonging an identity space $\mathcal{ID}$. The function sets up the key-aggregate cryptosystem for the identity space $\mathcal{ID}$. Outputs the public parameter $param$. \\
+
+\noindent\textbf{KeyGen}(): Outputs the public key $PK$, the master-secret key $msk$ and the authentication key $U$. A data owner willing to share her data using this system registers to receive her own public, private and authentication keys.\\ 
+
+\noindent\textbf{Encrypt}$(param,PK,i,\mathcal{M})$: Takes as input the public key parameter $PK$, the data class $i\in\mathcal{ID}$ and the plaintext message $\mathcal{M}$. Outputs the corresponding ciphertext $\mathcal{C}$, which is stored online in the shared environment.\\
+
+\noindent\textbf{Extract}$(msk,\mathcal{S})$: Takes as input the master secret key and a subset of data classes $\mathcal{S} \subseteq\mathcal{ID}$. Computes the aggregate key $K_{\mathcal{S}}$ for all encrypted data/messages classified into any class in $\mathcal{S}$.\\
+
+\noindent\textbf{Decrypt}$(\mathcal{C},i,\mathcal{S},K_{\mathcal{S}},U)$: Takes as input the ciphertext $\mathcal{C}$, the data class $i$, the aggregate key $K_{\mathcal{S}}$ corresponding to a subset $\mathcal{S}$, and the authentication key $U$. If $i\notin\mathcal{S}$, output $\bot$. Otherwise, outputs the decrypted message $\mathcal{M}$. The \textbf{Decrypt} function is invoked by a data user with the appropriate credentials to access one or more classes of data owned by the data owner. Note that the \textbf{Decrypt} operation for a given data user requires the explicit knowledge of the subset $\mathcal{S}$ of data classes that the corresponding user can access. This is of course a valid requirement since each user is expected to be aware of the subset $\mathcal{S}$ of data classes that she can access.
+
+\subsubsection{Correctness.} For correctness, we require that the decryption algorithm always succeeds in decrypting a correctly encrypted plaintext message $m$. Formally, correctness of KAC may be described as follows. For any valid identity space $\mathcal{ID}$, any set $\mathcal{S}\subseteq\mathcal{ID}$, any index $i\in\mathcal{S}$, and any plaintext message $m$, we must have 
+\begin{equation}
+ Pr[\textbf{Decrypt}(\mathcal{C},i,\mathcal{S},K_{\mathcal{S}},U)=\mathcal{M} |\mathcal{E}]=1\nonumber
+\end{equation}
+where $\mathcal{E}$ is the event described as the conjunction of the following atomic events:
+\begin{equation}
+\begin{split}
+param\leftarrow\textbf{SetUp}(\mathcal{ID}),(PK,msk,U)\leftarrow\textbf{KeyGen}(),\\
+\mathcal{C}\leftarrow\textbf{Encrypt}(param,PK,i,\mathcal{M}),K_{\mathcal{S}}\leftarrow\textbf{Extract}(msk,\mathcal{S})\nonumber
+\end{split} 
+\end{equation}
+
+
+\subsection{Security Definitions}
+\label{subsec:security}
+
+We define a formal framework for proving active chosen ciphertext security of KAC. We begin by introducing a game between a non-adaptive attack algorithm $\mathcal{A}$ and a challenger $\mathcal{B}$, both of whom are given $\mathcal{ID}$, the data class identity space, as input. The game proceeds through the following stages.\\
+ 
+\noindent\textbf{SetUp}: Challenger $\mathcal{B}$ sets up the KAC system. In particular, $\mathcal{B}$ generates the public parameter $param$, the public key $PK$, the master secret key $msk$ and the authentication key $U$.\\ 
+ 
+\noindent\textbf{Query Phase 1}: Algorithm $\mathcal{A}$ adaptively issues decryption queries $q_1,\cdots,q_w$ where a decryption query comprises of the tuple $(\mathcal{C},v)$, where $v\in\mathcal{ID}$ is the data class of the message encrypted as $\mathcal{C}$. The challenger has to respond with \textbf{Decrypt}$(\mathcal{C},v,\mathcal{S},K_{\mathcal{S}},U)$, for \emph{any} $\mathcal{S}\subset\mathcal{ID}$ containing $v$.\\
+ 
+\noindent\textbf{Commit:} Algorithm $\mathcal{A}$ adaptively commits to a set ${\mathcal{S}}^{*} \subset \mathcal{ID}$ of data classes that it wishes to attack. Since collusion attacks are allowed in our framework, $\mathcal{B}$ furnishes $\mathcal{A}$ with the aggregate key $K_{\overline{\mathcal{S}}^{*}}$ that allows $\mathcal{A}$ to decrypt any data class $v\notin{\mathcal{S}}^{*}$. Next, $\mathcal{B}$ randomly chooses a data class $i\in{\mathcal{S}}^{*}$ and provides it to $\mathcal{A}$.\\ 
+ 
+\noindent\textbf{Challenge}: $\mathcal{A}$ picks at random two messages $\mathcal{M}_0$ and $\mathcal{M}_1$ from the set of possible plaintext messages and provides them to $\mathcal{B}$. To generate the challenge, $\mathcal{B}$ randomly picks $b\in\{0,1\}$, and sets the challenge to $\mathcal{A}$ as $(\mathcal{C}^{*},\mathcal{M}_0,\mathcal{M}_1)$, where ${\mathcal{C}}^{*}$ = \textbf{Encrypt}($PK,i,\mathcal{M}_b$).\\
+ 
+\noindent\textbf{Query Phase 2}: Algorithm $\mathcal{A}$ continues to adaptively issue decryption queries $q_{w+1},\cdots,q_{Q_D}$ where a decryption query comprises of the tuple $(\mathcal{C},v)$, but now subject to the restriction $\mathcal{C}\neq {\mathcal{C}}^{*}$. The challenger responds as in query phase 1.\\ 
+ 
+ 
+\noindent\textbf{Guess}: The adversary $\mathcal{A}$ outputs a guess $b'$ of $b$. If $b' = b$, $\mathcal{A}$ wins the game.\\
+
+% Note that the adversary $\mathcal{A}$ is non-adaptive; it chooses $\mathcal{S}$, and obtains the aggregate decryption key for all data classes outside of $\mathcal{S}$, before it even sees the public parameters $param$ or the public key $PK$
+
+% \vspace{-2mm}
+\noindent The game above models an attack in the real world setting where users who do not have authorized access to the subset ${\mathcal{S}}^{*}$ collude to try and expose a message in this subset. We now formally define the security notions for KAC. Let $Adv_{\mathcal{A},|\mathcal{ID}|}$ denote the probability that $\mathcal{A}$ wins the game when the challenger is given $\mathcal{ID}$ as input.
+
+\subsubsection{Definition 2.1.}
+ A KAC construction is $(\epsilon,\mathcal{ID},Q_D)$ adaptively secure under a chosen ciphertext attack (that is, adaptively CCA-secure) if, for all adaptive poly-time algorithms $\mathcal{A}$ that can make a total of $Q_D$ decryption queries, we have that $|Adv_{\mathcal{A},|\mathcal{ID}|}-\frac{1}{2}| < \epsilon$.
+ 
+\subsubsection{Definition 2.2.}
+ A KAC construction is $(\epsilon,\mathcal{ID})$ adaptively secure under a chosen plaintext attack (that is, adaptively CPA-secure) if it is $(\epsilon,\mathcal{ID},0)$ adaptively CCA secure.\\
+
+
+\noindent We also define two weaker notions of security in the non-adaptive setting. In particular, non-adaptive security is achieved in the scenario when $\mathcal{A}$ is required to commit to the set ${\mathcal{S}}^{*}$ before seeing the public parameters. We refer to such an adversary as a non-adaptive adversary. This leads to the following definitions.
+
+\subsubsection{Definition 2.3.}
+ A KAC construction is $(\epsilon,\mathcal{ID},Q_D)$ non-adaptively secure under a chosen ciphertext attack (that is, non-adaptively CCA-secure) if, for all non-adaptive poly-time algorithms $\mathcal{A}$ that can make a total of $Q_D$ decryption queries, we have that $|Adv_{\mathcal{A},|\mathcal{ID}|}-\frac{1}{2}| < \epsilon$.
+% \end{Definition}
+
+\subsubsection{Definition 2.4.}
+ A KAC construction is $(\epsilon,\mathcal{ID})$ non-adaptively secure under a chosen plaintext attack (that is, non-adaptively CPA-secure) if it is $(\epsilon,\mathcal{ID},0)$ non-adaptively CCA secure.
+% \end{Definition}
+
+\subsection{Extensions to KAC}
+\label{subsec:extensions}
+
+We discuss in this paper two extensions to the basic frameworKAC
+
+\subsection{Multilinear Maps}
+\label{subsec:multilinear}
+
+In this section, we provide a brief overview of multilinear maps. Our description of multilinear maps is based on the \emph{graded encoding scheme} used in several candidate multilinear map constructions \cite{garg2013candidate}.
+
+\subsubsection{Symmetric Multilinear Maps.} A standard symmetric multilinear map consists of the following pair of algorithms.\\
+
+\noindent\textbf{SetUp}$'(1^\lambda,m)$: Sets up an $m$-linear map by outputting an $m$-tuple of groups $<\mathbb{G}_1,\mathbb{G}_2,\cdots,\mathbb{G}_m>$ of prime order $q$ (where $q$ is a $\lambda$ bit prime), along with the respective generator $g_i\in\mathbb{G}_i$ for $1\leq i\leq m$. In standard notation, $\mathbb{G}_1$ is the source group, $\mathbb{G}_m$ is the target group, and $\mathbb{G}_2,\cdots,\mathbb{G}_{m-1}$ are the intermediate groups.\\
+
+\noindent$e_{i,j}(h_1,h_2)$: Takes as input $h_1\in\mathbb{G}_i$ and $h_2\in\mathbb{G}_j$, and outputs $h_3\in\mathbb{G}_{i+j}$ such that
+\begin{equation}
+ (h_1=g_i^a,h_2=g_j^b) \Rightarrow h_3=g_{i+j}^{ab}\nonumber
+\end{equation}
+\noindent In this paper, we follow the standard notation used in the literature to omit the subscripts and simply refer to this multilinear map as $e$. Further, $e$ may be generalized to multiple inputs as $e(h_1,\cdots,h_k)=e(h_1,e(h_2,\cdots,h_k))$. Note that $g^a_i$ is sometimes referred to as the level-$i$ \emph{encoding} of $a$. The scalar $a$ itself may therefore be referred to as the level $0$ encoding of itself.
+
+\subsubsection{Asymmetric Multilinear Maps.} We adopt the same definition of asymmetric multilinear maps presented in \cite{garg2013candidate}. According to this definition, in asymmetric multilinear maps, the groups are indexed by integer vectors. Formally, a standard asymmetric multilinear map consists of the following algorithms.\\
+
+\noindent\textbf{SetUp}$''(1^\lambda,\mathbf{m})$: Takes as input $\mathbf{m}\in\mathbb{Z}^l$. Sets up an $\mathbf{m}$-linear map by outputting an $m$-tuple of groups $<\mathbb{G}_{\mathbf{1}},\mathbb{G}_{\mathbf{2}},\cdots,\mathbb{G}_{\mathbf{m}}>$ of prime order $q$ (where $q$ is a $\lambda$ bit prime), along with the respective generator $g_{\mathbf{v}}\in\mathbb{G}_{\mathbf{v}}$ for $\mathbf{1}\leq \mathbf{v}\leq \mathbf{m}$(comparison is defined component-wise). Further, let $\mathbf{x}_i$ be the $i$th \emph{standard} basis vector (with $1$ at position $i$ and $0$ at each other position). In standard notation, $\mathbb{G}_{\mathbf{x}_i}$ is the $i$th source group, $\mathbb{G}_{\mathbf{v}}$ is the target group, and the rest are the intermediate groups.\\
+
+\noindent$e_{\mathbf{i},\mathbf{j}}(h_1,h_2)$: Takes as input $h_1\in\mathbb{G}_\mathbf{i}$ and $h_2\in\mathbb{G}_\mathbf{j}$, and outputs $h_3\in\mathbb{G}_\mathbf{i+j}$ such that
+\begin{equation}
+ (h_1=g_\mathbf{i}^a,h_2=g_\mathbf{j}^b)\Rightarrow h_3=g_\mathbf{i+j}^{ab}\nonumber
+\end{equation}
+\noindent Again, we omit the subscripts and simply refer to this multilinear map as $e$, which may be generalized to multiple inputs as $e(h_1,\cdots,h_k)=e(h_1,e(h_2,\cdots,h_k))$.\\ 
+
+In the forthcoming discussions, we present our KAC constructions assuming that the ideal multilinear maps based on the graded encoding scheme described above exist and are efficiently computable. We do this to make the analysis simple and easy to follow. We point out, however, that current candidates for multilinear maps in the cryptographic literature deviate from these ideal notions. In these candidates, group elements lack unique representations due to the presence of a noise term that tends to grow with repeated group/multilinear operations. We summarize the major properties of multilinear maps that our proposed KAC schemes require:
+
+\let\labelitemi\labelitemii
+
+\begin{itemize}
+ \item The representation of an element should be statistically independent of the group and multilinear operations that led to that element.\\
+ \item It should be possible to extract a \emph{canonical} representation of an element in the target group given any representation of that element.\\
+ \item The party setting up the multilinear map should have a \emph{trapdoor} information that allows her to compute $g^{\alpha^x}$ for a non-random $\alpha$ and exponentially large $x$.\\
+ \item It should be possible to generate asymmetric multilinear maps for any positive integer vector $\mathbf{m}\in\mathbb{Z}^l$.\\
+ \item It should be possible to design the parameters of our system such that the noise growth during the execution of our scheme does not lead to erroneous computations. 
+\end{itemize}
+
+We point out that the two foremost candidates for multilinear maps based on graded encoding schemes - the GGH candidate over ideal lattices \cite{garg2013candidate} and the CLT candidate over integers \cite{coron2013practical} would allow us to meet all these requirements. However, we also note that both these candidate constructions have been subjected to \emph{zeroizing attacks}\cite{cheon2015cryptanalysis}, also known as the weak discrete logarithmic attack. These attacks break the Subgroup Membership (SubM) and the decision linear (DLIN) problems on the GGH candidate map, and also completely break the CLT candidate. Initially it was conjectured that this attack could be thwarted by keeping the low-level encodings of $0$ private in the candidate constructions, and several fixes to these candidate constructions were provided based on this idea \cite{gentry2014zeroizing,boneh2014immunizing}. However, these extensions were also proven to be insecure in \cite{coron2014cryptanalysis}. 
+
+In this paper, we propose using use the graph-induced multilinear map based on lattices proposed by Gentry et al. \cite{gentry2015graph} to instantiate our constructions. The graph-induced multilinear map, like the GGH and CLT candidate constructions, is also based on the graded encoding scheme and meets almost all the requirements listed above. The only significant drawback of this construction is the absence of the \emph{re-randomization} procedure (that helps to hide the group and multilinear operations leading to a particular element) to thwart cryptanalytic threats. However, a work around suggested in \cite{gentry2015graph} is to use Kilian-style randomization \cite{kilian1988founding} on the encoding side. This enhances the security of any scheme based on the graph induced candidate map, at the cost of some extra encoding bits.
+
+
+
+
+% \noindent\textbf{The Multilinear Diffie-Hellman Exponent (MDHE) Assumption}:  Let $params\leftarrow SetUp'(n+l-1)$. Choose random 
+
+
+ 
+
+
+
+
+
+
+
+

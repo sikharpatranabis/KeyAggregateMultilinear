@@ -1,0 +1,530 @@
+\appendix
+
+\section{Relaxing Assumptions 3.5 and 4.5}
+\label{app_sec:relaxation}
+
+In the two KAC constructions presented so far, we have assumed that all plaintext messages $\mathcal{M}$ may be efficiently embedded as elements in the respective target multilinear groups. However, embedding any general class of data as group elements is extremely challenging and requires \emph{public samplability} - a feature that makes a multilinear map constructions insecure. However, a workaround may be readily proposed. We first note that in any ciphertext output by \textbf{Encrypt}, the message $\mathcal{M}$ is essentially multiplied with a random secret group element $\rho$. Rather than embedding $\mathcal{M}$ as a group element, we propose hashing $\rho$ using a collision resistant hash function $H$, and then outputting $\mathcal{M}\odot H(\rho)$ in the ciphertext (here $\odot$ denotes an appropriate operator). In order to ensure that the constructions are still provably secure in the standard model, we propose that $H$ be chosen from the family of \emph{smooth projective hash functions} \cite{cramer2002universal}, that do not require the use of random oracles to prove security. Smooth projective hash functions are very efficient to construct and can be designed to be collision-resistant \cite{abdalla2009smooth}, making them an ideal choice for our constructions.
+
+\section{CCA Secure Basic KAC Using Asymmetric Multilinear Maps}
+\label{app_sec:CCA1}
+
+In this section we demonstrate how to extend the basic identity-based KAC construction (for single owner - single user scenario) to obtain non-adaptive chosen ciphertext security while maintaining full collusion resistance. We have the following additional requirements for achieving CCA security:
+
+\begin{itemize}
+ \item A signature scheme $(SigKeyGen,Sign,Verify)$. 
+ \item A collision resistant hash function for mapping verification keys to $\mathbb{Z}_q$. 
+\end{itemize}
+
+For simplicity of presentation, we assume here that the signature verification keys are encoded as elements of $\mathbb{Z}_q$. We avoid any further mention of the hash function in the forthcoming discussion, since it is implicitly assumed that any signature value we refer to is essentially the hash value corresponding to the original signature.
+
+\subsubsection{The CCA-Secure Construction.}  It is to be noted that unlike non-adaptive CPA security, non-adaptive CCA security for our proposed KAC under the $m$-HDHE assumption requires that the system handles at most $N-1$ data classes, where $N=2^m-1$. The reason for this will be apparent in the proof. hence for consistency of notation, we describe here the construction of the CCA-secure KAC for $N-1$ data classes. Recall that \textbf{SetUp}$''(1^{\lambda},\mathbf{m})$ is the setup algorithm for an asymmetric multilinear map, where groups have prime order $q$ (where $q$ is a $\lambda$ bit prime).\\
+
+% \begin{enumerate}
+\noindent\textbf{SetUp}$(1^{\lambda},m)$: Takes as input the length $m$ of identities and the group order parameter $\lambda$. Let $\mathcal{ID}=\{0,1\}^m\backslash(\{0\}^m\cup\{1\}^m)$ be the data class identity space with $N-1$ classes. Also, let $\mathbf{m}$ be the $m+1$ length vector consisting of all ones. Let $param''\leftarrow SetUp''(1^{\lambda},2\mathbf{m})$ be the public parameters for a multilinear map, with $\mathbb{G}_{2\mathbf{m}}$ being the target group. Next, choose a random $\alpha\in \mathbb{Z}_q$. Set $X_j=g^{\alpha^{(2^j)}}_{\mathbf{x}_j}$ for $0\leq j\leq m-1$ and $X_m=g^{\alpha^{(2^m+1)}}_{\mathbf{x}_m}$. Output the public parameter tuple $param$ as
+\begin{equation}
+ param = (param'',\{X_j\}_{j\in\{0,\cdots,m\}})\nonumber
+\end{equation}
+\noindent Discard $\alpha$ after $param$ has been output.\\ 
+ 
+\noindent \textbf{KeyGen}(): Same as in the construction of Section \ref{subsec:construction}.\\
+ 
+\noindent \textbf{Encrypt}$(PK,i,\mathcal{M})$: Run the $SigKeyGen$ algorithm to obtain a signature signing key $K_{SIG}$ and a verification key $V_{SIG} \in \mathbb{Z}_q$. Randomly choose $r\in\mathbb{Z}_q$ and let $t'=t+r \in\mathbb{Z}_q$. Recall that $Y_i=g^{\alpha^i}_{\mathbf{m}}$ and can be computed as per the formulation in Claim 3.1 for $1\leq i\leq N$. Compute 
+\begin{equation}
+ \mathcal{C}'=(g^r_{\mathbf{m}},(PK.Y_i.Y^{V_{SIG}}_{2^m-1})^{t'},\mathcal{M}.g^{t'\alpha^{(2^m)}}_{2\mathbf{m}})\nonumber
+\end{equation} 
+\noindent and output the ciphertext as
+\begin{eqnarray}
+ \mathcal{C}&=&(\mathcal{C}',Sign(\mathcal{C}',K_{SIG}),V_{SIG}) \nonumber
+\end{eqnarray} 
+ 
+\noindent \textbf{Extract}$(msk,\mathcal{S})$: Same as in the construction of Section \ref{subsec:construction}.\\
+ 
+\noindent \textbf{Decrypt}$(\mathcal{C},i,\mathcal{S},K_{\mathcal{S}},U)$: Let $\mathcal{C}=((c_0,c_1,c_2),\sigma,V_{SIG})$. Verify that $\sigma$ is a valid signature of $(c_0,c_1,c_2)$ under the key $V_{SIG}$. If not, output $\bot$. Also, if $i\notin\mathcal{S}$, output $\bot$. Otherwise, set 
+\begin{eqnarray}
+  SIG_{\mathcal{S}} &=& \prod_{v\in\mathcal{S}}Y^{V_{SIG}}_{2^{m+1}-1-v}\nonumber\\
+  a_{\mathcal{S}} &=& \prod_{v\in\mathcal{S},v\neq i}Y_{2^m-v+i}\nonumber\\
+  b_{\mathcal{S}} &=& \prod_{v\in\mathcal{S}}Y_{2^m-v}\nonumber  
+\end{eqnarray}
+\noindent Note that these can be computed as $1\leq i,v \leq N-1(=2^m-2)$. \emph{This is precisely why we allow only $N-1$ data classes}.  Next, pick a random $w\in \mathbb{Z}_q$ and set
+ \begin{eqnarray}
+  \hat{d_1} &=& (K_{\mathcal{S}}.SIG_{\mathcal{S}}.a_{\mathcal{S}}.(PK.Y_i.Y^{V_{SIG}}_{2^m-1})^w)\nonumber\\
+  \hat{d_2} &=& (b_{\mathcal{S}}.g^w_{\mathbf{m}}) \nonumber
+ \end{eqnarray}
+ \noindent Output the decrypted message 
+ \begin{equation}
+  \hat{\mathcal{M}} = c_2\frac{{e}(\hat{d_1},U.c_0)}{{e}(\hat{d_2},c_1)}\nonumber
+ \end{equation}
+\noindent The proof of correctness of this scheme is presented below.
+
+\begin{equation}
+\begin{split}
+ \hat{\mathcal{M}} &= c_3\frac{{e}(\hat{d_1},U.c_1)}{{e}(\hat{d_2},c_2)}\\
+ &= c_3.\left(\frac{e\left(K_{\mathcal{S}}.SIG_{\mathcal{S}}.a_{\mathcal{S}},g^{t'}_{\mathbf{m}}\right)}{e\left(b_{\mathcal{S}},(PK.Y_i.Y^{V_{SIG}}_{2^m-1})^{t'}\right)}\right).\left(\frac{e\left(\left(PK.Y_i.Y^{V_{SIG}}_{2^m-1}\right)^w,g^{t'}_{\mathbf{m}}\right)}{e\left(g^w_{\mathbf{m}},(PK.Y_i.Y^{V_{SIG}}_{2^m-1})^{t'}\right)}\right)\\
+ &=c_3.\left(\frac{e\left(K_{\mathcal{S}},g^{t'}_{\mathbf{m}}\right)}{e\left(b_{\mathcal{S}},PK^{t'}\right)}\right).\left(\frac{e\left(SIG_{\mathcal{S}},g^{t'}_{\mathbf{m}}\right)}{e\left(b_{\mathcal{S}},\left(Y^{V_{SIG}}_{2^m-1}\right)^{t'}\right)}\right).\left(\frac{e\left(a_{\mathcal{S}},g^{t'}_{\mathbf{m}}\right)}{e\left(b_{\mathcal{S}},Y^{t'}_i\right)}\right)\\
+ &=c_3\frac{e(\prod_{v\in\mathcal{S},v\neq i}Y_{2^m-v+i},g^{t'}_{\mathbf{m}})}{e(\prod_{v\in\mathcal{S}}Y_{2^m-v},Y_i^{t'})}\\
+ &=\frac{\mathcal{M}.g^{t'\alpha^{(2^m)}}_{2\mathbf{m}}}{e(Y_{2^m},g^{t'}_{\mathbf{m}})}\\
+ &=\mathcal{M}\nonumber
+\end{split}
+\end{equation}
+
+\noindent Note that the overhead for the ciphertext, aggregate key, public parameters, and the private and public keys, remains unchanged. The main change from the original scheme is in the fact that decryption requires a randomization value $w\in\mathbb{Z}_q$.
+
+\subsubsection{Claim B.1.} \textit{For a given $i\in\mathcal{S}$, the pair $(\hat{d_1},\hat{d_2})$ is chosen from the following distribution 
+\begin{equation}
+\left(\left({Y_{2^m}}\right)^{-1}.\left(PK.Y_i.Y^{V_{SIG}}_{2^m-1}\right)^x,\left(g_{\mathbf{m}}\right)^x\right)\nonumber
+\end{equation}
+\noindent where $x$ is uniformly randomly chosen from $\mathbb{Z}_q$.}\\
+
+\noindent{\textbf{Proof.}} We have 
+\begin{equation}
+\begin{split}
+ \hat{d_2} &= \left(b_{\mathcal{S}}.g^w_{\mathbf{m}}\right)\\
+ &= g^{\left(w+\left(\sum_{v\in\mathcal{S}}\alpha^{2^m-v}\right)\right)}_{\mathbf{m}}\\
+ &= \left(g_{\mathbf{m}}\right)^x\nonumber
+\end{split}
+\end{equation}
+\noindent Also, we have the following:
+\begin{equation}
+\begin{split}
+ \hat{d_1} &= \left(K_{\mathcal{S}}.SIG_{\mathcal{S}}.a_{\mathcal{S}}\right).\left(PK.Y_i.Y^{V_{SIG}}_{2^m-1}\right)^w\\
+ &= \left({Y_{2^m}}\right)^{-1}\left(K_{\mathcal{S}}.SIG_{\mathcal{S}}.a_{\mathcal{S}}.{Y_{2^m}}\right).\left(PK.Y_i.Y^{V_{SIG}}_{2^m-1}\right)^w\\
+ &= \left({Y_{2^m}}\right)^{-1}\left(PK.Y_i.Y^{V_{SIG}}_{2^m-1}\right)^{\left(\sum_{v\in\mathcal{S}}\alpha^{2^m-v}\right)}.\left(PK.Y_i.Y^{V_{SIG}}_{2^m-1}\right)^w\\
+ &= \left({Y_{2^m}}\right)^{-1}\left(PK.Y_i.Y^{V_{SIG}}_{2^m-1}\right)^{(w+\left(\sum_{v\in\mathcal{S}}\alpha^{2^m-v}\right))}\\
+ &= \left({Y_{2^m}}\right)^{-1}\left(PK.Y_i.Y^{V_{SIG}}_{2^m-1}\right)^x\nonumber
+\end{split} 
+\end{equation}
+
+
+\noindent This randomization slows down the decryption by a factor of two, but is vital from the point of view of CCA-security. Note that the distribution $(\hat{d_1},\hat{d_2})$ depends \emph{only on the data class $i$ for the message $\mathcal{M}$ to be decrypted} and is \emph{completely independent of the subset $\mathcal{S}$ used to encrypt it}. 
+
+\subsubsection{CCA Security.} We next prove the non-adaptive CCA security of this scheme. Note that a signature scheme $(SigKeyGen,Sign,Verify)$ is said to be $(\epsilon,q_S)$ strongly existentially unforgeable if no poly-time adversary, making at most $q_{S}$ signature signature queries, fails to produce some new message-signature pair with probability at least $\epsilon$. For a more complete description, refer \cite{canetti2004chosen}.
+
+\subsubsection{Theorem B.2.} \textit{Let \textbf{Setup}$''$ be the setup algorithm for an asymmetric multilinear map, and let the decisional $m$-Hybrid Diffie-Hellman Exponent assumption holds for {SetUp}$''$. Also, assume that the signature scheme is strongly existentially unforgeable. Then the modified KAC construction for $N-1$ data classes presented above is non-adaptively CCA secure.}
+
+\subsubsection{Proof.} Once again, let $\mathcal{A}$ be a poly-time adversary such that $|Adv_{\mathcal{A},N-1}-\frac{1}{2}| > \epsilon_1+\epsilon_2$ for the proposed KAC system parameterized with an identity space $\mathcal{ID}$ of size $N-1=2^m-2$. Let the signature scheme is $(\epsilon_2,q_S)$ strongly existentially unforgeable. We build an algorithm $\mathcal{B}$ that has advantage at least $\epsilon_1$ in solving the decisional $m$-HDHE problem for \textbf{Setup}$''$. $\mathcal{B}$ takes as input a random $m$-HDHE challenge $(params'',\{X_j\}_{j\in\{0,\cdots,m\}},V,Z)$ where:
+\begin{itemize}
+ \item $param''\leftarrow SetUp''(1^{\lambda},2\mathbf{m})$ 
+ \item $X_j=g^{\alpha^{(2^j)}}_{\mathbf{x}_j}$ for $0\leq j \leq m-1$
+ \item $X_m=g^{\alpha^{(2^m+1)}}_{\mathbf{x}_m}$
+ \item $V=g^{t'}_{\mathbf{m}}$ for a random $t'\in\mathbb{Z}_q$, $q$ being a $\lambda$ bit prime
+ \item $Z$ is either $g^{t'\alpha^{(2^m)}}_{2\mathbf{m}}$ or a random element of $\mathbb{G}_{2\mathbf{m}}$
+\end{itemize}
+\noindent $\mathcal{B}$ then proceeds as follows.\\
+
+% \begin{enumerate}
+\noindent \textbf{Commit:} $\mathcal{B}$ runs $\mathcal{A}$ and receives the set ${\mathcal{S}}^{*}$ of data classes that $\mathcal{A}$ wishes to be challenged on. $\mathcal{B}$ then randomly chooses a data class $i\in{\mathcal{S}}^{*}$ and provides it to $\mathcal{A}$.\\
+ 
+\noindent \textbf{SetUp}: $\mathcal{B}$ should generate the public $param$, public key $PK$, the authentication key $U$, and the aggregate key $K_{\overline{{\mathcal{S}}^{*}}}$ and provide them to $\mathcal{A}$. Algorithm $\mathcal{B}$ first runs the $SigKeyGen$ algorithm to obtain a signature signing key $K^{*}_{SIG}$ and a corresponding verification key $V^{*}_{SIG} \in \mathbb{Z}_q$. The various items to be provided to $\mathcal{A}$ are generated as follows.
+%  \vspace{-0.6mm}
+\begin{itemize}
+  \item $param$ is set as $(param'',\{X_i\}_{i\in\{0,\cdots,m\}})\nonumber$.
+  \item $PK$ is set as $\left({g^u_{\mathbf{m}}}\right)/{\left(Y_i.Y^{V^{*}_{SIG}}_{2^m-1}\right)}$ where $u$ is chosen uniformly at random from $\mathbb{Z}_q$ and $Y_i,Y_{2^m-1}$ are computed as mentioned in Claim 3.1. Note that this is equivalent to setting $msk=u-\alpha^i-V^{*}_{SIG}\alpha^{2^m-1}$, as required.
+  \item $U$ is set as $g^{t}_{\mathbf{m}}$ where $t$ is again chosen uniformly at random from $\mathbb{Z}_q$.
+  \item $\mathcal{B}$ then computes   
+  \begin{equation}
+   K_{\overline{{\mathcal{S}}^{*}}} = \prod_{v\notin{\mathcal{S}}^{*}}\frac{Y^{u}_{2^m-v}}{(Y_{2^m-v+i}).(Y^{V^{*}_{SIG}}_{2^{m+1}-1-v})}\nonumber
+  \end{equation}
+  \noindent Observe that $K_{\overline{{\mathcal{S}}^{*}}}=\prod_{v\notin{\mathcal{S}}^{*}}PK^{\alpha^{2^m-v}}$, as desired. Moreover, $\mathcal{B}$ is aware that $i\notin \overline{{\mathcal{S}}^{*}}$ (implying $i\neq v$), and hence has all the resources to compute $K_{\overline{{\mathcal{S}}^{*}}}$.  
+\end{itemize}
+ 
+\noindent Since the $g_{\mathbf{m}}$, $\alpha$, $u$, $t'$ and $t$ values are chosen uniformly at random, \emph{the public parameters and the public, private and authentication keys have an identical distribution to that in the actual construction}.\\
+
+\noindent\textbf{Query Phase 1}: Algorithm $\mathcal{A}$ now issues decryption queries. Let $(\mathcal{C},v)$ be a decryption query $\mathcal{C}$ is obtained by $\mathcal{A}$ using some subset $\mathcal{S}$ containing $v$. However, $\mathcal{B}$ is not given the knowledge of $\mathcal{S}$. Let $\mathcal{C}=((c_0,c_1,c_2),\sigma,V_{SIG})$. Algorithm $\mathcal{B}$ first runs $Verify$ to check if the signature $\sigma$ is valid on $(c_0,c_1,c_2)$ using $V_{SIG}$. If invalid, $\mathcal{B}$ returns $\bot$. If $V_{SIG} = V^{*}_{SIG}$, $\mathcal{B}$ outputs a random bit $b\in\{0,1\}$ and \emph{aborts} the simulation. Otherwise, the challenger picks a random $x\in\mathbb{Z}_q$. It then sets
+\begin{eqnarray}
+ \hat{d_0}&=&Y^{(V_{SIG}-V^{*}_{SIG})}_{2^m-1}.Y_v.Y^{-1}_i\nonumber\\
+ \hat{d'_0}&=&(Y_{v+1}/Y_{i+1})^{\frac{1}{(V_{SIG}-V^{*}_{SIG})}}\nonumber \\
+ \hat{d_2}&=&g^{x}_{\mathbf{m}}.Y^{\frac{1}{(V_{SIG}-V^{*}_{SIG})}}_1\nonumber\\
+ \hat{d_1}&=&\left(\hat{d_2}\right)^u.\left(\hat{d_0}\right)^x.\left(\hat{d'_0}\right) \nonumber 
+\end{eqnarray}
+\noindent Note that $\hat{d'_0}$ can be computed following Claim 3.1 as $1\leq i,v \leq 2^m-2$. $\mathcal{B}$ responds with $K=c_2\frac{{e}(\hat{d_1},c_0.U)}{{e}(\hat{d_2},c_1)}$. 
+
+\subsubsection{Claim B.3.} \textit{$\mathcal{B}$'s response is exactly as in a real attack scenario, that is, for some $x'$ chosen uniformly at random from $\mathbb{Z}_q$, we have} 
+\begin{equation}
+\hat{d_1} = \left({Y_{2^m}}\right)^{-1}.\left(PK.Y_v.Y^{V_{SIG}}_{2^m-1}\right)^{x'}  \text{ and }  \hat{d_2} = g^{x'}_{\mathbf{m}}\nonumber
+\end{equation}
+
+\noindent{\textbf{Proof.}} Recall $PK=\left({g^u_{\mathbf{m}}}\right)/{\left(Y_i.Y^{V^{*}_{SIG}}_{2^m-1}\right)}$, where $u$ is chosen uniformly at random from $\mathbb{Z}_q$. Set $x'=x+\frac{\alpha}{(V_{SIG}-V^{*}_{SIG})}$. Since $x$ is uniform in $\mathbb{Z}_q$, so is $x'$. Now, we have 
+
+\begin{equation}
+\begin{split}
+ \hat{d_2}&=g^{x}_{\mathbf{m}}.Y^{\frac{1}{(V_{SIG}-V^{*}_{SIG})}}_1\\
+ &= g^{x}_{\mathbf{m}}.g^{\frac{\alpha}{(V_{SIG}-V^{*}_{SIG})}}_{\mathbf{m}}\\
+ &= g^{x'}_{\mathbf{m}}\nonumber
+\end{split}
+\end{equation}
+
+\noindent Next, we have the following:
+\begin{equation}
+\begin{split}
+  \hat{d_1}&=\left(\hat{d_2}\right)^u.\left(\hat{d_0}\right)^x.\left(\hat{d'_0}\right)\\
+  &=\left(g^{u}_{\mathbf{m}}\right)^{x'}.\left(Y^{x\left(V_{SIG}-V^{*}_{SIG}\right)}_{2^m-1}\right).\left(Y_{v}/Y_{i}\right)^{\left(x+\frac{\alpha}{(V_{SIG}-V^{*}_{SIG})}\right)}\\
+  &= \left(PK.Y_i.Y^{V^{*}_{SIG}}_{2^m-1}\right)^{x'}.\left(Y^{x\left(V_{SIG}-V^{*}_{SIG}\right)}_{2^m-1}\right).\left(Y_{v}/Y_{i}\right)^{x'}\\
+  &= \left(PK.Y_v.Y^{V_{SIG}}_{2^m-1}\right)^{x'}.\left(Y^{\left(x-x'\right)\left(V_{SIG}-V^{*}_{SIG}\right)}_{2^m-1}\right)\\
+  &= \left(PK.Y_v.Y^{V_{SIG}}_{2^m-1}\right)^{x'}.\left(Y^{-\alpha}_{2^m-1}\right)\\
+  &= \left({Y_{2^m}}\right)^{-1}.\left(PK.Y_v.Y^{V_{SIG}}_{2^m-1}\right)^{x'}\nonumber
+\end{split}
+\end{equation}
+ 
+
+\noindent Thus, $\mathcal{B}$'s response is identical to \textbf{Decrypt}$(\mathcal{C},v,\mathcal{S},K_{\mathcal{S}},U)$, even though $\mathcal{B}$ does not possess the knowledge of the subset $\mathcal{S}$ used by $\mathcal{A}$ to obtain $\mathcal{C}$.\\
+ 
+\noindent \textbf{Challenge}: $\mathcal{A}$ picks at random two messages $\mathcal{M}_0$ and $\mathcal{M}_1$ from the set of possible plaintext messages in $\mathbb{G}_{2\mathbf{m}}$, and provides them to $\mathcal{B}$. $\mathcal{B}$ randomly picks $b\in\{0,1\}$, and sets 
+\begin{eqnarray}
+ \mathcal{C}&=&(U^{-1}V,V^u,\mathcal{M}_b.Z) \nonumber\\
+ \mathcal{C}^{*}&=&(\mathcal{C},Sign(\mathcal{C},K^{*}_{SIG}),V^{*}_{SIG})\nonumber
+\end{eqnarray}
+\noindent The challenge posed to $\mathcal{A}$ is $(\mathcal{C}^{*},\mathcal{M}_0,\mathcal{M}_1)$. It can be easily shown that when $Z=g^{t\alpha^{(2^m)}}_{2\mathbf{m}}$ (i.e. the input to $\mathcal{B}$ is a valid $m$-HDHE tuple), then this is a valid challenge to $\mathcal{A}$ as in a real attack.\\
+
+\noindent\textbf{Query Phase 2}: Same as in query phase 1.\\
+ 
+\noindent \textbf{Guess}: The adversary $\mathcal{A}$ outputs a guess $b'$ of $b$. If $b' = b$, $\mathcal{B}$ outputs $0$ (indicating that $Z=g^{t'\alpha^{(2^m)}}_{2\mathbf{m}}$). Otherwise, it outputs $1$ (indicating that $Z$ is a random element in $\mathbb{G}_{2\mathbf{m}}$).\\ 
+
+\noindent We now bound the probability that $\mathcal{B}$ aborts the simulation as a result of one of the decryption queries by $\mathcal{A}$. We claim that $Pr[\textbf{abort}]<\epsilon_2$; otherwise one can use $\mathcal{A}$ to forge signatures with probability at least $\epsilon_2$. A very brief proof of this may be stated as follows. We may construct a simulator that knows the secret $u$ and receives $K^{*}_{SIG}$ as a challenge in an existential forgery game. $\mathcal{A}$ can then cause an abort by producing a query that leads to an existential forgery under $K^{*}_{SIG}$ on some ciphertext. Our simulator uses this forgery to win the existential forgery game. Only one chosen message query is made by the adversary during the game to generate the signature corresponding to the challenge ciphertext. Thus, $Pr[\text{abort}]<\epsilon_2$.
+
+We conclude that $\mathcal{B}$ has the same advantage $\epsilon$ as $\mathcal{A}$, which must therefore be negligible, as desired. This completes the proof of Theorem B.2. \hfill\qed
+
+% \subsection{Proof of Security }
+% \label{app_subsec:CPA_general}
+
+% \subsection{Correctness}
+% \label{app_subsec:proofCCA}
+% 
+% We show that the CCA-secure construction is correct, that is, $\hat{\mathcal{M}}=\mathcal{M}$ as follows.
+% 
+% 
+% \subsection{Proof of Claim B.1}
+% \label{app_subsec:claimB.1}
+% 
+% Recall that we have set 
+% \begin{eqnarray}
+%  \hat{d_1} &=& (K_{\mathcal{S}}.SIG_{\mathcal{S}}.a_{\mathcal{S}}.(PK.Y_i.Y^{V_{SIG}}_{2^m-1})^w)\nonumber\\
+%  \hat{d_2} &=& (b_{\mathcal{S}}.g^w_{\mathbf{m}}) \nonumber
+% \end{eqnarray}
+% \noindent where $w$ is uniformly randomly chosen from $\mathbb{Z}_q$. Set $x=w+\left(\sum_{v\in\mathcal{S}}\alpha^{2^m-v}\right)$. Quite evidently $x$ is also uniformly random in $\mathbb{Z}_q$. Now, \hfill\qed
+% 
+% \subsection{Proof of Claim B.3}
+% \label{app_subsec:claimB.3}
+% 
+% Recall that we have set
+% \begin{eqnarray}
+%  \hat{d_0}&=&Y^{(V_{SIG}-V^{*}_{SIG})}_{2^m-1}.Y_v.Y^{-1}_i\nonumber\\
+%  \hat{d'_0}&=&(Y_{v+1}/Y_{i+1})^{\frac{1}{(V_{SIG}-V^{*}_{SIG})}}\nonumber \\
+%  \hat{d_2}&=&g^{x}_{\mathbf{m}}.Y^{\frac{1}{(V_{SIG}-V^{*}_{SIG})}}_1\nonumber\\
+%  \hat{d_1}&=&\left(\hat{d_2}\right)^u.\left(\hat{d_0}\right)^x.\left(\hat{d'_0}\right) \nonumber 
+% \end{eqnarray}
+% \noindent where $x$ is chosen at random from $\mathbb{Z}_q$. \noindent This concludes the proof of Claim B.3.\hfill\qed
+
+
+\section{KAC Using Symmetric Multilinear Maps}
+
+\subsection{Correctness of the CPA Secure Construction}
+\label{app_sec:correctness_2}
+
+Correctness may be established as follows.
+
+\begin{equation}
+\begin{split}
+ \hat{\mathcal{M}}&=c_2\frac{{e}(K_{\mathcal{S}}.a_{\mathcal{S}},U.c_0)}{{e}(b_{\mathcal{S}},c_1)}\\
+ &=c_2\frac{e(\prod_{v\in\mathcal{S}}\left({Y_{2^m-1-v}}\right)^{\gamma}.\prod_{v\in\mathcal{S},v\neq i}Y_{2^m-1-v+i},g^{t'}_{l})}{e(\prod_{v\in\mathcal{S}}Y_{2^m-1-v},(PK.\hat{Y}_i)^{t'})}\\
+ &=c_2\frac{e(\prod_{v\in\mathcal{S},v\neq i}Y_{2^m-1-v+i},g^{t'}_{l})}{e(\prod_{v\in\mathcal{S}}Y_{2^m-1-v},(\hat{Y}_i)^{t'})}\\
+ &=\frac{\mathcal{M}.g^{t'\alpha^{(2^m-1)}}_{m+l-1}}{e(Y_{2^m-1},g^{t'}_{l})}\\
+ &=\mathcal{M}\nonumber
+\end{split} 
+\end{equation}
+
+\subsection{Extension of the CPA Secure Construction to Multi-User Scenario}
+\label{subsec:multiuserKAC_2}
+% 
+\subsubsection{Construction.} Let $N=2^m-2$ and $Setup'$ sets up a symmetric multilinear map. We build a fully identity-based extended KAC for multi-user scenario using symmetric multilinear maps. Recall that $Y_i=g^{\alpha^i}_{m-1}$ and $\hat{Y}_i=g^{\alpha^i}_l$, where $1\leq i \leq N$ and $l\leq m$. Our scheme can handle $N$ data classes and $N$ data users.\\\\
+% 
+\noindent\textbf{SetUp}$(1^{\lambda},m)$: Same as the construction in Section \ref{subsec:construction_2}.\\\\
+% 
+\noindent\textbf{OwnerKeyGen}(): Randomly pick $\gamma_1, \gamma_2, t \in \mathbb{Z}_q$. Set the master secret key $msk$ to $(\gamma_1,\gamma_2,t)$. Set $PK=(g^{\gamma_1}_{l},g^{\gamma_2}_{l})$ and $U=g^{t}_{l}$. Output the tuple $(msk,PK,U)$.\\\\
+% 
+\noindent\textbf{Encrypt}$(params,PK,i,\mathcal{M})$: Take as input a message $\mathcal{M} \in \mathbb{G}_{m+l-1}$ belonging to class $i \in \mathcal{ID}$. Randomly choose $r\in\mathbb{Z}_q$ and let $t'=t+r \in\mathbb{Z}_q$. Output the ciphertext $\mathcal{C}$ as 
+\begin{equation}
+ \mathcal{C}=\left(g^r_{l},PK^r_1,(PK_1.\hat{Y}_i)^{t'},\mathcal{M}.g^{t'\alpha^{(2^m-1)}}_{m+l-1}\right)\nonumber
+\end{equation}
+
+\noindent\textbf{UserKeyGen}$(params,msk,\hat{i})$: Let $msk=(msk_1,msk_2,msk_3)$. Output the secret key for data user $\hat{i}$ as $Y^{msk_2}_u$.\\\\
+% 
+\noindent\textbf{Extract}$(params,msk,\mathcal{S},\hat{\mathcal{S}})$: The \textbf{Extract} operation now broadcasts the aggregate key $K_{\mathcal{S}}$ to all users in $\hat{\mathcal{S}}$ as follows. Let $msk=(msk_1,msk_2,msk_3)$. For the input subset of data class indices $\mathcal{S}$, compute $K_{\mathcal{S}} = \prod_{v\in\mathcal{S}}Y^{\gamma_1}_{2^m-1-v}$. Now, it is necessary to distribute this aggregate key to all users in $\hat{\mathcal{S}}$. For this, randomly choose $\hat{t}\in\mathbb{Z}_q$ and set $b_{\hat{\mathcal{S}}}=\left(\prod_{\hat{v}\in\hat{\mathcal{S}}}Y_{2^m-1-\hat{v}}\right)$. Output 
+\begin{equation}
+K_{\left(\mathcal{S},\hat{\mathcal{S}}\right)}=\left(g^{\hat{t}}_{l},\left(g^{msk_2}_{m-1}.b^{\hat{t}}_{\hat{\mathcal{S}}}\right),\mathcal{K}\right)\nonumber
+\end{equation}
+\noindent where 
+\begin{equation}
+\mathcal{K} = \left(\left(g^{\hat{t}\alpha^{(2^m-1)}}_{m+l-1}\right).\left(e(K_{\mathcal{S}},g^{msk_3}_{l})\right)\right)\nonumber
+\end{equation}
+
+%  
+\noindent\textbf{Decrypt}$(\mathcal{C},K_{\left(\mathcal{S},\hat{\mathcal{S}}\right)},i,u,sk_u,\mathcal{S},\hat{\mathcal{S}},U)$: If $i\notin\mathcal{S}$ or $u\notin\hat{\mathcal{S}}$, output $\bot$. Otherwise, set
+\begin{eqnarray}
+ a_{\hat{\mathcal{S}}}=\left(\prod_{\hat{v}\in\hat{\mathcal{S}},\hat{v}\neq i}Y_{2^m-1-\hat{v}+u}\right)&\text{ , }&
+ a_{\mathcal{S}}=\left(\prod_{v\in\mathcal{S},v\neq i}Y_{2^m-1-v+i}\right)\nonumber\\ 
+ \text{and }b_{\mathcal{S}}&=&\left(\prod_{v\in\mathcal{S}}Y_{2^m-1-v}\right)\nonumber
+\end{eqnarray}
+\noindent Let $\mathcal{C}=(c_0,c_1,c_2,c_3)$ and $K_{\left(\mathcal{S},\hat{\mathcal{S}}\right)}=(\hat{k}_0,\hat{k}_1,\hat{k}_2)$. Output the decrypted message as  
+\begin{eqnarray} 
+\hat{\mathcal{M}}&=&c_3.\hat{k}_2.\left(\frac{e(b_{\mathcal{S}},c_1){e}(a_{\mathcal{S}},U.c_0)}{{e}(b_{\mathcal{S}},c_2)}\right).\left(\frac{e(sk_u.a_{\hat{\mathcal{S}}},\hat{k}_0)}{e(Y_u,\hat{k}_1)}\right) \nonumber
+\end{eqnarray}
+
+\noindent Correctness of this scheme may be easily proven. The proof of security is similar to that in Section \ref{subsec:security1_1}.
+
+
+\subsection{A CCA Secure Basic KAC using Symmetric Multilinear Maps}
+\label{app_sec:CCAsecure2}
+
+We now demonstrate how to extend the identity-based KAC construction using multilinear maps to obtain non-adaptive chosen ciphertext security. We again make use of the signature scheme coupled with the collusion resistant hash function that we introduced in Appendix \ref{app_sec:CCA1}. In this CCA secure construction, we force the class index value $i$ to be strictly less than $2^m-2$ instead of $2^m-1$ in the CPA secure construction.
+
+\noindent\textbf{SetUp}$(1^{\lambda},m)$: Same as in Section \ref{subsec:construction_2}.\\
+ 
+\noindent \textbf{KeyGen}(): Same as in Section \ref{subsec:construction_2}.\\
+ 
+\noindent \textbf{Encrypt}$(PK,i,\mathcal{M})$: Run the $SigKeyGen$ algorithm to obtain a signature signing key $K_{SIG}$ and a verification key $V_{SIG} \in \mathbb{Z}_q$. Randomly choose $r\in\mathbb{Z}_q$ and let $t'=t+r \in\mathbb{Z}_q$. Compute 
+\begin{equation}
+ \mathcal{C}'=(g^r_{l},(PK.Y_i.g^{V_{SIG}}_{m-1})^{t'},\mathcal{M}.g^{t'\alpha^{(2^m-1)}}_{m+l-1})\nonumber
+\end{equation} 
+\noindent and output the ciphertext as
+\begin{eqnarray}
+ \mathcal{C}&=&(\mathcal{C}',Sign(\mathcal{C}',K_{SIG}),V_{SIG}) \nonumber
+\end{eqnarray} 
+ 
+\noindent \textbf{Extract}$(msk,\mathcal{S})$: Same as in Section \ref{subsec:construction_2}.\\
+ 
+\noindent \textbf{Decrypt}$(\mathcal{C},i,\mathcal{S},K_{\mathcal{S}},U)$: Let $\mathcal{C}=((c_0,c_1,c_2),\sigma,V_{SIG})$. Verify that $\sigma$ is a valid signature of $(c_0,c_1,c_2)$ under the key $V_{SIG}$. If not, output $\bot$. Also, if $i\notin\mathcal{S}$, output $\bot$. Otherwise, set 
+\begin{eqnarray}
+  SIG_{\mathcal{S}} &=& \prod_{v\in\mathcal{S}}g^{V_{SIG}}_{m-1}\nonumber\\
+  a_{\mathcal{S}} &=& \prod_{v\in\mathcal{S},v\neq i}Y_{2^m-1-v+i}\nonumber\\
+  b_{\mathcal{S}} &=& \prod_{v\in\mathcal{S}}Y_{2^m-1-v}\nonumber  
+\end{eqnarray}
+% \noindent Note that these can be computed as $1\leq i,v \leq N-1(=2^m-2)$. \emph{This is precisely why we allow only $N-1$ data classes}.  
+\noindent Next, pick a random $w\in \mathbb{Z}_q$ and set
+ \begin{eqnarray}
+  \hat{d_1} &=& (K_{\mathcal{S}}.SIG_{\mathcal{S}}.a_{\mathcal{S}}.(PK.Y_i.g^{V_{SIG}}_{m-1})^w)\nonumber\\
+  \hat{d_2} &=& (b_{\mathcal{S}}.g^w_{m-1}) \nonumber
+ \end{eqnarray}
+ \noindent Output the decrypted message 
+ \begin{equation}
+  \hat{\mathcal{M}} = c_2\frac{{e}(\hat{d_1},U.c_0)}{{e}(\hat{d_2},c_1)}\nonumber
+ \end{equation}
+\noindent The proof of correctness of this scheme is presented in Appendix \ref{app_sec:CCA1}. Note that the overhead for the ciphertext, aggregate key, public parameters, and the private and public keys, remains unchanged. The main change from the original scheme is in the fact that decryption requires a randomization value $w\in\mathbb{Z}_q$.
+
+\subsubsection{Claim C.1.} \textit{For a given $i\in\mathcal{S}$, the pair $(\hat{d_1},\hat{d_2})$ is chosen from the following distribution 
+\begin{equation}
+\left(\left({Y_{2^m-1}}\right)^{-1}.\left(PK.Y_i.g^{V_{SIG}}_{m-1}\right)^x,\left(g_{m-1}\right)^x\right)\nonumber
+\end{equation}
+\noindent where $x$ is uniformly randomly chosen from $\mathbb{Z}_q$.}\\
+\noindent{\textbf{Proof.}} Similar to the proof in Appendix \ref{app_sec:CCA1}.\\
+
+Once again, note that the distribution $(\hat{d_1},\hat{d_2})$ depends \emph{only on the data class $i$ for the message $\mathcal{M}$ to be decrypted} and is \emph{completely independent of the subset $\mathcal{S}$ used to encrypt it}. We next prove the non-adaptive CCA security of this scheme. 
+
+\subsubsection{Theorem C.2.} \textit{Let \textbf{Setup}$'$ be the setup algorithm for a symmetric multilinear map, and let the decisional $(m,l)$-Multilinear Diffie-Hellman Exponent assumption holds for {SetUp}$'$. Then our proposed construction of KAC for $N'$ data classes presented in this section is non-adaptively CCA secure for $N'=\binom{m}{l}$, where each data class number $i<2^m-2$.}
+
+\subsubsection{Proof.} Let $\mathcal{A}$ be a poly-time adversary such that $|Adv_{\mathcal{A},N'}-\frac{1}{2}| > \epsilon$ for the proposed KAC system parameterized with an identity space $\mathcal{ID}'$ of size $N'$, and $\epsilon$ is a non-negligible positive constant. We build an algorithm $\mathcal{B}$ that has advantage at least $\epsilon$ in solving the decisional $(m,l)$-MDHE problem for \textbf{Setup}$'$. $\mathcal{B}$ takes as input a random $(m,l)$-MDHE challenge tuple $(params',\{X_j\}_{j\in\{0,\cdots,m\}},V,Z)$, where:
+\begin{itemize}
+ \item $param'\leftarrow SetUp'(1^{\lambda},m+l-1)$
+ \item $X_j=g^{\alpha^{(2^j)}}_{1}$ for $0\leq j \leq m$
+ \item $V=g^{t'}_{l}$ for a random $t'\in\mathbb{Z}_q$ (where $q$ is a $\lambda$ bit prime)
+ \item $Z$ is either $g^{t'\alpha^{(2^m-1)}}_{m+l-1}$ or a random element of $\mathbb{G}_{m+l-1}$.
+\end{itemize}
+\noindent $\mathcal{B}$ then proceeds as follows.\\
+
+% \begin{enumerate}
+\noindent \textbf{Commit:} $\mathcal{B}$ runs $\mathcal{A}$ and receives the set ${\mathcal{S}}^{*}$ of data classes that $\mathcal{A}$ wishes to be challenged on. $\mathcal{B}$ then randomly chooses a data class $i\in{\mathcal{S}}^{*}$ and provides it to $\mathcal{A}$.\\
+ 
+\noindent \textbf{SetUp}: $\mathcal{B}$ should generate the public $param$, public key $PK$, the authentication key $U$, and the aggregate key $K_{\overline{{\mathcal{S}}^{*}}}$ and provide them to $\mathcal{A}$. Algorithm $\mathcal{B}$ first runs the $SigKeyGen$ algorithm to obtain a signature signing key $K^{*}_{SIG}$ and a corresponding verification key $V^{*}_{SIG} \in \mathbb{Z}_q$. The various items to be provided to $\mathcal{A}$ are generated as follows.
+%  \vspace{-0.6mm}
+\begin{itemize}
+  \item $param$ is set as $(param'',\{X_i\}_{i\in\{0,\cdots,m\}})\nonumber$.
+  \item $PK$ is set as $\left({g^u_{l}}\right)/{\left(Y_i.g^{V^{*}_{SIG}}_{m-1}\right)}$ where $u$ is chosen uniformly at random from $\mathbb{Z}_q$. Note that this is equivalent to setting $msk=u-\alpha^i-V^{*}_{SIG}$, as required.
+  \item $U$ is set as $g^{t}_{\mathbf{m}}$ where $t$ is again chosen uniformly at random from $\mathbb{Z}_q$.
+  \item $\mathcal{B}$ then computes   
+  \begin{equation}
+   K_{\overline{{\mathcal{S}}^{*}}} = \prod_{v\notin{\mathcal{S}}^{*}}\frac{Y^{u}_{2^m-1-v}}{(Y_{2^m-1-v+i}).(g^{V^{*}_{SIG}}_{m-1})}\nonumber
+  \end{equation}
+  \noindent Observe that $K_{\overline{{\mathcal{S}}^{*}}}=\prod_{v\notin{\mathcal{S}}^{*}}PK^{\alpha^{2^m-1-v}}$, as desired. Moreover, $\mathcal{B}$ is aware that $i\notin \overline{{\mathcal{S}}^{*}}$ (implying $i\neq v$), and hence has all the resources to compute $K_{\overline{{\mathcal{S}}^{*}}}$.  
+\end{itemize}
+ 
+\noindent Since the $g_{\mathbf{m}}$, $\alpha$, $u$, $t'$ and $t$ values are chosen uniformly at random, \emph{the public parameters and the public, private and authentication keys have an identical distribution to that in the actual construction}.\\
+
+\noindent\textbf{Query Phase 1}: Algorithm $\mathcal{A}$ now issues decryption queries. Let $(\mathcal{C},v)$ be a decryption query $\mathcal{C}$ is obtained by $\mathcal{A}$ using some subset $\mathcal{S}$ containing $v$. However, $\mathcal{B}$ is not given the knowledge of $\mathcal{S}$. Let $\mathcal{C}=((c_0,c_1,c_2),\sigma,V_{SIG})$. Algorithm $\mathcal{B}$ first runs $Verify$ to check if the signature $\sigma$ is valid on $(c_0,c_1,c_2)$ using $V_{SIG}$. If invalid, $\mathcal{B}$ returns $\bot$. If $V_{SIG} = V^{*}_{SIG}$, $\mathcal{B}$ outputs a random bit $b\in\{0,1\}$ and \emph{aborts} the simulation. Otherwise, the challenger picks a random $x\in\mathbb{Z}_q$. It then sets
+\begin{eqnarray}
+ \hat{d_0}&=&Y^{(V_{SIG}-V^{*}_{SIG})}.Y_v.Y^{-1}_i\nonumber\\
+ \hat{d'_0}&=&(Y_{v+1}/Y_{i+1})^{\frac{1}{(V_{SIG}-V^{*}_{SIG})}}\nonumber \\
+ \hat{d_2}&=&g^{x}_{\mathbf{m}}.Y^{\frac{1}{(V_{SIG}-V^{*}_{SIG})}}_1\nonumber\\
+ \hat{d_1}&=&\left(\hat{d_2}\right)^u.\left(\hat{d_0}\right)^x.\left(\hat{d'_0}\right) \nonumber 
+\end{eqnarray}
+\noindent Note that $\hat{d'_0}$ can be computed following Claim 4.2 as $1\leq i,v \leq 2^m-3$. $\mathcal{B}$ responds with $K=c_2\frac{{e}(\hat{d_1},c_0.U)}{{e}(\hat{d_2},c_1)}$. 
+
+\subsubsection{Claim C.3.} \textit{$\mathcal{B}$'s response is exactly as in a real attack scenario, that is, for some $x'$ chosen uniformly at random from $\mathbb{Z}_q$, we have} 
+\begin{equation}
+\hat{d_1} = \left({Y_{2^m-1}}\right)^{-1}.\left(PK.Y_v.g^{V_{SIG}}_{m-1}\right)^{x'}  \text{ and }  \hat{d_2} = g^{x'}_{m-1}\nonumber
+\end{equation}
+
+\noindent{\textbf{Proof.}} Similar to the proof in Appendix \ref{app_sec:CCA1}.\\
+
+% 
+% To see that this response is as in a real attack game, set $x'=x+\frac{\alpha}{(V_{SIG}-V^{*}_{SIG})}$ and observe that 
+% 
+% \noindent Furthermore, since $x$ is uniform in $\mathbb{Z}_q$, so is $x'$. 
+
+\noindent Thus, by the result in Claim C.1, $\mathcal{B}$'s response is identical to \textbf{Decrypt}$(\mathcal{C},v,\mathcal{S},K_{\mathcal{S}},U)$, even though $\mathcal{B}$ does not possess the knowledge of the subset $\mathcal{S}$ used by $\mathcal{A}$ to obtain $\mathcal{C}$.\\
+ 
+\noindent \textbf{Challenge}: $\mathcal{A}$ picks at random two messages $\mathcal{M}_0$ and $\mathcal{M}_1$ from the set of possible plaintext messages in $\mathbb{G}_{2\mathbf{m}}$, and provides them to $\mathcal{B}$. $\mathcal{B}$ randomly picks $b\in\{0,1\}$, and sets 
+\begin{eqnarray}
+ \mathcal{C}&=&(U^{-1}V,V^u,\mathcal{M}_b.Z) \nonumber\\
+ \mathcal{C}^{*}&=&(\mathcal{C},Sign(\mathcal{C},K^{*}_{SIG}),V^{*}_{SIG})\nonumber
+\end{eqnarray}
+\noindent The challenge posed to $\mathcal{A}$ is $(\mathcal{C}^{*},\mathcal{M}_0,\mathcal{M}_1)$. It can be easily shown that when $Z=g^{t'\alpha^{(2^m-1)}}_{m+l-1}$ (i.e. the input to $\mathcal{B}$ is a valid $m$-MDHE tuple), then this is a valid challenge to $\mathcal{A}$ as in a real attack.\\
+
+\noindent\textbf{Query Phase 2}: Same as in query phase 1.\\
+ 
+\noindent \textbf{Guess}: The adversary $\mathcal{A}$ outputs a guess $b'$ of $b$. If $b' = b$, $\mathcal{B}$ outputs $0$ (indicating that $Z=g^{t'\alpha^{(2^m-1)}}_{m+l-1}$). Otherwise, it outputs $1$ (indicating that $Z$ is a random element in $\mathbb{G}_{m+l-1}$).\\
+
+\noindent It can be easily proved that the probability that $\mathcal{B}$ aborts the simulation as a result of one of the decryption queries by $\mathcal{A}$ is less than $\epsilon_2$ (from the existential unforgability property of the signature scheme). We conclude that $\mathcal{B}$ has the same advantage $\epsilon$ as $\mathcal{A}$, which must therefore be negligible, as desired. This completes the proof of Theorem C.2. \hfill\qed
+
+
+
+\section{The Third KAC Construction}
+
+\subsection{Correctness}
+\label{app_sec:proof_correctness_3}
+
+Correctness of the third KAC construction may be established as follows.
+
+\begin{equation}
+ \begin{split}
+  \hat{\mathcal{M}}&=c_{m+2}\frac{{e}(K_{\mathcal{S}},U.c_0)}{{e}(c_{m+1}.a_{\mathcal{S}},PK_2)}\\
+  &=c_{m+2}\frac{e\left(\left(\prod_{v\in\mathcal{S}}{Y_{v}}\right)^x,g^{t'}_1\right)}{e\left(\left(g^{\gamma}_m.{Y_i}.\prod_{v\in\mathcal{S},v\neq i}Y_{v}\right)^{t'},g^x_1\right)}\\
+  &=\frac{c_{m+2}}{e(\left(g^{\gamma}_m\right)^{t'},g^{x}_1)}\\
+  &=\mathcal{M}\nonumber
+ \end{split}
+\end{equation}
+
+
+\subsection{Security In The Generic Multilinear Map Model}
+\label{app_sec:proofgeneric}
+
+In this section, we prove that our third KAC construction is adaptively CPA secure in the generic multilinear map model described in Section \ref{sec:generic_security}. In particular, we demonstrate that with a prime group order parameter $q\approx 2^{\lambda}$, the scheme achieves $\lambda$-bit security. We state and prove the following theorem.
+
+\subsubsection{Theorem D.1.} \textit{Any generic adversary $\mathcal{A}$ that can make at most a polynomial number of queries to (\textbf{Encode},\textbf{Mult},\textbf{Pair}) has negligible advantage in breaking the adaptive security of the KAC construction presented in Section \ref{subsec:construction_third}, provided that $1/q$ is negligible.}
+
+\subsubsection{Proof.} Let $\mathcal{A}$ be an adaptive adversary under the generic model and let $\mathcal{B}$ be a challenger that plays the following game with $\mathcal{A}$:\\
+
+\noindent\textbf{SetUp}: Challenger $\mathcal{B}$ sets up the system for $\mathcal{ID}$ consisting of all $m$ bit class identities. $\mathcal{B}$ generates random $\alpha_{j,b}\in\mathbb{Z}_q$ for $j=0,\cdots,m-1$, and $b=0,1$. $\mathcal{B}$ also generates random $\gamma,x,t\in\mathbb{Z}_q$. $\mathcal{A}$ receives the following:
+
+\begin{itemize}
+ \item $X_{j,b}=\xi({\alpha_{j,b}},1)$ for $j=0,\cdots,m-1$, and $b=0,1$
+ \item $PK=(\xi({\gamma},{m}),\xi(x,1))$ 
+ \item $U=\xi(t,{1})$
+\end{itemize}
+
+\noindent\textbf{Oracle Query Phase.} $\mathcal{A}$ adaptively issues queries to (\textbf{Encode},\textbf{Mult},\textbf{Pair}).\\
+
+\noindent\textbf{Commit.} Algorithm $\mathcal{A}$ commits to a set ${\mathcal{S}} \subset \mathcal{ID}$ of data classes that it wishes to attack. Since collusion attacks are allowed in our framework, $\mathcal{B}$ furnishes $\mathcal{A}$ with the aggregate key $K_{\overline{\mathcal{S}}}$ computed as
+
+\begin{equation}
+ K_{\overline{\mathcal{S}}} = \xi\left(x\sum_{v\notin\mathcal{S}}{\prod_{j=0}^{m-1}\alpha_{j,v_j}},m\right)\nonumber
+\end{equation}
+\noindent $\mathcal{B}$ also chooses $i\in\mathcal{S}$ and communicates the same to $\mathcal{A}$.\\
+
+\noindent\textbf{Challenge}: To make a challenge query, $\mathcal{A}$  randomly generates $\hat{m}_0,\hat{m}_1\in\mathbb{Z}_2q$ and provides these to $\mathcal{B}$. $\mathcal{B}$ randomly chooses $r\in\mathbb{Z}_q$ and sets $t'=t+r \in\mathbb{Z}_q$. It then chooses chooses a random $\hat{b}\in\{0,1\}$ and sets
+\begin{eqnarray}
+ c_0&=&\xi(r,1)\nonumber\\
+ c_{j+1}&=&\xi(t'\alpha_{j,\left(1-i_{j}\right)}) \text{ for } j=0,1,\cdots,m-1\nonumber\\
+ c_{m+1}&=&\xi(t'(\gamma+\prod_{j=0}^{m-1}\alpha_{j,i_j}),m)\nonumber\\
+ c_{m+2}&=& \xi(\hat{m}_{\hat{b}}+\gamma xt',m+1)\nonumber
+\end{eqnarray}
+\noindent Finally, $\mathcal{B}$ sets 
+\begin{equation}
+ \mathcal{C}=(\{c_j\}_{j\in\{0,\cdots,m+2\}})\nonumber
+\end{equation}
+\noindent and provides the challenge to $\mathcal{A}$ as $(\mathcal{C},\xi(\hat{m}_0,m+1),\xi(\hat{m}_1,m+1))$.\\
+ 
+ 
+\noindent\textbf{Guess}: $\mathcal{A}$ outputs a guess $\hat{b'}$ of $\hat{b}$. If $\hat{b'} = \hat{b}$, $\mathcal{A}$ wins the game.\\
+
+\noindent We now assume that instead of choosing random values for the set of parameters 
+\begin{equation}
+ (\{\alpha_{j,b}\}_{j\in\{0,\cdots,m-1\},b\in\{0,1\}},\gamma,x,t,r,\hat{m}_0,\hat{m}_1)\nonumber
+\end{equation}
+\noindent the algorithm $\mathcal{B}$ treats them as formal variables and maintains a list of tuples $L=\{(p,j,\epsilon)\}$, where $p$ is a polynomial in these formal variables, $j$ is the group index and $\epsilon\in\{0,1\}^{n}$. The list is initialized with the following tuples:
+\begin{itemize}
+ \item $(\alpha_{j,b},1,\xi_{2j+b})$ for randomly generated strings $\xi_{2j+b}\in\{0,1\}^{n}$ for some $n$, $j\in\{0,\cdots,m-1\},b\in\{0,1\}$
+ \item $(\gamma,m,\xi{2m})$ for a randomly generated $\xi_{2m}\in\{0,1\}^{n}$
+ \item $(x,1,\xi_{2m+1})$ for a randomly generated $\xi_{2m+1}\in\{0,1\}^{n}$
+ \item $(t,1,\xi_{2m+2})$ for a randomly generated $\xi_{2m+2}\in\{0,1\}^{n}$
+\end{itemize}
+
+\noindent Thus intially, $|L|=2m+3$ and the game begins with $\mathcal{B}$ supplying the set of strings $\{\xi_j\}_{j\in\{0,\cdots,2m+2\}}$ to $\mathcal{A}$, who can make the following queries: 
+
+\begin{itemize}
+\item $\mathcal{A}$ is allowed at most a polynomial number of queries to (\textbf{Encode},\textbf{Mult},\textbf{Pair}). $\mathcal{B}$ simulates the oracle to handle these queries using techniques described in \cite{boneh2014low}. We take note of the fact that in each query to any of the three algorithms, at most one new tuple is added to $L$, and no tuple can have index $j>m+1$. Note that $\mathcal{B}$ can make the string responses $\xi$ to $\mathcal{A}$ arbitrarily long to make them hard to guess. Hence, without loss of generality, we assume that all \textbf{Mult} and \textbf{Pair} queries made by $\mathcal{A}$ are precisely on strings furnished by $\mathcal{B}$.\\
+
+\item $\mathcal{A}$ is allowed to commit to a set $\mathcal{S}$ and query for $K_{\overline{\mathcal{S}}}$. $\mathcal{B}$ adds the tuple $\left(x\sum_{v\notin\mathcal{S}}{\prod_{j=0}^{m-1}\alpha_{j,v_j}},m,\xi\right)$ for randomly generated $\xi\in\{0,1\}^{n}$, which is given as response to $\mathcal{A}$. $\mathcal{B}$ also chooses $i\in\mathcal{S}$ and communicates the same to $\mathcal{A}$.\\ 
+
+\item Finally, $\mathcal{A}$ is allowed to make a single encryption query on the class $i\in\mathcal{S}$. $\mathcal{B}$ creates new formal variables $r$ and $\hat{b}$ and adds the following tuples to its list $L$:\\
+
+ \subitem $(r,1,\xi)$
+ \subitem $((t+r)\alpha_{j,\left(1-i_{j}\right)},1,\xi_{j}) \text{ for } j=0,1,\cdots,m-1$
+ \subitem $((t+r)(\gamma+\prod_{j=0}^{m-1}\alpha_{j,i_j}),m,\xi_{m})$
+ \subitem $(\hat{m}_{\hat{b}}+\gamma x(t'+r),m+1,\xi_{m+1})$
+ \subitem $(\hat{m}_0,m+1,\xi_{m+2})$
+ \subitem $(\hat{m}_1,m+1,\xi_{m+3})$\\
+
+\noindent Once again $\xi$ and $\xi_j, j\in\{0,\cdots,m+3\}$ are randomly generated strings in $\{0,1\}^{n}$ that are provided to $\mathcal{A}$ as response.\\
+
+\item After a valid number of queries, $\mathcal{A}$ outputs a random $\hat{b'}\in\{0,1\}$ and terminates.
+\end{itemize}
+
+\noindent Now, at this point, $\mathcal{B}$ chooses random values for $\alpha_{j,b},\gamma,x,t,r,\hat{b}$ and asks $\mathcal{A}$ for two random messages $m_0$ and $m_1$. We denote by $\Upsilon$ the event that for two random tuples $(p,j,\xi)$ and $(p',j',\xi')$ in the list $L$ such that $j=j'$, we have $p\neq p'$ but $p(\alpha_{j,b},\cdots)=p'(\alpha_{j,b},\cdots)$. We refer to such an event as a \emph{false polynomial equality} event. We say that $\mathcal{A}$ wins the game if $\hat{b}=\hat{b'}$ or an instance of the event $Upsilon$ occurs. In the latter case, $\mathcal{B}$ fails to simulate the oracle perfectly.
+
+\begin{table}[!t]
+\centering
+\captionsetup{font=scriptsize}
+\caption{Upper Bounds on Contributions to Length of $L$}
+\label{tab:tuple}
+\scalebox{1.0}{
+\begin{tabular}{|c|c|}
+  \hline
+  \textbf{Query Stage} & \textbf{Maximum Contribution to $|L|$}\\\hline
+  SetUp & $2m+3$\\\hline
+  Oracle Query Phase & $Q_e+Q_m+Q_p$\\\hline
+  Commit & $1$\\\hline
+  Challenge & $m+5$\\\hline
+  \textbf{Total} & $Q_e+Q_m+Q_p+3m+9$\\\hline
+\end{tabular}}
+\end{table}
+
+We now look at the probability that a random choice of values for
+\begin{equation}
+(\alpha_{j,b},\gamma,x,t,r,\hat{b},m_0,m_1)\in\mathbb{Z}^{\left(2m+7\right)}_q\nonumber
+\end{equation}
+\noindent results in the event $\Upsilon$. First, we make the following observation.
+
+\subsubsection{Observation D.1.}\emph{The maximum degree of any polynomial in $\mathcal{B}$'s list $L$ is at most $m+1$}.\\
+
+\noindent Then, by Observation D.1 and the Swartz-Zippel lemma \cite{moshkovitz2010alternative}, the probability that a randomly chosen pair of polynomials in $L$ evaluate to the same value for a random choice of variable values, is upper bounded by $(m+1)/q$. Next, assume that $\mathcal{A}$ makes $Q_E$ queries to \textbf{Encode}, $Q_M$ queries to \textbf{Mult} and $Q_P$ queries to \textbf{Pair} during \textbf{Oracle Query Phase}. Table \ref{tab:tuple} summarizes the maximum possible contributions to $|L|$ by the tuples added by $\mathcal{B}$ at different query stages. Note that $|L|$ is upper bounded by $(Q_e+Q_m+Q_p+3m+9)$. It easily follows that the probability of a false polynomial equality event $\Upsilon$ is upper bounded as
+\begin{equation}
+ Pr(\Upsilon)\leq \left(Q_e+Q_m+Q_p+3m+9\right)^2\left(m+1\right)/2q\nonumber
+\end{equation}
+\noindent If the event $\Upsilon$ does not occur, $\mathcal{B}$ simulates the oracle in response to $\mathcal{A}$'s queries perfectly and, from $\mathcal{A}$'s view, $\hat{b}$ is independent as it was chosen after the simulation. Hence we have 
+
+\begin{equation}
+ Pr[\hat{b}=\hat{b'}\mid\overline{\Upsilon}]=1/2\nonumber
+\end{equation}
+\noindent This in turn gives us the following relations:
+\begin{eqnarray}
+ Pr[\hat{b}=\hat{b'}]\geq Pr[\hat{b}=\hat{b'}\mid\overline{\Upsilon}]Pr[\overline{\Upsilon}]=\frac{1-Pr[\Upsilon]}{2}\nonumber\\
+ Pr[\hat{b}=\hat{b'}]\leq Pr[\hat{b}=\hat{b'}\mid\overline{\Upsilon}]Pr[\Upsilon] + Pr[{\Upsilon}] = \frac{1+Pr[\Upsilon]}{2}\nonumber
+\end{eqnarray}
+\noindent From this, it is straightforward to conclude that the advantage of the generic adversary $\mathcal{A}$ may be upper bounded as follows:
+\begin{equation}
+\begin{split}
+ |Adv_{\mathcal{A},2^m}-\frac{1}{2}| &= |Pr[\hat{b}=\hat{b'}]|\leq {Pr[\Upsilon]}/{2}\\
+ &= \left(Q_e+Q_m+Q_p+3m+9\right)^2\left(m+1\right)/4q\nonumber
+\end{split} 
+\end{equation}
+
+\noindent For $Q_e,Q_m,Q_p,m$ polynomial in the security parameter $\lambda$, this quantity is negligible provided that $1/q$ is negligible, or in particular, $q\approx 2^{\lambda}$, as desired. This completes the proof of Theorem D.1.\hfill\qed 

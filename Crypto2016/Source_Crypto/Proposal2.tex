@@ -1,0 +1,146 @@
+\section{KAC Using Symmetric Multilinear Maps}
+\label{sec:proposal2}
+
+In this section, we present the second identity-based KAC construction based on traditional symmetric multilinear maps. We use the same idea presented in the earlier construction, that is, we embed the original KAC scheme in \cite{patranabis2015dynamic} within a symmetric multilinear map, such that the original public parameters can be derived from a small number of elements in the source group of the map. In this construction, the parameter $Y_i=g^{\alpha^i}_m$, while $X_j=g^{\alpha^{2^j}}_1$. However, unlike in the asymmetric setting where the same elements cannot be paired together, in the symmetric setting one could pair $X_{m-1}$ with itself, and then pair it with $g_1$ $m-2$ times, to obtain $Y_{N+1}$. To overcome this we use a technique proposed in \cite{boneh2014low} that restricts the bit representations of all identities in $\mathcal{ID}$ to a single Hamming weight class. This actually allows computing the necessary $Y_i$ without leaking the value of $Y_{N+1}$.
+
+\subsubsection{The Basic Idea.} Let $Y_i=g^{\alpha^i}_{m-1}$ and $\hat{Y}_i=g^{\alpha^i}_l$ where $l\leq m$. Set $X_j=g^{\alpha^{(2^j)}}_1$ for $i=0,1,\cdots,m$. Further, let $HW(i)$ denote the Hamming weight of the bit representation of $i$. We now make the following claims.
+
+\subsubsection{Claim 4.1.} One can compute $g^{\alpha^i}_{HW(i)}$ for $1\leq i\leq 2^m-2$. In particular, one can compute $\hat{Y}_i$ for $1\leq i\leq 2^m-2$ such that $HW(i)=l$.\\
+
+\noindent\textbf{Proof.} Compute $g^{\alpha^i}_{HW(i)}$ by pairing together all $X_j$ such that the $j$th bit of $i$ is 1. Since $i$ has at most $m$ bits, the necessary $X_j$ are available. 
+
+% \subsubsection{Claim 4.2.} One can compute $Y_{i}$ for $1\leq i\leq 2^m-2$.\\
+% 
+% \noindent\textbf{Proof.} Compute $g^{\alpha^i}_{HW(i)}$ by Claim 4.1. (and pair it with $g_{m-HW(i)-1}$ if $HW(i)\leq m-2$). Note that for all $i$ such that $1\leq i\leq 2^m-2$, $HW(i)\leq m-1$.
+
+\subsubsection{Claim 4.2.} One can compute $Y_{i}$ and $Y_{2^m-1-i}$ for $1\leq i\leq 2^m-2$ such that $HW(i)=l$.\\
+
+\noindent\textbf{Proof.} Note that for all $i$ such that $1\leq i\leq 2^m-2$, $HW(i)\leq m-1$. Hence, one can compute $g^{\alpha^i}_{HW(i)}$ by Claim 4.1 and then pair it with $g_{m-HW(i)-1}$ (if $HW(i)\leq m-2$) to obtain $Y_{i}$.  Also, compute $g^{\alpha^{2^m-1-i}}_{HW(2^m-1-i)}$ as per Claim 4.1. Note that $HW(2^m-1-i)=m-l$ if $HW(i)=l$. Thus, we basically computed $g^{\alpha^{2^m-1-i}}_{m-l}$. Then, we pair it with $g_{l-1}$ (obtained by pairing $g_1$ ($l-1$) times) to obtain $Y_{2^m-1-i}$. 
+
+\subsubsection{Claim 4.3.}  One can compute $Y_{2^m-1-v+i}$ for $1\leq i,v\leq 2^m-2$, $i\neq v$ where $HW(i)=HW(v)=l$.\\
+
+\noindent\textbf{Proof.} Let $T_1$ denote the set of these bit positions that are $1$ in the bit representation of $i$, and $T_2$ denote the set of bit positions that are $1$ in the bit representation of $2^m-1-v$. Clearly, $|T_1|=l$ and $|T_2|=m-l$. Now, note that that $T_1\bigcap T_2=\phi$ iff $i=v$ which is not allowed. So $\exists j'\in T_1\bigcap T_2$. Then, we can write
+\begin{equation}
+{2^m-1-v+i}=\left(\sum_{j\in T_1\backslash\{j'\}}2^j\right) + \left(\sum_{j\in T_2\backslash\{j'\}}2^j\right) + 2^{j'+1}\nonumber
+\end{equation}
+\noindent Note that this is a sum of $m-1$ powers of two. This in turn allows us to compute
+\begin{equation}
+ Y_{2^m-1-v+i}=e\left(\{X_j\}_{j\in T_1\backslash\{j'\}},\{X_j\}_{j\in T_2\backslash\{j'\}},X_{j'+1}\right)\nonumber
+\end{equation}
+which is a pairing of $(m-1)$ $X_j$ terms, as desired.
+
+\subsubsection{Assumption 4.4.} For simplicity, we assume in the forthcoming discussion that our plaintext messages are embedded as elements in the group $\mathbb{G}_{m+l-1}$. For relaxations, refer Appendix \ref{app_sec:relaxation}.
+
+\subsection{Construction}
+\label{subsec:construction_2}
+
+We now present the basic construction of KAC using traditional symmetric multilinear maps. Recall that \textbf{SetUp}$'(1^\lambda,m)$ sets up an $m$-linear map with groups of prime order $q$ ($q$ being a $\lambda$ bit prime) and the target group $\mathbb{G}_{m}$. Our second identity-based KAC consists of the following algorithms.\\
+
+\noindent\textbf{SetUp}$(1^{\lambda},(m,l))$: Set up the KAC system for $\mathcal{ID}$ consisting of all $m$ bit class identities with Hamming weight $l$, that is $N=|\mathcal{ID}|=\binom{m}{l}$. Since $1\leq l\leq m-1$, we have $N\leq 2^{m-2}$. Let $param'\leftarrow SetUp'(1^{\lambda},m+l-1)$ be the public parameters for a symmetric multilinear map, with $\mathbb{G}_{m+l-1}$ being the target group. Choose a random $\alpha\in \mathbb{Z}_q$. Set $X_j=g^{\alpha^{(2^j)}}_{1}$ for $0\leq j\leq m$.  Output the public parameter tuple $param$ as
+\begin{equation}
+ param = (param',\{X_j\}_{j\in\{0,\cdots,m\}})\nonumber
+\end{equation}
+\noindent Discard $\alpha$ after $param$ has been output.\\
+
+\noindent \textbf{KeyGen}(): Randomly pick $\gamma, t \in \mathbb{Z}_q$. Set the master secret key $msk$ to $(\gamma,t)$. Set $PK=g^{\gamma}_{l}$ and $U=g^{t}_{l}$. Output the tuple $(msk,PK,U)$.\\
+
+\noindent \textbf{Encrypt}$(PK,i,\mathcal{M})$: Take as input a message $\mathcal{M} \in \mathbb{G}_{m+l-1}$ belonging to class $i \in \mathcal{ID}$. Randomly choose $r\in\mathbb{Z}_q$ and let $t'=t+r \in\mathbb{Z}_q$. Recall that $\hat{Y}_i=g^{\alpha^i}_{l}$ and can be computed for $i\in\mathcal{ID}$ as per Claim 4.1. Output the ciphertext $\mathcal{C}$ as 
+\begin{equation}
+ \mathcal{C}=(g^r_{l},(PK.\hat{Y}_i)^{t'},\mathcal{M}.g^{t'\alpha^{(2^m-1)}}_{m+l-1})\nonumber
+\end{equation}
+
+\noindent \textbf{Extract}$(msk,\mathcal{S})$: Let $msk=(msk_1,msk_2)$. For the input subset of data class indices $\mathcal{S}$, the aggregate key is computed as 
+\begin{equation}
+ K_{\mathcal{S}} = \prod_{v\in\mathcal{S}}\left({Y_{2^m-1-v}}\right)^{msk_1}\nonumber
+\end{equation} 
+\noindent Recall that $Y_{2^m-1-v}$ can be computed as per Claim 4.3 for $j\in\mathcal{ID}$. Note that this is indirectly equivalent to setting $K_{\mathcal{S}}$ to $\prod_{v\in\mathcal{S}}{\left(g^{msk}_{m-1}\right)}^{\alpha^{2^m-1-v}}$.\\
+ 
+\noindent\textbf{Decrypt}$(\mathcal{C},i,\mathcal{S},K_{\mathcal{S}},U)$: If $i\notin\mathcal{S}$, output $\bot$. Otherwise, use the results from Claims 4.3 and 4.2 to set
+\begin{equation}
+a_{\mathcal{S}}=\left(\prod_{v\in\mathcal{S},v\neq i}Y_{2^m-1-v+i}\right) \text{ and } b_{\mathcal{S}}=\left(\prod_{v\in\mathcal{S}}Y_{2^m-1-v}\right)\nonumber
+\end{equation}
+Let $\mathcal{C}=(c_0,c_1,c_2)$. Output the decrypted message as  
+\begin{eqnarray} 
+\hat{\mathcal{M}}&=&c_2\frac{{e}(K_{\mathcal{S}}.a_{\mathcal{S}},U.c_0)}{{e}(b_{\mathcal{S}},c_1)} \nonumber
+\end{eqnarray}
+
+\subsubsection{Correctness.} Refer Appendix \ref{app_sec:correctness_2}.\\
+
+\noindent Finally, we comment on the choice of $m$ and $l$. Let $N=|\mathcal{ID}|=2^{\lambda}$ be the number of classes our proposed KAC wishes to handle. Then we must have $2^{\lambda}=\binom{m}{l}$. If we wish to minimize the value of $m$, we may set $m=\lambda+\lceil(\log_2\lambda)/2\rceil+1$ and $l=\lfloor m/2\rfloor$. But if we wish to minimize the degree of multilinearity, then we must set $m\approx 1.042(\lambda+(\log_2\lambda)/2)$ and $l\approx 0.398(\lambda+(\log_2\lambda)/2)$, leading to a total multilinearity requirement of $1.44(\lambda+(\log_2\lambda)/2)-1$ \cite{boneh2014low}.
+
+\subsubsection{Implementation Nuances.} As in the earlier construction, the system administrator must herself set up the multilinear map framework. Also, the ciphertext and the aggregate key must not leak any important information and hence need to be appropriately randomized. This implies that Kilian-style randomization parameters must be included for the groups $\mathbb{G}_{l}$ and $\mathbb{G}_{m-1}$. We now look into the security of our second identity-based KAC construction.
+
+\subsection{The Complexity Assumption}
+\label{subsec:complexity_2}
+
+We now briefly state the complexity assumption that is to be used to prove the security of second KAC scheme.
+
+\subsubsection{The Multilinear Diffie-Hellman Exponent Assumption.} Let $param'$ is generated by \textbf{SetUp}$'(1^{\lambda},m+l-1)$. Choose $\alpha \in \mathbb{Z}_q$ at random (where $q$ is a $\lambda$-bit prime), and let $X_j=g^{\alpha^{(2^j)}}_{1}$ for $0\leq j \leq m$. Choose a random $t'\in\mathbb{Z}_q$, and let $V=g^{t'}_{l}$. The decisional $(m,l)$-Multilinear Diffie Hellman Exponent~(MDHE) problem as defined as follows. Given the tuple $(params',\{X_j\}_{j\in\{0,\cdots,m\}},V,Z)$, distinguish if $Z$ is $g^{t'\alpha^{(2^m-1)}}_{m+l-1}$ or a random element of $\mathbb{G}_{m+l-1}$.
+
+\subsubsection{Definition 4.5.} The decisional $(m,l)$-Multilinear Diffie-Hellman Exponent assumption holds for {SetUp}$'$ if, for any polynomial $m$ and a probabilistic poly-time algorithm $\mathcal{A}$, $\mathcal{A}$ has negligible advantage in solving the $m$-Multilinear Diffie-Hellman Exponent problem.
+
+\subsection{Security}
+\label{subsec:security2}
+
+We state and prove the non-adaptive CPA security of our proposed KAC scheme.
+
+\subsubsection{Theorem 4.6.} \textit{Let \textbf{Setup}$'$ be the setup algorithm for a symmetric multilinear map, and let the decisional $(m,l)$-Multilinear Diffie-Hellman Exponent assumption holds for {SetUp}$'$. Then our proposed construction of KAC for $N$ data classes presented in Section \ref{subsec:construction_2} is non-adaptively CPA secure for $N=\binom{m}{l}$.}
+
+\subsubsection{Proof.} Let $\mathcal{A}$ be a poly-time adversary such that $|Adv_{\mathcal{A},N}-\frac{1}{2}| > \epsilon$ for the proposed KAC system parameterized with an identity space $\mathcal{ID}$ of size $N$, where $N=\binom{m}{l}$ and $\epsilon$ is a non-negligible positive constant. We build an algorithm $\mathcal{B}$ that has advantage at least $\epsilon$ in solving the decisional $(m,l)$-MDHE problem for \textbf{Setup}$'$. $\mathcal{B}$ takes as input a random $(m,l)$-MDHE challenge consisting of the tuple $(params',\{X_j\}_{j\in\{0,\cdots,m\}},V,Z)$, where:
+\begin{itemize}
+ \item $param'\leftarrow SetUp'(1^{\lambda},m+l-1)$
+ \item $X_j=g^{\alpha^{(2^j)}}_{1}$ for $0\leq j \leq m$
+ \item $V=g^{t'}_{l}$ for a random $t'\in\mathbb{Z}_q$ (where $q$ is a $\lambda$ bit prime)
+ \item $Z$ is either $g^{t'\alpha^{(2^m-1)}}_{m+l-1}$ or a random element of $\mathbb{G}_{m+l-1}$.
+\end{itemize}
+\noindent $\mathcal{B}$ then proceeds as follows.\\
+
+% \begin{enumerate}
+\noindent \textbf{Commit:} $\mathcal{B}$ runs $\mathcal{A}$ and receives the set $\mathcal{S}$ of data classes that $\mathcal{A}$ wishes to be challenged on. $\mathcal{B}$ then randomly chooses a data class $i\in\mathcal{S}$ and provides it to $\mathcal{A}$.\\
+ 
+\noindent \textbf{SetUp}: $\mathcal{B}$ should generate the public $param$, public key $PK$, the authentication key $U$, and the aggregate key $K_{\overline{\mathcal{S}}}$ and provide them to $\mathcal{A}$. They are generated as follows.
+%  \vspace{-0.6mm}
+\begin{itemize}
+  \item $param$ is set as $(param',\{X_j\}_{j\in\{0,\cdots,m\}})$.
+  \item $PK$ is set as $({g^u_{l}}/{\hat{Y}_i})$ where $u$ is chosen uniformly at random from $\mathbb{Z}_q$ and $\hat{Y}_i$ is computed as mentioned in Claim 4.2. 
+  \item $U$ is set as $g^{t}_{l}$ where $t$ is again chosen uniformly at random from $\mathbb{Z}_q$.
+  \item $\mathcal{B}$ then computes   
+  \begin{equation}
+   K_{\overline{\mathcal{S}}} = \prod_{v\notin\mathcal{S}}\frac{\left(Y_{2^m-1-v}\right)^u}{Y_{2^m-1-v+i}}\nonumber
+  \end{equation}
+  \noindent Observe that $K_{\overline{\mathcal{S}}}=\prod_{v\in\mathcal{S}}{\left(g^{msk}_{m-1}\right)}^{\alpha^{2^m-1-v}}$, as desired. Moreover, $\mathcal{B}$ is aware that $i\notin \overline{\mathcal{S}}$ (implying $i\neq v$), and hence has all the resources to compute $K_{\overline{\mathcal{S}}}$.  
+\end{itemize}
+ 
+\noindent Since $g_{m-1}$, $g_{l}$, $\alpha$, $u$, $t'$ and $t$ values are chosen uniformly at random, \emph{the public parameters and the public, private and authentication keys have an identical distribution to that in the actual construction}.\\
+ 
+\noindent \textbf{Challenge}: $\mathcal{A}$ picks at random two messages $\mathcal{M}_0$ and $\mathcal{M}_1$ from the set of possible plaintext messages in $\mathbb{G}_{m+l-1}$, and provides them to $\mathcal{B}$. $\mathcal{B}$ randomly picks $b\in\{0,1\}$, and sets the challenge as $(\mathcal{C},\mathcal{M}_0,\mathcal{M}_1)$, where 
+\begin{equation}
+ \mathcal{C}=(U^{-1}V,V^u,\mathcal{M}_b.Z) \nonumber
+\end{equation}
+\noindent We claim that when $Z=g^{t'\alpha^{(2^m-1)}}_{m+l-1}$ (i.e. the input to $\mathcal{B}$ is a valid $(m,l)$-MDHE tuple), then $(\mathcal{C},\mathcal{M}_0,\mathcal{M}_1)$ is a valid challenge to $\mathcal{A}$ as in a real attack. To see this, let $r=t'-t$ and refer the following relations.
+\begin{eqnarray}
+U^{-1}V=g^r_{l}   &\text{ and }&   V^u= \left(g^u_{l}\right)^{t'}=(PK.\hat{Y}_i)^{t'}\nonumber \\
+\mathcal{M}_b.Z&=&\mathcal{M}_b.g^{t'\alpha^{(2^m-1)}}_{m+l-1}\nonumber
+\end{eqnarray}
+
+\noindent Thus, by definition, $\mathcal{C}$ is a valid encryption of the message $\mathcal{M}_b$ in class $i$ and hence, $(\mathcal{C},\mathcal{M}_0,\mathcal{M}_1)$ is a valid challenge to $\mathcal{A}$. \\
+ 
+\noindent \textbf{Guess}: The adversary $\mathcal{A}$ outputs a guess $b'$ of $b$. If $b' = b$, $\mathcal{B}$ outputs $0$ (indicating that $Z=g^{t'\alpha^{(2^m-1)}}_{m+l-1}$). Otherwise, it outputs $1$ (indicating that $Z$ is a random element in $\mathbb{G}_{m+l-1}$).\\ 
+
+\noindent We conclude that $\mathcal{B}$ has the same advantage $\epsilon$ as $\mathcal{A}$, which must therefore be negligible, as desired. This completes the proof of Theorem 4.7. Note that once again this proof is also in the standard model and does not use random oracles. \hfill\qed 
+
+\subsubsection{CCA Security.} We can easily extend this KAC construction for non-adaptive CCA security for full collusion resistance. For the detailed construction and security proof, refer Appendix \ref{app_sec:CCAsecure2}.
+
+\subsubsection{Extensions.} The KAC construction can be extended for public-key based aggregate key distribution to multiple data users using techniques similar to those in Section \ref{subsec:multiuserKAC}. For details, refer Appendix \ref{subsec:multiuserKAC_2}. Extensions for multiple data owners also follow from discussions in Section \ref{subsec:multiownerKAC}.
+
+
+
+
+
+
+
+
+
+
+
+

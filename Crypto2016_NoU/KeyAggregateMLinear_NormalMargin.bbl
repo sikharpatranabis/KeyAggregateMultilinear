@@ -1,0 +1,166 @@
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{DMMM{\etalchar{+}}12}
+
+\bibitem[ACP09]{abdalla2009smooth}
+Michel Abdalla, C{\'e}line Chevalier, and David Pointcheval.
+\newblock Smooth projective hashing for conditionally extractable commitments.
+\newblock In {\em Advances in Cryptology-CRYPTO 2009}, pages 671--689.
+  Springer, 2009.
+
+\bibitem[ADSFM12]{ateniese2012provably}
+Giuseppe Ateniese, Alfredo De~Santis, Anna~Lisa Ferrara, and Barbara Masucci.
+\newblock Provably-secure time-bound hierarchical key assignment schemes.
+\newblock {\em Journal of cryptology}, 25(2):243--270, 2012.
+
+\bibitem[AFGH06]{ateniese2006improved}
+Giuseppe Ateniese, Kevin Fu, Matthew Green, and Susan Hohenberger.
+\newblock Improved proxy re-encryption schemes with applications to secure
+  distributed storage.
+\newblock {\em ACM Transactions on Information and System Security (TISSEC)},
+  9(1):1--30, 2006.
+
+\bibitem[BBG05]{boneh2005hierarchical}
+Dan Boneh, Xavier Boyen, and Eu-Jin Goh.
+\newblock Hierarchical identity based encryption with constant size ciphertext.
+\newblock In {\em Advances in Cryptology--EUROCRYPT 2005}, pages 440--456.
+  Springer, 2005.
+
+\bibitem[BCHL09]{benaloh2009patient}
+Josh Benaloh, Melissa Chase, Eric Horvitz, and Kristin Lauter.
+\newblock Patient controlled encryption: ensuring privacy of electronic medical
+  records.
+\newblock In {\em Proceedings of the 2009 ACM workshop on Cloud computing
+  security}, pages 103--114. ACM, 2009.
+
+\bibitem[BF03]{boneh2003identity}
+Dan Boneh and Matthew Franklin.
+\newblock Identity-based encryption from the weil pairing.
+\newblock {\em SIAM Journal on Computing}, 32(3):586--615, 2003.
+
+\bibitem[BGW05]{boneh2005collusion}
+Dan Boneh, Craig Gentry, and Brent Waters.
+\newblock Collusion resistant broadcast encryption with short ciphertexts and
+  private keys.
+\newblock In {\em Advances in Cryptology--CRYPTO 2005}, pages 258--275.
+  Springer, 2005.
+
+\bibitem[BW06]{boyen2006anonymous}
+Xavier Boyen and Brent Waters.
+\newblock Anonymous hierarchical identity-based encryption (without random
+  oracles).
+\newblock In {\em Advances in Cryptology-CRYPTO 2006}, pages 290--307.
+  Springer, 2006.
+
+\bibitem[BWZ14a]{boneh2014low}
+Dan Boneh, Brent Waters, and Mark Zhandry.
+\newblock Low overhead broadcast encryption from multilinear maps.
+\newblock In {\em Advances in Cryptology--CRYPTO 2014}, pages 206--223.
+  Springer, 2014.
+
+\bibitem[BWZ14b]{boneh2014immunizing}
+Dan Boneh, David~J Wu, and Joe Zimmerman.
+\newblock Immunizing multilinear maps against zeroizing attacks.
+\newblock {\em IACR Cryptology ePrint Archive}, 2014:930, 2014.
+
+\bibitem[CCT{\etalchar{+}}14]{chu2014key}
+Cheng-Kang Chu, Sherman~SM Chow, Wen-Guey Tzeng, Jianying Zhou, and Robert~H
+  Deng.
+\newblock Key-aggregate cryptosystem for scalable data sharing in cloud
+  storage.
+\newblock {\em Parallel and Distributed Systems, IEEE Transactions on},
+  25(2):468--477, 2014.
+
+\bibitem[CHK04]{canetti2004chosen}
+Ran Canetti, Shai Halevi, and Jonathan Katz.
+\newblock Chosen-ciphertext security from identity-based encryption.
+\newblock In {\em Advances in Cryptology-Eurocrypt 2004}, pages 207--222.
+  Springer, 2004.
+
+\bibitem[CHL{\etalchar{+}}15]{cheon2015cryptanalysis}
+Jung~Hee Cheon, Kyoohyung Han, Changmin Lee, Hansol Ryu, and Damien Stehl{\'e}.
+\newblock Cryptanalysis of the multilinear map over the integers.
+\newblock In {\em Advances in Cryptology--EUROCRYPT 2015}, pages 3--12.
+  Springer, 2015.
+
+\bibitem[Clo]{dropbox}
+CloudPro.
+\newblock {Dropbox goes big on security with Enterprise offering}.
+
+\bibitem[CLT13]{coron2013practical}
+Jean-S{\'e}bastien Coron, Tancrede Lepoint, and Mehdi Tibouchi.
+\newblock Practical multilinear maps over the integers.
+\newblock In {\em Advances in Cryptology--CRYPTO 2013}, pages 476--493.
+  Springer, 2013.
+
+\bibitem[CLT14]{coron2014cryptanalysis}
+Jean-Sebastien Coron, Tancrede Lepoint, and Mehdi Tibouchi.
+\newblock Cryptanalysis of two candidate fixes of multilinear maps over the
+  integers.
+\newblock {\em IACR Cryptology ePrint Archive}, 2014:975, 2014.
+
+\bibitem[CS02]{cramer2002universal}
+Ronald Cramer and Victor Shoup.
+\newblock Universal hash proofs and a paradigm for adaptive chosen ciphertext
+  secure public-key encryption.
+\newblock In {\em Advances in Cryptology—Eurocrypt 2002}, pages 45--64.
+  Springer, 2002.
+
+\bibitem[DMMM{\etalchar{+}}12]{drago2012inside}
+Idilio Drago, Marco Mellia, Maurizio M~Munafo, Anna Sperotto, Ramin Sadre, and
+  Aiko Pras.
+\newblock Inside dropbox: understanding personal cloud storage services.
+\newblock In {\em Proceedings of the 2012 ACM conference on Internet
+  measurement conference}, pages 481--494. ACM, 2012.
+
+\bibitem[GGH13]{garg2013candidate}
+Sanjam Garg, Craig Gentry, and Shai Halevi.
+\newblock Candidate multilinear maps from ideal lattices.
+\newblock In {\em Eurocrypt}, volume 7881, pages 1--17. Springer, 2013.
+
+\bibitem[GGH15]{gentry2015graph}
+Craig Gentry, Sergey Gorbunov, and Shai Halevi.
+\newblock Graph-induced multilinear maps from lattices.
+\newblock In {\em Theory of Cryptography}, pages 498--527. Springer, 2015.
+
+\bibitem[GHMS14]{gentry2014zeroizing}
+Craig Gentry, Shai Halevi, Hemanta~K Maji, and Amit Sahai.
+\newblock Zeroizing without zeroes: Cryptanalyzing multilinear maps without
+  encodings of zero.
+\newblock {\em IACR Cryptology ePrint Archive}, 2014:929, 2014.
+
+\bibitem[GPSW06]{goyal2006attribute}
+Vipul Goyal, Omkant Pandey, Amit Sahai, and Brent Waters.
+\newblock Attribute-based encryption for fine-grained access control of
+  encrypted data.
+\newblock In {\em Proceedings of the 13th ACM conference on Computer and
+  communications security}, pages 89--98. Acm, 2006.
+
+\bibitem[Kil88]{kilian1988founding}
+Joe Kilian.
+\newblock Founding crytpography on oblivious transfer.
+\newblock In {\em Proceedings of the twentieth annual ACM symposium on Theory
+  of computing}, pages 20--31. ACM, 1988.
+
+\bibitem[Mos10]{moshkovitz2010alternative}
+Dana Moshkovitz.
+\newblock An alternative proof of the schwartz-zippel lemma.
+\newblock In {\em Electronic Colloquium on Computational Complexity (ECCC)},
+  volume~17, page~34, 2010.
+
+\bibitem[NR04]{naor2004number}
+Moni Naor and Omer Reingold.
+\newblock Number-theoretic constructions of efficient pseudo-random functions.
+\newblock {\em Journal of the ACM (JACM)}, 51(2):231--262, 2004.
+
+\bibitem[Pau]{googledrive}
+Ian Paul.
+\newblock {Google Drive: The Pros and Cons}.
+
+\bibitem[PSM15]{patranabis2015dynamic}
+Sikhar Patranabis, Yash Shrivastava, and Debdeep Mukhopadhyay.
+\newblock Dynamic key-aggregate cryptosystem on elliptic curves for online data
+  sharing.
+\newblock In {\em Progress in Cryptology--INDOCRYPT 2015}, pages 25--44.
+  Springer, 2015.
+
+\end{thebibliography}

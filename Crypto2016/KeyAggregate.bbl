@@ -1,0 +1,105 @@
+\begin{thebibliography}{10}
+
+\bibitem{cryptoeprint:2009:579}
+Cong Wang, Sherman S.-M. Chow, Qian Wang, Kui Ren, and Wenjing Lou.
+\newblock Privacy-preserving public auditing for secure cloud storage.
+\newblock Cryptology ePrint Archive, Report 2009/579, 2009.
+\newblock \url{http://eprint.iacr.org/}.
+
+\bibitem{chow2012dynamic}
+Sherman~SM Chow, Cheng-Kang Chu, Xinyi Huang, Jianying Zhou, and Robert~H Deng.
+\newblock Dynamic secure cloud storage with provenance.
+\newblock In {\em Cryptography and Security: From Theory to Applications},
+  pages 442--464. Springer, 2012.
+
+\bibitem{chu2014key}
+Cheng-Kang Chu, Sherman~SM Chow, Wen-Guey Tzeng, Jianying Zhou, and Robert~H
+  Deng.
+\newblock Key-aggregate cryptosystem for scalable data sharing in cloud
+  storage.
+\newblock {\em Parallel and Distributed Systems, IEEE Transactions on},
+  25(2):468--477, 2014.
+
+\bibitem{boneh2005collusion}
+Dan Boneh, Craig Gentry, and Brent Waters.
+\newblock Collusion resistant broadcast encryption with short ciphertexts and
+  private keys.
+\newblock In {\em Advances in Cryptology--CRYPTO 2005}, pages 258--275.
+  Springer, 2005.
+
+\bibitem{ateniese2012provably}
+Giuseppe Ateniese, Alfredo De~Santis, Anna~Lisa Ferrara, and Barbara Masucci.
+\newblock Provably-secure time-bound hierarchical key assignment schemes.
+\newblock {\em Journal of cryptology}, 25(2):243--270, 2012.
+
+\bibitem{benaloh2009patient}
+Josh Benaloh, Melissa Chase, Eric Horvitz, and Kristin Lauter.
+\newblock Patient controlled encryption: ensuring privacy of electronic medical
+  records.
+\newblock In {\em Proceedings of the 2009 ACM workshop on Cloud computing
+  security}, pages 103--114. ACM, 2009.
+
+\bibitem{ateniese2006improved}
+Giuseppe Ateniese, Kevin Fu, Matthew Green, and Susan Hohenberger.
+\newblock Improved proxy re-encryption schemes with applications to secure
+  distributed storage.
+\newblock {\em ACM Transactions on Information and System Security (TISSEC)},
+  9(1):1--30, 2006.
+
+\bibitem{miller1986use}
+Victor Miller.
+\newblock Use of elliptic curves in cryptography.
+\newblock In {\em Advances in Cryptology—CRYPTO’85 Proceedings}, pages
+  417--426. Springer, 1986.
+
+\bibitem{silverman1994advanced}
+Joseph~H Silverman.
+\newblock {\em Advanced topics in the arithmetic of elliptic curves}, volume
+  151.
+\newblock Springer Science \& Business Media, 1994.
+
+\bibitem{akl1983cryptographic}
+Selim~G Akl and Peter~D Taylor.
+\newblock Cryptographic solution to a problem of access control in a hierarchy.
+\newblock {\em ACM Transactions on Computer Systems (TOCS)}, 1(3):239--248,
+  1983.
+
+\bibitem{frey1994remark}
+Gerhard Frey and Hans-Georg R{\"u}ck.
+\newblock A remark concerning 𝑚-divisibility and the discrete logarithm in
+  the divisor class group of curves.
+\newblock {\em Mathematics of computation}, 62(206):865--874, 1994.
+
+\bibitem{hess2006eta}
+Florian Hess, Nigel~P Smart, and Frederik Vercauteren.
+\newblock The eta pairing revisited.
+\newblock {\em Information Theory, IEEE Transactions on}, 52(10):4595--4602,
+  2006.
+
+\bibitem{zhao2008note}
+Chang-An Zhao, Fangguo Zhang, and Jiwu Huang.
+\newblock A note on the ate pairing.
+\newblock {\em International Journal of Information Security}, 7(6):379--382,
+  2008.
+
+\bibitem{oliveira2007tinytate}
+Leonardo~B Oliveira, Diego~F Aranha, Eduardo Morais, Felipe Daguano, Julio
+  L{\'o}pez, and Ricardo Dahab.
+\newblock Tinytate: Computing the tate pairing in resource-constrained sensor
+  nodes.
+\newblock In {\em Network Computing and Applications, 2007. NCA 2007. Sixth
+  IEEE International Symposium on}, pages 318--323. IEEE, 2007.
+
+\bibitem{ghosh2013secure}
+Santosh Ghosh, Debdeep Mukhopadhyay, and Dipanwita Roychowdhury.
+\newblock Secure dual-core cryptoprocessor for pairings over barreto-naehrig
+  curves on fpga platform.
+\newblock {\em Very Large Scale Integration (VLSI) Systems, IEEE Transactions
+  on}, 21(3):434--442, 2013.
+
+\bibitem{sandhu1988cryptographic}
+Ravinderpal~S Sandhu.
+\newblock Cryptographic implementation of a tree hierarchy for access control.
+\newblock {\em Information Processing Letters}, 27(2):95--98, 1988.
+
+\end{thebibliography}

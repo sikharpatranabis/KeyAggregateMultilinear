@@ -1,0 +1,52 @@
+This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: KeyAggregateMLinear.aux
+The style file: alpha.bst
+Database file #1: bib/KeyAggregate.bib
+Warning--entry type for "googledrive" isn't style-file defined
+--line 1193 of file bib/KeyAggregate.bib
+Warning--entry type for "dropbox" isn't style-file defined
+--line 1199 of file bib/KeyAggregate.bib
+Warning--can't use both volume and number fields in moshkovitz2010alternative
+You've used 26 entries,
+            2543 wiz_defined-function locations,
+            705 strings with 9052 characters,
+and the built_in function-call counts, 13066 in all, are:
+= -- 1358
+> -- 629
+< -- 22
++ -- 228
+- -- 226
+* -- 915
+:= -- 2036
+add.period$ -- 91
+call.type$ -- 26
+change.case$ -- 183
+chr.to.int$ -- 25
+cite$ -- 27
+duplicate$ -- 539
+empty$ -- 945
+format.name$ -- 253
+if$ -- 2797
+int.to.chr$ -- 2
+int.to.str$ -- 0
+missing$ -- 24
+newline$ -- 132
+num.names$ -- 78
+pop$ -- 203
+preamble$ -- 1
+purify$ -- 209
+quote$ -- 0
+skip$ -- 456
+stack$ -- 0
+substring$ -- 752
+swap$ -- 162
+text.length$ -- 22
+text.prefix$ -- 4
+top$ -- 0
+type$ -- 208
+warning$ -- 1
+while$ -- 133
+width$ -- 29
+write$ -- 350
+(There were 3 warnings)

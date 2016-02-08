@@ -1,0 +1,42 @@
+\section{Introduction}
+\label{sec:Introduction}
+
+The recent advent of cloud computing has led to unforeseen amounts of data being shared online with wide-ranging applications. There exists today a massive demand for scalable and efficiently implementable online data sharing schemes that provide formal guarantees of security and resistance against multi-party collusion attacks. The major challenge in designing such a system is solving the \emph{online access delegation problem} \cite{drago2012inside,chu2014key} in which a data owner owning $N$ different classes of encrypted data, wishes to grant decryption rights to an arbitrary subset $\mathcal{S}$ of these data classes to a subset $\hat{\mathcal{S}}$ of authorized data users. Note that a data class in this context refers to a collection of similar data objects with identical access permissions.
+
+A recently proposed solution to the online access delegation problem is the key-aggregate cryptosystem~(KAC) \cite{chu2014key,patranabis2015dynamic}. KAC allows a data user to delegate decryption rights for \emph{any} arbitrary set of of data classes $\mathcal{S}$ into a \emph{single low overhead aggregate decryption key}. The aggregate key can then be distributed among a subset $\hat{S}$ of data users with appropriate access rights. The other major advantage of KAC is that it does not assume any pre-defined data hierarchy as in \cite{boneh2005hierarchical,boyen2006anonymous} and can be adapted for any data organization mechanism. The efficiency of any KAC construction is measured in terms of the \emph{ciphertext size} (storage overhead) and the \emph{aggregate key size} (distribution overhead). A low overhead KAC construction is one in which both the ciphertext overhead and the key aggregate overhead is upper bounded by a logarithmic function in the number of data classes as well as the number of data users that the system can handle.
+
+\subsubsection{Low Overhead KAC Constructions in the Literature.}  Since KAC has only recently been introduced, there exist only a handful of constructions that achieve full collusion resistance while maintaining low ciphertext and aggregate key overhead. The constructions proposed in \cite{chu2014key} and \cite{patranabis2015dynamic} achieve \emph{constant size} overhead for both the ciphertext and the aggregate key. However, both the aforementioned constructions use a public parameter that has \emph{linear} size in the number of data classes $N$. In addition, they do not address how the aggregate keys may be distributed among any arbitrarily large subset of data users. Thus a fully public key based online data sharing scheme supporting multiple data users, where all parameters are low overhead, has not been proposed prior to this work to the best of our knowledge. 
+
+
+\subsection{Our Contributions}
+\label{subsec:contributions}
+
+In this paper, we propose three key-aggregate cryptosystems for $N$ data classes and $N$ data users, using $O(\log N)$-way multilinear maps. For each construction, we first present a basic construction that focuses on generating low overhead aggregate keys for any arbitrary subset of data classes. We then show how these constructions may be extended to broadcast the aggregate key among multiple data users. 
+
+\let\labelitemi\labelitemii
+
+\begin{itemize}
+ \item The first KAC construction uses an asymmetric $O(\log N)$ multilinear map and supports $N$ data classes. The scheme has a public parameter overhead of $O(\log N)$ group elements, and produces short ciphertexts and aggregate keys comprising of $O(1)$ gorup elements. The scheme is proved to be non-adaptively secure under a standard complexity assumption.\\
+ 
+ \item The second KAC construction supports $N$ data classes using more general symmetric $O(\log N)$ multilinear maps, and has similar overheads as the first construction. The symmetric map setting allows us to obtain security proofs for non-adaptive CPA and CCA security based on a simpler complexity assumption. However, as a flip side, to maintain non-adaptive security under standard complexity assumption, we must ensure all data class indices $i \in \{1,\cdots,N\}$ can be efficiently mapped to integers $\hat{i} \in \{1,\cdots,O(N\log N)\}$, where all $\hat{i}$ have the same Hamming weight $l$.\\
+ 
+ \item We demonstrate how both the aforementioned constructions may be efficiently combined with broadcast encryption schemes \cite{boneh2005collusion,boneh2014low} to obtain a full-fledged public key based cryptosytem, where the aggregate key is broadcast to any target subset of data users. Our proposed extensions support $N$ data users and are proven to be non-adaptively secure under extended versions of standard complexity assumptions that we propose in this paper.\\
+ 
+ \item We also present a third KAC construction that is \emph{adaptively} secure in the generic multilinear group model with tighter bounds on the group size parameter. The trade-off in this scheme, as compared to the first two constructions, lies in the ciphertext size overhead, which is $O(\log N)$ group elements, unlike $O(1)$ group elements in the previous constructions.
+ 
+
+\end{itemize}
+
+\subsubsection{Identity-Based Online Data Sharing Schemes.} Our proposed KAC constructions can be used to design fully identity-based online data sharing schemes with low overhead parameters. To see this, observe that each of our constructions can support $N$ data classes and $N$ data users,while using parameters with only $O(\log N)$ group elements. Thus, $N$ is allowed to be exponentially large and in particular, as large as the range of a collision resistant hash function $H$. This makes our KAC constructions fully identity-based, since each data class and each data user can be associated with a unique identity $id\in\{0,1\}^{*}$. The index number can be automatically set by hashing the corresponding identity $id$ to $H(id)\in \{1,\cdots,N\}$. Quite evidently, an identity-based KAC offers much flexibility. The aggregate key to any subset of data classes may be computed by simply hashing the corresponding class identities. At the same time, this aggregate key may be broadcast to any set of authorized users by hashing their public identities. This allows constructing very practical online data sharing schemes that are convenient for large scale deployment.
+
+
+\subsection{Other Related Work}
+\label{subsec:relwork}
+
+% Although a number of public and private key based encryption schemes are used for online data sharing, most of them seem to focus on efficient key distributions 
+% 
+% We present a brief overview of alternative public and private key cryptographic schemes in literature for secure online data sharing. While many of them focus on key aggregation in some form or the other, very few have the ability to provide low overhead decryption keys for an arbitrary number of encrypted entities.
+% 
+% 
+% 
+One of the most popular techniques for access control in online data storage is to use a pre-defined hierarchy of secret keys \cite{ateniese2012provably,boneh2005hierarchical,boyen2006anonymous} in the form of a tree-like structure, where access to the key corresponding to any node implicitly grants access to all the keys in the subtree rooted at that node. Compact key encryption for the symmetric key setting has been used in \cite{benaloh2009patient} to solve the problem of concisely transmitting  large number of keys in the broadcast scenario. However, symmetric key sharing via a secured channel is costly and not always practically viable for many applications on the cloud. Efficient public key based encryption methods such as identity based encryption~(IBE) \cite{boneh2003identity} and attribute based encryption~(ABE) \cite{goyal2006attribute} focus principally on efficient decryption key distribution. However, these schemes do not focus on the possibility of key aggregation for multi-class data environments. Proxy re-encryption is another technique to achieve fine-grained access control and scalable user revocation in unreliable clouds \cite{ateniese2006improved}. Proxy re-encryption essentially transfers the responsibility for secure key storage from the delegatee to the proxy and may be susceptible to collusion attacks. 

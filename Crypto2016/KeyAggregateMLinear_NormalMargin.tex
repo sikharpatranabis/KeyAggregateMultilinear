@@ -1,0 +1,67 @@
+\documentclass{class/llncs}
+% \usepackage[margin=1.3in]{geometry}
+% \addtolength{\topmargin}{-.2in}
+% \addtolength{\topmargin}{-.2in}
+\usepackage{amssymb}
+\usepackage{amsmath}
+%\usepackage{tabularx}
+\usepackage[table]{xcolor}
+\usepackage{color}
+\usepackage{caption}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+% \usepackage{algorithm2e}
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\usepackage{comment}
+\usepackage{mathrsfs} 
+\usepackage{subcaption}
+\usepackage{threeparttable}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{mathrsfs} 
+\usepackage{booktabs}
+
+\newtheorem{Theorem}{Theorem}
+\newtheorem{Definition}{Definition}
+\newtheorem{Observation}{Observation}
+
+
+\title{Identity-Based Key Aggregate Cryptosystem from Multilinear Maps}
+\begin{document}
+% 
+% \author{}
+% \institute{}
+
+\author{Sikhar Patranabis and Debdeep Mukhopadhyay}
+\institute{Department of Computer Science and Engineering\\ Indian Institute of Technology Kharagpur
+\\\{sikhar.patranabis, debdeep\}@cse.iitkgp.ernet.in}
+\maketitle
+\toctitle{Lecture Notes in Computer Science}
+\tocauthor{Authors' Instructions}
+
+
+\begin{abstract}
+
+The recent advent of cloud computing has made secure online data sharing one of the most important applications in today's world with far reaching impact in various fields. Storing multiple classes of encrypted data in a shared environment poses two major challenges - ensuring data privacy for multiple data owners, and secure delegation of decryption rights to arbitrarily large subsets of the whole data to authorized users. In this paper, we propose a multilinear map-based \emph{key-aggregate cryptosystem}~(KAC) to tackle this problem. The main novelty of KAC is that it can combine the decryption rights to any arbitrarily large number of data classes into a single low overhead \emph{aggregate} decryption key, that can be distributed to any number of authorized users via broadcast encryption. In addition, KAC produces low overhead ciphertexts that can be efficiently stored online. Our KAC constructions are fully identity-based in the sense that each data class has a unique identity, and are scalable to an arbitrarily large number of data owners and data users. We present three different low-overhead KAC constructions based on $O(\log N)$-way multilinear maps that support $N$ different data classes using polylogarithmic size public and private parameters. The constructions are proven to be secure under different security guarantees and are fully collusion-resistant against any number of colluding parties. Our constructions give rise to fully identity-based online data sharing schemes suitable for real world applications.
+
+\noindent{\textbf{Keywords:}} Identity-based Key-Aggregate Cryptoystem, Online Data Sharing, Multilinear Maps, Collusion-resistant
+\end{abstract}
+
+\input{Source_Crypto/Introduction}
+\input{Source_Crypto/Prelims}
+\input{Source_Crypto/Proposal1}
+\input{Source_Crypto/Proposal2}
+\input{Source_Crypto/Applications}
+\input{Source_Crypto/Proposal3}
+\input{Source_Crypto/Conclusions}
+
+% \begin{scriptsize}
+\bibliographystyle{alpha}
+\bibliography{bib/KeyAggregate}
+% \end{scriptsize}
+
+\newpage
+\input{Source_Crypto/Appendix.tex}
+
+\end{document}

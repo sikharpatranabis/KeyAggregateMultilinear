@@ -1,0 +1,1071 @@
+@article{Kocher:0,
+  author = {Kocher,Paul and Jaffe,Joshua and Jon,Benjamin},
+  title = {{Differential Power Analysis}},
+  journal = {{Advances in Cryptology CRYPTO99.Springer}},
+  year = {1999},
+  pages = {388-397},
+  owner = {Springer}
+}
+
+@article{Boneh:0,
+  author = {Boneh,Dan and Millo, Richard and Lipton, Richard},
+  title = {{On the Importance of Checking Cryptographic Protocols for Faults}},
+  journal = {{Advances in Cryptology EUROCRYPT97.Springer}},
+  year = {1997},
+  pages = {37-51},
+  owner = {Springer},  
+  
+}
+
+@article{Fuhr:0,
+  author = {Fuhr,Thomas and Jaulmes,Eliane and Lomne, Victor and Thillard, Adrian},
+  title = {{Fault Attacks on AES with Faulty Ciphertexts Only}},
+  journal = {{2013 Workshop on Fault Diagnosis and Tolerance in Cryptography(FDTC).IEEE}},
+  year = {2013},
+  pages = {108-118},
+  owner = {IEEE}
+}
+
+@article{Guilley:0,
+  author = {Guilley,Sylvain and Sauvage,Laurent and Danger, J-L and Selmane,Nidhal and Pacalet,Renaud },
+  title = {{Silicon-level Solutions to Counteract Passive and Active Attacks}},
+  journal = {{5th Workshop on Fault Diagnosis and Tolerance in Cryptography 2008,FDTC'08,IEEE}},
+  year = {2008},
+  pages = {3-17},
+  owner = {IEEE}
+}
+
+@article{Li:0,
+  author = {Li,Yang and Sakiyama, Kazuo and Gomisawa,Shigeto and Fukunaga,Toshinori and Takahashi,Junko and Ohta,Kauzo},
+  title = {{Fault Sensitivity Analysis}},
+  journal = {{Cryptographic Hardware and Embedded Systems, CHES 2010, Springer}},
+  year = {2010},
+  pages = {320-334},
+  owner = {Springer}
+}
+
+@article{Piret:0,
+  author = {Piret,Gilles and Quisquater,Jean-Jacques},
+  title = {{A Differential Fault Attack Technique against SPN Structures, with Application to the AES and KHAZAD}},
+  journal = {{Cryptographic Hardware and Embedded Systems, CHES 2003, Springer}},
+  year = {2003},
+  pages = {77-88},
+  owner = {Springer}
+}
+
+@article{Tunstall:0,
+  author = {Tunstall,Michael and Mukhopadhyay,Debdeep and Ali,Subidh},
+  title = {{Differential Fault Analysis of the Advanced Encryption Standard Using a Single Fault}},
+  journal = {{Information Security Theory and Practice.Security and Privacy of Mobile Devices in Wireless Communication, Springer}},
+  year = {2011},
+  pages = {224-233},
+  owner = {Springer}
+}
+
+@article{Ghalaty:0,
+  author = {Ghalaty,Nahid and Yuce,Bilgiday and Taha,Mostafa and Schaumont,patrick},
+  title = {{Differential Fault Intensity Analysis}},
+  journal = {{2014 Workshop on Fault Diagnosis and Tolerance in Cryptography(FDTC).IEEE}},
+  year = {2014}
+  
+}
+
+@article{Kim:0,
+  author = {Kim, H.C},
+  title = {{Differential Fault Analysis against AES-192 and AES-256 with Minimal Faults}},
+  journal = {{2010 Workshop on Fault Diagnosis and Tolerance in Cryptography(FDTC),IEEE}},
+  year = {2010},
+  pages = {3-9},
+  owner = {IEEE}
+} 
+
+@article{Kommerling:0,
+  author = {Kommerling, Oliver and Kuhn, G.M.},
+  title = {{Design Principles for Tamper-Resistant Smartcard Processors}},
+  journal = {{Proceedings of the USENIX Workshop on Smartcard Technology}},
+  year = {1999},
+  pages = {2-2},
+  organization = {USENIX Association}
+}
+
+@article{Ors:0,
+  author = {Ors, S.B and Oswald,Elisabeth and Preneel, Bart},
+  title = {{Power Analysis Attacks on an FPGA-First Experimental Results}},
+  journal = {{Cryptographic Hardware and Embedded Systems, CHES 2003, Springer}},
+  year = {2003},
+  pages = {35-50},
+  organization = {Springer}
+}
+
+@article{Rivain:0,
+  author = {Rivain, Matthieu},
+  title = {{Differential Fault Analysis on DES Middle Rounds}},
+  journal = {{Clavier and Gaj[8]}}, 
+  pages = {457-469}
+  
+}
+
+@article{Hemme:0,
+  author = {Hemme, Ludger},
+  title = {{A Differential Fault Attack against Early Rounds of (triple-)DES}},
+  journal = {{Cryptographic Hardware and Embedded Systems, CHES 2004, Springer}},
+  year = {2004},
+  pages = {254-267},
+  organization = {Springer}
+}
+
+
+@article{Biham:0,
+  author = {Biham, Eli and Shamir, Adi},
+  title = {{Differential Fault Analysis of Secret Key Cryptosystems}},
+  journal = {{dvances in Cryptology CRYPTO'97,Springer}},
+  year = {1997},
+  pages = {513-525},
+  organization = {Springer}
+}
+
+@article{Kim:1,
+  author = {Kim, H.C},
+  title = {{Improved Differential Fault Analysis on AES Key Schedule}},
+  journal = {{IEEE Transactions on Information Forensics and Security}},
+  year = {2012},
+  volume = {7},
+  number = {1},
+  pages = {41-50},
+  organization = {IEEE}
+} 
+
+@article{Agoyan:0,
+  author = {Agoyan, Michel and Dutertre, Jean-Max and Naccache, David and Robisson,Bruno and Tria,Assia},
+  title = {{When Clocks Fail: On Critical Paths and Clock Faults}},
+  journal = {{Smart Card Research and Advanced Application}},
+  year = {2010},  
+  pages = {182-193},
+  organization = {Springer}
+} 
+
+@article{FIPS:0,
+  author = {PUB FIPS},
+  title = {{197, Advanced Encryption Standard(AES)}}, 
+  year = {2001},
+  organization = {National Institute of Standards and Technology}
+} 
+
+@article{Malkin:0,
+  author = {Malkin, T and Standaert,F.X and Yung, M},
+  title = {{A Comparative Cost/Security Analysis of Fault Attack Countermeasures}},
+  journal = {{2005 Workshop on Fault Diagnosis and Tolerance in Cryptography(FDTC),IEEE}},
+  year = {2005},  
+  pages = {109-123},
+  organization = {IEEE}
+} 
+
+@article{Maistri:0,
+  author = {Maistri, P. and Leveugle, R},
+  title = {{Double-Data-Rate Computation as a Countermeasure against Fault Analysis}},
+  journal = {{IEEE Transactions on Computers}},
+  year = {2008},
+  volume = {57},
+  number = {11},
+  pages = {1528-1539},
+  organization = {IEEE}
+} 
+@incollection{BihamShamir,
+year={1997},
+booktitle={Advances in Cryptology -- CRYPTO 1997},
+volume={1294},
+series={Lecture Notes in Computer Science},
+editor={Burton S. Kaliski Jr.},
+title={{Differential Fault Analysis of Secret Key Cryptosystems}},
+publisher={Springer},
+author={Eli Biham and Adi Shamir},
+pages={513-525},
+} 
+ 
+@inproceedings{Kim,
+  title={Differential fault analysis against AES-192 and AES-256 with minimal faults},
+  author={Kim, Chong Hee},
+  booktitle={Fault Diagnosis and Tolerance in Cryptography (FDTC), 2010 Workshop on},
+  pages={3--9},
+  year={2010},
+  organization={IEEE}
+}
+
+@incollection{Li,
+  title={Fault sensitivity analysis},
+  author={Li, Yang and Sakiyama, Kazuo and Gomisawa, Shigeto and Fukunaga, Toshinori and Takahashi, Junko and Ohta, Kazuo},
+  booktitle={Cryptographic Hardware and Embedded Systems-CHES 2010},
+  pages={320--334},
+  year={2010},
+  publisher={Springer}
+}
+
+
+@incollection{Boneh,
+year={1997},
+booktitle={Advances in Cryptology -- EUROCRYPT 1997},
+volume={1233},
+series={Lecture Notes in Computer Science},
+editor={Walter Fumy},
+title={{On the Importance of Checking Cryptographic Protocols for Faults}},
+publisher={Springer},
+author={Dan Boneh and Richard A. DeMillo and Richard J. Lipton},
+pages={37-51},
+}
+
+
+@incollection{DFAGiraud,
+year={2005},
+booktitle={Advanced Encryption Standard -- AES},
+volume={3373},
+series={Lecture Notes in Computer Science},
+editor={Hans Dobbertin and Vincent Rijmen and Aleksandra Sowa},
+title={{DFA on AES}},
+publisher={Springer},
+author={Christophe Giraud},
+pages={27-41}
+}
+
+@incollection{Piret,
+year={2003},
+booktitle={Cryptographic Hardware and Embedded Systems - CHES 2003},
+volume={2779},
+series={Lecture Notes in Computer Science},
+editor={Colin D. Walter and {\c C}etin K. Ko{\c C} and Christof Paar},
+title={{A Differential Fault Attack Technique against SPN Structures, with Application to the AES and Khazad}},
+publisher={Springer},
+author={Gilles Piret and Jean-Jacques Quisquater},
+pages={77-88}
+}
+
+
+@incollection{SirOne,
+year={2009},
+booktitle={Progress in Cryptology -- AFRICACRYPT 2009},
+volume={5580},
+series={Lecture Notes in Computer Science},
+editor={Bart Preneel},
+title={{An Improved Fault Based Attack of the Advanced Encryption Standard}},
+publisher={Springer},
+author={Debdeep Mukhopadhyay},
+pages={421-434}
+}
+
+@incollection{lomne,
+  author    = {Thomas Fuhr and
+               {\'E}liane Jaulmes and
+               Victor Lomn{\'e} and
+               Adrian Thillard},
+  editor    = {Wieland Fischer and J{\"o}rn-Marc Schmidt},
+  title     = {{Fault Attacks on AES with Faulty Ciphertexts Only}},
+  booktitle = {Fault Diagnosis and Tolerance in Cryptography -- FDTC 2013},
+  publisher = {IEEE Computer Society},
+  year      = {2013},
+  pages     = {108-118}
+
+}
+
+
+@incollection{Blomer,
+year={2003},
+booktitle={Financial Cryptography},
+volume={2742},
+series={Lecture Notes in Computer Science},
+editor={Rebecca N. Wright},
+title={{Fault Based Cryptanalysis of the Advanced Encryption Standard (AES)}},
+publisher={Springer},
+author={Johannes Bl\"{o}mer and Jean-Pierre Seifert},
+pages={162-181}
+}
+
+
+@incollection{SirTwo,
+  title={Differential fault analysis of the advanced encryption standard using a single fault},
+  author={Tunstall, Michael and Mukhopadhyay, Debdeep and Ali, Subidh},
+  booktitle={Information Security Theory and Practice. Security and Privacy of Mobile Devices in Wireless Communication},
+  pages={224--233},
+  year={2011},
+  publisher={Springer}
+}
+
+
+@incollection{Roche,
+  author    = {Victor Lomn{\'e} and
+               Thomas Roche and
+               Adrian Thillard},
+  editor    = {Guido Bertoni and Benedikt Gierlichs},
+  title     = {{On the Need of Randomness in Fault Attack Countermeasures - Application to AES}},
+  booktitle = {Fault Diagnosis and Tolerance in Cryptography -- FDTC 2012},
+  publisher = {IEEE Computer Society},
+  year      = {2012},
+  pages     = {85-94},
+
+}
+
+@incollection{Tunstall,
+year={2012},
+booktitle={Progress in Cryptology -- LATINCRYPT 2012},
+volume={7533},
+series={Lecture Notes in Computer Science},
+editor={Hevia, Alejandro and Neven, Gregory},
+title={{Infective Computation and Dummy Rounds: Fault Protection for Block Ciphers without Check-before-Output}},
+publisher={Springer},
+author={Benedikt Gierlichs and J\"{o}rn-Marc Schmidt and Michael Tunstall},
+pages={305-321}
+}
+
+@incollection{GiraudAttack,
+  author    = {Alberto Battistello and
+               Christophe Giraud},
+  editor    = {Wieland Fischer and J{\"o}rn-Marc Schmidt},
+  title     = {{Fault Analysis of Infective AES Computations}},
+  booktitle = {Fault Diagnosis and Tolerance in Cryptography -- FDTC 2013},
+  publisher = {IEEE Computer Society},
+  year      = {2013},
+  pages     = {101-107},
+}
+
+
+
+@incollection{Tupsamudre,
+  title={Destroying Fault Invariant with Randomization},
+  author={Tupsamudre, Harshal and Bisht, Shikha and Mukhopadhyay, Debdeep},
+  booktitle={Cryptographic Hardware and Embedded Systems--CHES 2014},
+  pages={93--111},
+  year={2014},
+  publisher={Springer}
+}
+
+@inproceedings{Dehbaoui,
+  title={Electromagnetic transient faults injection on a hardware and a software implementations of AES},
+  author={Dehbaoui, Amine and Dutertre, J-M and Robisson, Bruno and Tria, Assia},
+  booktitle={Fault Diagnosis and Tolerance in Cryptography (FDTC), 2012 Workshop on},
+  pages={7--15},
+  year={2012},
+  organization={IEEE}
+}
+
+@inproceedings{Schmidt1,
+  title={A practical fault attack on square and multiply},
+  author={Schmidt, J and Herbst, Christoph},
+  booktitle={Fault Diagnosis and Tolerance in Cryptography, 2008. FDTC'08. 5th Workshop on},
+  pages={53--58},
+  year={2008},
+  organization={IEEE}
+}
+
+@inproceedings{Balasch,
+  title={An In-depth and Black-box Characterization of the Effects of Clock Glitches on 8-bit MCUs},
+  author={Balasch, Josep and Gierlichs, Benedikt and Verbauwhede, Ingrid},
+  booktitle={Fault Diagnosis and Tolerance in Cryptography (FDTC), 2011 Workshop on},
+  pages={105--114},
+  year={2011},
+  organization={IEEE}
+}
+
+@article{Barenghi1,
+  title={Fault injection attacks on cryptographic devices: Theory, practice, and countermeasures},
+  author={Barenghi, Alessandro and Breveglieri, Luca and Koren, Israel and Naccache, David},
+  journal={Proceedings of the IEEE},
+  volume={100},
+  number={11},
+  pages={3056--3076},
+  year={2012},
+  publisher={IEEE}
+}
+
+@article{Barenghi2,
+  title={A fault induction technique based on voltage underfeeding with application to attacks against AES and RSA},
+  author={Barenghi, Alessandro and Bertoni, Guido M and Breveglieri, Luca and Pelosi, Gerardo},
+  journal={Journal of Systems and Software},
+  volume={86},
+  number={7},
+  pages={1864--1878},
+  year={2013},
+  publisher={Elsevier}
+}
+
+@inproceedings{Trichina,
+  title={Multi fault laser attacks on protected CRT-RSA},
+  author={Trichina, Elena and Korkikyan, Roman},
+  booktitle={Fault Diagnosis and Tolerance in Cryptography (FDTC), 2010 Workshop on},
+  pages={75--86},
+  year={2010},
+  organization={IEEE}
+}
+
+@inproceedings{Schmidt2,
+  title={A fault attack on ECDSA},
+  author={Schmidt, J and Medwed, Marcel},
+  booktitle={Fault Diagnosis and Tolerance in Cryptography (FDTC), 2009 Workshop on},
+  pages={93--99},
+  year={2009},
+  organization={IEEE}
+}
+
+@inproceedings{Moro,
+  title={Electromagnetic fault injection: towards a fault model on a 32-bit microcontroller},
+  author={Moro, Nicolas and Dehbaoui, Amine and Heydemann, Karine and Robisson, Bruno and Encrenaz, Emmanuelle},
+  booktitle={Fault Diagnosis and Tolerance in Cryptography (FDTC), 2013 Workshop on},
+  pages={77--88},
+  year={2013},
+  organization={IEEE}
+}
+
+@inproceedings{Heydemann,
+  title={Formal verification of a software countermeasure against instruction skip attacks},
+  author={Heydemann, Karine and Moro, Nicolas and Encrenaz, Emmanuelle and Robisson, Bruno},
+  booktitle={PROOFS 2013}
+}
+
+@article{Choukri,
+  title={Round reduction using faults},
+  author={Choukri, Hamid and Tunstall, Michael},
+  journal={FDTC},
+  volume={5},
+  pages={13--24},
+  year={2005}
+}
+
+@inproceedings{Dutertre,
+  title={Fault round modification analysis of the advanced encryption standard},
+  author={Dutertre, J-M and Mirbaha, A-P and Naccache, David and Ribotta, A-L and Tria, Assia and Vaschalde, Thierry},
+  booktitle={Hardware-Oriented Security and Trust (HOST), 2012 IEEE International Symposium on},
+  pages={140--145},
+  year={2012},
+  organization={IEEE}
+}
+
+@inproceedings{matsui1994linear,
+  title={Linear cryptanalysis method for DES cipher},
+  author={Matsui, Mitsuru},
+  booktitle={Advances in Cryptology—EUROCRYPT’93},
+  pages={386--397},
+  year={1994},
+  organization={Springer}
+}
+
+@article{biham1991differential,
+  title={Differential cryptanalysis of DES-like cryptosystems},
+  author={Biham, Eli and Shamir, Adi},
+  journal={Journal of CRYPTOLOGY},
+  volume={4},
+  number={1},
+  pages={3--72},
+  year={1991},
+  publisher={Springer}
+}
+
+@inproceedings{kaminsky2010overview,
+  title={An overview of cryptanalysis research for the advanced encryption standard},
+  author={Kaminsky, Alan and Kurdziel, Michael and Radziszowski, Stanis{\l}aw},
+  booktitle={MILITARY COMMUNICATIONS CONFERENCE, 2010-MILCOM 2010},
+  pages={1310--1316},
+  year={2010},
+  organization={IEEE}
+}
+
+@article{bar2006sorcerer,
+  title={The sorcerer's apprentice guide to fault attacks},
+  author={Bar-El, Hagai and Choukri, Hamid and Naccache, David and Tunstall, Michael and Whelan, Claire},
+  journal={Proceedings of the IEEE},
+  volume={94},
+  number={2},
+  pages={370--382},
+  year={2006},
+  publisher={IEEE}
+}
+
+@article{karaklajic2013hardware,
+  title={Hardware designer's guide to fault attacks},
+  author={Karaklajic, Dusko and Schmidt, J-M and Verbauwhede, Ingrid},
+  journal={Very Large Scale Integration (VLSI) Systems, IEEE Transactions on},
+  volume={21},
+  number={12},
+  pages={2295--2306},
+  year={2013},
+  publisher={IEEE}
+}
+
+@incollection{giraud2004survey,
+  title={A survey on fault attacks},
+  author={Giraud, Christophe and Thiebeauld, Hugues},
+  booktitle={Smart Card Research and Advanced Applications VI},
+  pages={159--176},
+  year={2004},
+  publisher={Springer}
+}
+
+@article{saha2009diagonal,
+  title={A Diagonal Fault Attack on the Advanced Encryption Standard.},
+  author={Saha, Dhiman and Mukhopadhyay, Debdeep and Chowdhury, Dipanwita Roy},
+  journal={IACR Cryptology ePrint Archive},
+  volume={2009},
+  pages={581},
+  year={2009},
+  publisher={Citeseer}
+}
+
+@incollection{amiel2006fault,
+  title={Fault analysis of DPA-resistant algorithms},
+  author={Amiel, Frederic and Clavier, Christophe and Tunstall, Michael},
+  booktitle={Fault diagnosis and tolerance in cryptography},
+  pages={223--236},
+  year={2006},
+  publisher={Springer}
+}
+
+@inproceedings{selmane2008practical,
+  title={Practical setup time violation attacks on AES},
+  author={Selmane, Nidhal and Guilley, Sylvain and Danger, J-L},
+  booktitle={Dependable Computing Conference, 2008. EDCC 2008. Seventh European},
+  pages={91--96},
+  year={2008},
+  organization={IEEE}
+}
+
+@incollection{barenghi2012exploring,
+  title={Exploring the feasibility of low cost fault injection attacks on sub-threshold devices through an example of a 65nm AES implementation},
+  author={Barenghi, Alessandro and Hocquet, C{\'e}dric and Bol, David and Standaert, Fran{\c{c}}ois-Xavier and Regazzoni, Francesco and Koren, Israel},
+  booktitle={RFID. Security and Privacy},
+  pages={48--60},
+  year={2012},
+  publisher={Springer}
+}
+
+@inproceedings{khelil2008fault,
+  title={Fault analysis attack on an FPGA AES implementation},
+  author={Khelil, Farouk and Hamdi, Mohamed and Guilley, Sylvain and Danger, Jean-Luc and Selmane, Nidhal},
+  booktitle={New Technologies, Mobility and Security, 2008. NTMS'08.},
+  pages={1--5},
+  year={2008},
+  organization={IEEE}
+}
+
+@article{canivet2011glitch,
+  title={Glitch and laser fault attacks onto a secure AES implementation on a SRAM-based FPGA},
+  author={Canivet, Gaetan and Maistri, Paolo and Leveugle, R{\'e}gis and Cl{\'e}di{\`e}re, Jessy and Valette, Florent and Renaudin, Marc},
+  journal={Journal of Cryptology},
+  volume={24},
+  number={2},
+  pages={247--268},
+  year={2011},
+  publisher={Springer}
+}
+
+@inproceedings{agoyan2010flip,
+  title={How to flip a bit?},
+  author={Agoyan, Michel and Dutertre, Jean-Max and Mirbaha, Amir-Pasha and Naccache, David and Ribotta, Anne-Lise and Tria, Assia},
+  booktitle={IOLTS},
+  pages={235--239},
+  year={2010}
+}
+
+@inproceedings{canivet2008detailed,
+  title={Detailed analyses of single laser shot effects in the configuration of a Virtex-II FPGA},
+  author={Canivet, Gaetan and Cl{\'e}di{\`e}re, Jessy and Ferron, Jean Baptiste and Valette, Fr{\'e}d{\'e}ric and Renaudin, Marc and Leveugle, R{\'e}gis},
+  booktitle={On-Line Testing Symposium, 2008. IOLTS'08. 14th IEEE International},
+  pages={289--294},
+  year={2008},
+  organization={IEEE}
+}
+
+@inproceedings{dehbaoui2012electromagnetic,
+  title={Electromagnetic transient faults injection on a hardware and a software implementations of AES},
+  author={Dehbaoui, Amine and Dutertre, J-M and Robisson, Bruno and Tria, Assia},
+  booktitle={Fault Diagnosis and Tolerance in Cryptography (FDTC), 2012 Workshop on},
+  pages={7--15},
+  year={2012},
+  organization={IEEE}
+}
+
+@inproceedings{wu2004low,
+  title={Low cost concurrent error detection for the advanced encryption standard},
+  author={Wu, Kaijie and Karri, Ramesh and Kuznetsov, Grigori and Goessel, Michael},
+  booktitle={Test Conference, 2004. Proceedings. ITC 2004. International},
+  pages={1242--1248},
+  year={2004},
+  organization={IEEE}
+}
+
+@article{bertoni2003error,
+  title={Error analysis and detection procedures for a hardware implementation of the advanced encryption standard},
+  author={Bertoni, Guido and Breveglieri, Luca and Koren, Israel and Maistri, Paolo and Piuri, Vincenzo},
+  journal={Computers, IEEE Transactions on},
+  volume={52},
+  number={4},
+  pages={492--505},
+  year={2003},
+  publisher={IEEE}
+}
+
+@article{mozaffari2010concurrent,
+  title={Concurrent structure-independent fault detection schemes for the advanced encryption standard},
+  author={Mozaffari-Kermani, Mehran and Reyhani-Masoleh, Arash},
+  journal={Computers, IEEE Transactions on},
+  volume={59},
+  number={5},
+  pages={608--622},
+  year={2010},
+  publisher={IEEE}
+}
+
+@inproceedings{karpovsky2004robust,
+  title={Robust protection against fault-injection attacks on smart cards implementing the advanced encryption standard},
+  author={Karpovsky, Mark and Kulikowski, Konrad J and Taubin, Alexander},
+  booktitle={Dependable Systems and Networks, 2004 International Conference on},
+  pages={93--101},
+  year={2004},
+  organization={IEEE}
+}
+
+@article{joye2007strengthening,
+  title={Strengthening hardware AES implementations against fault attacks},
+  author={Joye, Marc and Manet, Pascal and Rigaud, J-B},
+  journal={IET Information Security},
+  volume={1},
+  number={3},
+  pages={106--110},
+  year={2007},
+  publisher={IET}
+}
+
+@article{karri2002concurrent,
+  title={Concurrent error detection schemes for fault-based side-channel cryptanalysis of symmetric block ciphers},
+  author={Karri, Ramesh and Wu, Kaijie and Mishra, Piyush and Kim, Yongkook},
+  journal={Computer-Aided Design of Integrated Circuits and Systems, IEEE Transactions on},
+  volume={21},
+  number={12},
+  pages={1509--1517},
+  year={2002},
+  publisher={IEEE}
+}
+
+@incollection{satoh2008high,
+  title={High-performance concurrent error detection scheme for AES hardware},
+  author={Satoh, Akashi and Sugawara, Takeshi and Homma, Naofumi and Aoki, Takafumi},
+  booktitle={Cryptographic Hardware and Embedded Systems--CHES 2008},
+  pages={100--112},
+  year={2008},
+  publisher={Springer}
+}
+
+@article{guo2013recomputing,
+  title={Recomputing with permuted operands: A concurrent error detection approach},
+  author={Guo, Xiaofei and Karri, Ramesh},
+  journal={Computer-Aided Design of Integrated Circuits and Systems, IEEE Transactions on},
+  volume={32},
+  number={10},
+  pages={1595--1608},
+  year={2013},
+  publisher={IEEE}
+}
+
+@inproceedings{guo2012invariance,
+  title={Invariance-based concurrent error detection for advanced encryption standard},
+  author={Guo, Xiaofei and Karri, Ramesh},
+  booktitle={Proceedings of the 49th Annual Design Automation Conference},
+  pages={573--578},
+  year={2012},
+  organization={ACM}
+}
+
+@article{guo2014security,
+  title={Security analysis of concurrent error detection against differential fault analysis},
+  author={Guo, Xiaofei and Mukhopadhyay, Debdeep and Jin, Chenglu and Karri, Ramesh},
+  journal={Journal of Cryptographic Engineering},
+  pages={1--17},
+  year={2014},
+  publisher={Springer}
+}
+
+@book{schneier1999twofish,
+  title={The Twofish encryption algorithm: a 128-bit block cipher},
+  author={Schneier, Bruce and Kelsey, John and Whiting, Doug and Wagner, David and Hall, Chris and Ferguson, Niels},
+  year={1999},
+  publisher={John Wiley \& Sons, Inc.}
+}
+
+@inproceedings{vaudenay1995need,
+  title={On the need for multipermutations: Cryptanalysis of MD4 and SAFER},
+  author={Vaudenay, Serge},
+  booktitle={Fast Software Encryption},
+  pages={286--297},
+  year={1995},
+  organization={Springer}
+}
+
+@inproceedings{junod2005perfect,
+  title={Perfect diffusion primitives for block ciphers},
+  author={Junod, Pascal and Vaudenay, Serge},
+  booktitle={Selected Areas in Cryptography},
+  pages={84--99},
+  year={2005},
+  organization={Springer}
+}
+
+@misc{cryptoeprint:2009:579,
+    author = {Cong Wang and Sherman S.-M. Chow and Qian Wang and Kui Ren and Wenjing Lou},
+    title = {Privacy-Preserving Public Auditing for Secure Cloud Storage},
+    howpublished = {Cryptology ePrint Archive, Report 2009/579},
+    year = {2009},
+    note = {\url{http://eprint.iacr.org/}},
+}
+
+@inproceedings{wang2013storing,
+  title={Storing shared data on the cloud via security-mediator},
+  author={Wang, Boyang and Chow, Sherman SM and Li, Ming and Li, Hui},
+  booktitle={Distributed Computing Systems (ICDCS), 2013 IEEE 33rd International Conference on},
+  pages={124--133},
+  year={2013},
+  organization={IEEE}
+}
+
+@incollection{chow2012dynamic,
+  title={Dynamic secure cloud storage with provenance},
+  author={Chow, Sherman SM and Chu, Cheng-Kang and Huang, Xinyi and Zhou, Jianying and Deng, Robert H},
+  booktitle={Cryptography and Security: From Theory to Applications},
+  pages={442--464},
+  year={2012},
+  publisher={Springer}
+}
+
+@article{chu2014key,
+  title={Key-aggregate cryptosystem for scalable data sharing in cloud storage},
+  author={Chu, Cheng-Kang and Chow, Sherman SM and Tzeng, Wen-Guey and Zhou, Jianying and Deng, Robert H},
+  journal={Parallel and Distributed Systems, IEEE Transactions on},
+  volume={25},
+  number={2},
+  pages={468--477},
+  year={2014},
+  publisher={IEEE}
+}
+
+@inproceedings{boneh2005collusion,
+  title={Collusion resistant broadcast encryption with short ciphertexts and private keys},
+  author={Boneh, Dan and Gentry, Craig and Waters, Brent},
+  booktitle={Advances in Cryptology--CRYPTO 2005},
+  pages={258--275},
+  year={2005},
+  organization={Springer}
+}
+
+@article{akl1983cryptographic,
+  title={Cryptographic solution to a problem of access control in a hierarchy},
+  author={Akl, Selim G and Taylor, Peter D},
+  journal={ACM Transactions on Computer Systems (TOCS)},
+  volume={1},
+  number={3},
+  pages={239--248},
+  year={1983},
+  publisher={ACM}
+}
+
+@inproceedings{chick1990flexible,
+  title={Flexible access control with master keys},
+  author={Chick, Gerald C and Tavares, Stafford E},
+  booktitle={Advances in Cryptology—CRYPTO’89 Proceedings},
+  pages={316--322},
+  year={1990},
+  organization={Springer}
+}
+
+@article{tzeng2002time,
+  title={A time-bound cryptographic key assignment scheme for access control in a hierarchy},
+  author={Tzeng, Wen-Guey},
+  journal={Knowledge and Data Engineering, IEEE Transactions on},
+  volume={14},
+  number={1},
+  pages={182--188},
+  year={2002},
+  publisher={IEEE}
+}
+@article{ateniese2012provably,
+  title={Provably-secure time-bound hierarchical key assignment schemes},
+  author={Ateniese, Giuseppe and De Santis, Alfredo and Ferrara, Anna Lisa and Masucci, Barbara},
+  journal={Journal of cryptology},
+  volume={25},
+  number={2},
+  pages={243--270},
+  year={2012},
+  publisher={Springer}
+}
+
+@article{sandhu1988cryptographic,
+  title={Cryptographic implementation of a tree hierarchy for access control},
+  author={Sandhu, Ravinderpal S},
+  journal={Information Processing Letters},
+  volume={27},
+  number={2},
+  pages={95--98},
+  year={1988},
+  publisher={Elsevier}
+}
+
+@inproceedings{sun2004scalable,
+  title={Scalable hierarchical access control in secure group communications},
+  author={Sun, Yan and Liu, KJ},
+  booktitle={INFOCOM 2004. Twenty-third AnnualJoint Conference of the IEEE Computer and Communications Societies},
+  volume={2},
+  pages={1296--1306},
+  year={2004},
+  organization={IEEE}
+}
+
+@misc{king2015centralized,
+  title={Centralized key management},
+  author={King, William C and Hjelm, Bjorn},
+  year={2015},
+  month=mar # "~24",
+  publisher={Google Patents},
+  note={US Patent 8,990,555}
+}
+
+@article{atallah2009dynamic,
+  title={Dynamic and efficient key management for access hierarchies},
+  author={Atallah, Mikhail J and Blanton, Marina and Fazio, Nelly and Frikken, Keith B},
+  journal={ACM Transactions on Information and System Security (TISSEC)},
+  volume={12},
+  number={3},
+  pages={18},
+  year={2009},
+  publisher={ACM}
+}
+@inproceedings{shamir1985identity,
+  title={Identity-based cryptosystems and signature schemes},
+  author={Shamir, Adi},
+  booktitle={Advances in cryptology},
+  pages={47--53},
+  year={1985},
+  organization={Springer}
+}
+@article{boneh2003identity,
+  title={Identity-based encryption from the Weil pairing},
+  author={Boneh, Dan and Franklin, Matthew},
+  journal={SIAM Journal on Computing},
+  volume={32},
+  number={3},
+  pages={586--615},
+  year={2003},
+  publisher={SIAM}
+}
+@incollection{cocks2001identity,
+  title={An identity based encryption scheme based on quadratic residues},
+  author={Cocks, Clifford},
+  booktitle={Cryptography and coding},
+  pages={360--363},
+  year={2001},
+  publisher={Springer}
+}
+@inproceedings{guo2008multi,
+  title={Multi-identity single-key decryption without random oracles},
+  author={Guo, Fuchun and Mu, Yi and Chen, Zhide and Xu, Li},
+  booktitle={Information Security and Cryptology},
+  pages={384--398},
+  year={2008},
+  organization={Springer}
+}
+@incollection{guo2007identity,
+  title={Identity-based encryption: how to decrypt multiple ciphertexts using a single decryption key},
+  author={Guo, Fuchun and Mu, Yi and Chen, Zhide},
+  booktitle={Pairing-Based Cryptography--Pairing 2007},
+  pages={392--406},
+  year={2007},
+  publisher={Springer}
+}
+@incollection{sahai2005fuzzy,
+  title={Fuzzy identity-based encryption},
+  author={Sahai, Amit and Waters, Brent},
+  booktitle={Advances in Cryptology--EUROCRYPT 2005},
+  pages={457--473},
+  year={2005},
+  publisher={Springer}
+}
+
+@article{ateniese2006improved,
+  title={Improved proxy re-encryption schemes with applications to secure distributed storage},
+  author={Ateniese, Giuseppe and Fu, Kevin and Green, Matthew and Hohenberger, Susan},
+  journal={ACM Transactions on Information and System Security (TISSEC)},
+  volume={9},
+  number={1},
+  pages={1--30},
+  year={2006},
+  publisher={ACM}
+}
+
+@inproceedings{liu2011reliable,
+  title={Reliable re-encryption in unreliable clouds},
+  author={Liu, Qin and Tan, Chiu C and Wu, Jie and Wang, Guojun},
+  booktitle={Global Telecommunications Conference (GLOBECOM 2011), 2011 IEEE},
+  pages={1--5},
+  year={2011},
+  organization={IEEE}
+}
+
+@article{NIST2009,
+  title = {{The Case for Elliptic Curve Cryptography}},
+  author = {NIST},
+  address = {[Online]. Available: https://www.nsa.gov/business/programs/elliptic_curve.shtml},
+  year = {2009}
+}
+@inproceedings{miller1986use,
+  title={Use of elliptic curves in cryptography},
+  author={Miller, Victor},
+  booktitle={Advances in Cryptology—CRYPTO’85 Proceedings},
+  pages={417--426},
+  year={1986},
+  organization={Springer}
+}
+
+@MISC{Cheon02diffie-hellmanproblems,
+    author = {Jung Hee Cheon and Dong Hoon Lee},
+    title = {Diffie-Hellman Problems and Bilinear Maps},
+    year = {2002}
+}
+@book{silverman1994advanced,
+  title={Advanced topics in the arithmetic of elliptic curves},
+  author={Silverman, Joseph H},
+  volume={151},
+  year={1994},
+  publisher={Springer Science \& Business Media}
+}
+
+@inproceedings{barreto2006pairing,
+  title={Pairing-friendly elliptic curves of prime order},
+  author={Barreto, Paulo SLM and Naehrig, Michael},
+  booktitle={Selected areas in cryptography},
+  pages={319--331},
+  year={2006},
+  organization={Springer}
+}
+
+@article{frey1994remark,
+  title={A remark concerning 𝑚-divisibility and the discrete logarithm in the divisor class group of curves},
+  author={Frey, Gerhard and R{\"u}ck, Hans-Georg},
+  journal={Mathematics of computation},
+  volume={62},
+  number={206},
+  pages={865--874},
+  year={1994}
+}
+
+@article{hess2006eta,
+  title={The eta pairing revisited},
+  author={Hess, Florian and Smart, Nigel P and Vercauteren, Frederik},
+  journal={Information Theory, IEEE Transactions on},
+  volume={52},
+  number={10},
+  pages={4595--4602},
+  year={2006},
+  publisher={IEEE}
+}
+
+@article{zhao2008note,
+  title={A note on the Ate pairing},
+  author={Zhao, Chang-An and Zhang, Fangguo and Huang, Jiwu},
+  journal={International Journal of Information Security},
+  volume={7},
+  number={6},
+  pages={379--382},
+  year={2008},
+  publisher={Springer}
+}
+
+@inproceedings{oliveira2007tinytate,
+  title={Tinytate: Computing the tate pairing in resource-constrained sensor nodes},
+  author={Oliveira, Leonardo B and Aranha, Diego F and Morais, Eduardo and Daguano, Felipe and L{\'o}pez, Julio and Dahab, Ricardo},
+  booktitle={Network Computing and Applications, 2007. NCA 2007. Sixth IEEE International Symposium on},
+  pages={318--323},
+  year={2007},
+  organization={IEEE}
+}
+
+@article{ghosh2013secure,
+  title={Secure dual-core cryptoprocessor for pairings over Barreto-Naehrig curves on FPGA platform},
+  author={Ghosh, Sudip and Mukhopadhyay, Debdeep and Roychowdhury, Dipanwita},
+  journal={Very Large Scale Integration (VLSI) Systems, IEEE Transactions on},
+  volume={21},
+  number={3},
+  pages={434--442},
+  year={2013},
+  publisher={IEEE}
+}
+
+@inproceedings{benaloh2009patient,
+  title={Patient controlled encryption: ensuring privacy of electronic medical records},
+  author={Benaloh, Josh and Chase, Melissa and Horvitz, Eric and Lauter, Kristin},
+  booktitle={Proceedings of the 2009 ACM workshop on Cloud computing security},
+  pages={103--114},
+  year={2009},
+  organization={ACM}
+}
+
+@techreport{benaloh2009key,
+  title={Key compression and its application to digital fingerprinting},
+  author={Benaloh, Josh},
+  year={2009},
+  institution={Technical Report Technical Report, Microsoft Research}
+}
+
+@article{alomair2009information,
+  title={Information Theoretically Secure Encryption with Almost Free Authentication.},
+  author={Alomair, Basel and Poovendran, Radha},
+  journal={J. UCS},
+  volume={15},
+  number={15},
+  pages={2937--2956},
+  year={2009}
+}
+
+@inproceedings{goyal2006attribute,
+  title={Attribute-based encryption for fine-grained access control of encrypted data},
+  author={Goyal, Vipul and Pandey, Omkant and Sahai, Amit and Waters, Brent},
+  booktitle={Proceedings of the 13th ACM conference on Computer and communications security},
+  pages={89--98},
+  year={2006},
+  organization={Acm}
+}
+
+@inproceedings{bethencourt2007ciphertext,
+  title={Ciphertext-policy attribute-based encryption},
+  author={Bethencourt, John and Sahai, Amit and Waters, Brent},
+  booktitle={Security and Privacy, 2007. SP'07. IEEE Symposium on},
+  pages={321--334},
+  year={2007},
+  organization={IEEE}
+}
+@incollection{chase2007multi,
+  title={Multi-authority attribute based encryption},
+  author={Chase, Melissa},
+  booktitle={Theory of cryptography},
+  pages={515--534},
+  year={2007},
+  publisher={Springer}
+}
+@article{li2013scalable,
+  title={Scalable and secure sharing of personal health records in cloud computing using attribute-based encryption},
+  author={Li, Ming and Yu, Shucheng and Zheng, Yao and Ren, Kui and Lou, Wenjing},
+  journal={Parallel and Distributed Systems, IEEE Transactions on},
+  volume={24},
+  number={1},
+  pages={131--143},
+  year={2013},
+  publisher={IEEE}
+}
+
+@incollection{devegili2007implementing,
+  title={Implementing cryptographic pairings over Barreto-Naehrig curves},
+  author={Devegili, Augusto Jun and Scott, Michael and Dahab, Ricardo},
+  booktitle={Pairing-Based Cryptography--Pairing 2007},
+  pages={197--207},
+  year={2007},
+  publisher={Springer}
+}
+
+@misc{cryptoeprint:2005:133,
+    author = {Paulo S. L. M. Barreto and Michael Naehrig},
+    title = {Pairing-Friendly Elliptic Curves of Prime Order},
+    howpublished = {Cryptology ePrint Archive, Report 2005/133},
+    year = {2005},
+    note = {\url{http://eprint.iacr.org/}},
+}

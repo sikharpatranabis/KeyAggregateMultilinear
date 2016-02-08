@@ -1,0 +1,289 @@
+\section{KAC Using Asymmetric Multilinear Maps}
+\label{sec:proposal1}
+
+In this section, we present the first construction of identity-based KAC based on asymmetric multilinear maps. Our construction is based on the basic KAC using bilinear pairings described in \cite{patranabis2015dynamic}. Their construction involves outputting a public parameter set consisting of $O(N)$ group elements, where $N$ is the number of data classes. Our goal in this scheme is to shrink the size of the public parameter to $O(\log N)$ group elements. To achieve this, we embed the original KAC scheme within a multilinear map, such that the original parameters can be derived from a small number of elements in the source group of the map. Hence it suffices to store these new elements as the public key of our proposed construction.
+
+\subsubsection{The Basic Idea.} Let $N=2^m-1$ for some integer $m$, and let $\mathbf{m}$ be the $m+1$ length vector consisting of all ones. We use an asymmetric multilinear map with the target group $\mathbb{G}_{2\mathbf{m}}$. Note that if we pair two elements in the group $\mathbb{G}_{\mathbf{m}}$, we get an element in $\mathbb{G}_{2\mathbf{m}}$ by the definition of asymmetric multilinear maps. Let $Y_i=g^{\alpha^i}_{\mathbf{m}}$, where $\alpha\in\mathbb{Z}_q$. Recall that $\mathbf{x}_j$ is the $j$th \emph{standard} basis vector (with $1$ at position $j$ and $0$ at each other position) and $\mathbb{G}_{\mathbf{x}_j}$ is the $j$th source group with generator $g_{\mathbf{x}_i}$. Also, let $X_j=g^{\alpha^{(2^j)}}_{\mathbf{x}_j}$ for $0\leq j\leq m-1$ and $X_m=g^{\alpha^{(2^m+1)}}_{\mathbf{x}_m}$. We make the following claims.
+
+\subsubsection{Claim 3.1.} Given an $i$ such that $0\leq i\leq N$, $Y_i$ can be computed from the set of parameters $(X_0,\cdots,X_m)$.
+\subsubsection{Proof.} Let $i=\sum_{j=0}^{m-1}i_j2^j$. We have 
+\begin{equation}
+ Y_i=e(X^{i_0}_0g^{1-i_0}_{\mathbf{x}_0},\cdots,X^{i_{m-1}}_{m-1}g^{1-i_{m-1}}_{\mathbf{x}_{m-1}},g_{\mathbf{x}_m})\nonumber
+\end{equation}
+\subsubsection{Claim 3.2.} Given $i$ such that $N+2\leq i \leq 2N$, $Y_i$ can be computed from the set of parameters $(X_0,\cdots,X_m)$.
+\subsubsection{Proof.} Let $i'=i-(2^m+1)=\sum_{j=0}^{m-1}i'_j2^j$. Then, we have  
+\begin{equation}
+ Y_i=e(X^{i'_0}_0g^{1-i'_0}_{\mathbf{x}_0},\cdots,X^{i'_{m-1}}_{m-1}g^{1-i'_{m-1}}_{\mathbf{x}_{m-1}},X_m)\nonumber
+\end{equation}
+
+\noindent We now make the following important observation.
+\subsubsection{Observation 3.3.} \emph{Unless $g^{\alpha^{(2^m)}}_{\mathbf{x}_m}$ is published, it is difficult to compute the value of $Y_{N+1}$}.\\
+
+\noindent This is the basic trick we use to embed a parameter set comprising of $O(N)$ group elements into another parameter set comprising of $O(\log N)$ group elements. We next present the construction of the basic single data-owner KAC using this framework.
+
+\subsubsection{Assumption 3.4.} For simplicity, we assume in the forthcoming discussion that our plaintext messages are embedded as elements in the group $\mathbb{G}_{2\mathbf{m}}$. We discuss in Appendix \ref{app_sec:relaxation} how we may modify our scheme to relax this assumption.
+
+\subsection{Construction for the Basic KAC Framework}
+\label{subsec:construction}
+
+We first present a basic construction for the KAC scheme assuming a single data owner and a single data user. The owner wishes to furnish the user with a \emph{single} low overhead aggregate key that allows the user to decryption rights to any data class $i\in\mathcal{S}$ where $\mathcal{S}$ is any arbitrary subset of $\{1,\cdots,N\}$. For the moment we assume that the aggregate key is received by the data owner from a trusted third party who sets up the overall system. We later show how this construction may be extended using public-key based broadcast encryption to distribute the aggregate key to multiple data users.   
+
+Assume that \textbf{SetUp}$''(1^{\lambda},\mathbf{m})$ is the setup algorithm for an asymmetric multilinear map, where groups have prime order $q$ (where $q$ is a $\lambda$ bit prime) and $\mathbb{G}_{\mathbf{m}}$ is the target group. Our first basic identity-based KAC, for a single data owner with $N=2^m-1$ data classes, consists of the following algorithms.\\
+
+\noindent\textbf{SetUp}$(1^{\lambda},m)$: Take as input the length $m$ of identities and the group order parameter $\lambda$. Set $\mathcal{ID}=\{0,1\}^m\backslash\{0\}^m$ as the identity space. Let $\mathbf{m}$ be the $m+1$ length vector consisting of all ones. Also, let $param''\leftarrow SetUp''(1^{\lambda},2\mathbf{m})$ be the public parameters for a multilinear map, with $\mathbb{G}_{2\mathbf{m}}$ being the target group. Choose a random $\alpha\in \mathbb{Z}_q$. Set $X_j=g^{\alpha^{(2^j)}}_{\mathbf{x}_j}$ for $0\leq j\leq m-1$ and $X_m=g^{\alpha^{(2^m+1)}}_{\mathbf{x}_m}$. Output the public parameter tuple $param$ as
+\begin{equation}
+ param = (param'',\{X_j\}_{j\in\{0,\cdots,m\}})\nonumber
+\end{equation}
+\noindent Discard $\alpha$ after $param$ has been output.\\
+
+\noindent \textbf{KeyGen}(): Randomly pick $\gamma, t \in \mathbb{Z}_q$. Set the master secret key $msk$ to $(\gamma,t)$. Let $PK=g^{\gamma}_{\mathbf{m}}$. Finally set the user authentication key $U=g^{t}_{\mathbf{m}}$. Output the tuple $(msk,PK,U)$.\\
+
+\noindent \textbf{Encrypt}$(params,PK,i,\mathcal{M})$: Take as input a message $\mathcal{M} \in \mathbb{G}_{2\mathbf{m}}$ belonging to class $i \in \mathcal{ID}$. Randomly choose $r\in\mathbb{Z}_q$ and let $t'=t+r \in\mathbb{Z}_q$. Recall that $Y_i=g^{\alpha^i}_{\mathbf{m}}$ and can be computed as per the formulation in Claim 3.1 for $1\leq i\leq N$. Output the ciphertext $\mathcal{C}$ as 
+\begin{equation}
+ \mathcal{C}=\left(g^r_{\mathbf{m}},(PK.Y_i)^{t'},\mathcal{M}.g^{t'\alpha^{(2^m)}}_{2\mathbf{m}}\right)\nonumber
+\end{equation}
+\noindent where $g^{t'\alpha^{(2^m)}}_{2\mathbf{m}}$ is computed as $\left(e(Y_{2^m-1},Y_1)\right)^{t'}$.\\
+
+\noindent \textbf{Extract}$(params,msk,\mathcal{S})$: For the input subset of data class indices $\mathcal{S}$, the aggregate key is computed as 
+\begin{equation}
+ K_{\mathcal{S}} = \prod_{v\in\mathcal{S}}Y^{\gamma}_{2^m-v}\nonumber
+\end{equation} 
+\noindent Note that this is indirectly equivalent to setting $K_{\mathcal{S}}$ to $\prod_{v\in\mathcal{S}}PK^{\alpha^{2^m-v}}$.\\
+ 
+\noindent\textbf{Decrypt}$(params,\mathcal{C},i,\mathcal{S},K_{\mathcal{S}},U)$: If $i\notin\mathcal{S}$, output $\bot$. Otherwise, set
+\begin{equation}
+a_{\mathcal{S}}=\left(\prod_{v\in\mathcal{S},v\neq i}Y_{2^m-v+i}\right) \text{ and } b_{\mathcal{S}}=\left(\prod_{v\in\mathcal{S}}Y_{2^m-v}\right)\nonumber
+\end{equation}
+Let $\mathcal{C}=(c_0,c_1,c_2)$. Output the decrypted message as  
+\begin{eqnarray} 
+\hat{\mathcal{M}}&=&c_2\frac{{e}(K_{\mathcal{S}}.a_{\mathcal{S}},U.c_0)}{{e}(b_{\mathcal{S}},c_1)} \nonumber
+\end{eqnarray}
+
+\subsubsection{Correctness.} To see that the scheme is correct, that is, $\hat{\mathcal{M}}=\mathcal{M}$, put $c_0=g^r_{\mathbf{m}}$, $c_1=(PK.Y_i)^{t'}$ and $c_2=\mathcal{M}.g^{t\alpha^{(2^m)}}_{2\mathbf{m}}$. Then we have
+
+\begin{equation}
+\begin{split}
+ \hat{\mathcal{M}}&=c_2\frac{{e}(K_{\mathcal{S}}.a_{\mathcal{S}},U.c_0)}{{e}(b_{\mathcal{S}},c_1)}\\
+ &=c_2\frac{e(\prod_{v\in\mathcal{S}}Y^{\gamma}_{2^m-v}.\prod_{v\in\mathcal{S},v\neq i}Y_{2^m-v+i},g^{t'}_{\mathbf{m}})}{e(\prod_{v\in\mathcal{S}}Y_{2^m-v},(PK.Y_i)^{t'})}\\
+ &=c_2\frac{e(\prod_{v\in\mathcal{S},v\neq i}Y_{2^m-v+i},g^{t'}_{\mathbf{m}})}{e(\prod_{v\in\mathcal{S}}Y_{2^m-v},Y_i^{t'})}\\
+ &=\frac{\mathcal{M}.g^{t'\alpha^{(2^m)}}_{2\mathbf{m}}}{e(Y_{2^m},g^{t'}_{\mathbf{m}})}\\
+ &=\mathcal{M}\nonumber
+\end{split} 
+\end{equation}
+
+\subsubsection{Implementation Nuances.}  As stated in Section \ref{sec:prelims}, the only multilinear map candidate in the current literature that is not yet broken to the best of our knowledge is the graph-induced multilinear map construction proposed in \cite{gentry2015graph}. This graded-level encoding based construction contains noise terms that could lead to erroneous group operations, especially during repeated pairing computations. This could create complications, for example, in the computation of $g^{\alpha^{2^j}}_{\mathbf{x}_j}$ for sufficiently high values of $j$, especially if one attempts to compute it via level-0 encodings of random unknown $\alpha$. However, a work-around for this is to pre-compute the level-0 encodings for the various $\alpha^{2^j}$ (where $\alpha$ is known) and then pair them with the corresponding $g_{\mathbf{x}_j}$. This means that the system administrator must herself set up the multilinear map framework with the knowledge of the secret parameters used to set up the multilinear maps. Note, however, that the knowledge of these parameters is not required for either encryption and decryption, and hence may be discarded immediately after setup. Thus our KAC scheme may easily be instantiated by any noisy non-ideal candidate multilinear map without affecting the desired semantics in any way. Also note that the ciphertext and the aggregate key must not leak any important information, and hence need to be randomized appropriately. This implies that Kilian-style randomization parameters must be included for the group $\mathbb{G}_{\mathbb{m}}$. No other randomization parameters are necessary. We now look into the security of our proposed identity-based KAC construction.
+
+
+\subsection{The Complexity Assumption}
+\label{subsec:complexity}
+
+We now briefly state the complexity assumption that is to be used to prove the security of the proposed KAC scheme. The assumption is introduced in \cite{boneh2014low}.
+
+\subsubsection{The Hybrid Diffie-Hellman Exponent Assumption.} Let $param''$ is generated by \textbf{SetUp}$''(1^{\lambda},2\mathbf{m})$, where $\mathbf{m}$ is the $m+1$ length vector consisting of all ones. Choose $\alpha \in \mathbb{Z}_q$ at random (where $q$ is a $\lambda$-bit prime), and let $X_j=g^{\alpha^{(2^j)}}_{\mathbf{x}_j}$ for $0\leq j \leq m-1$. Also, define $X_m=g^{\alpha^{(2^m+1)}}_{\mathbf{x}_m}$. Choose a random $t'\in\mathbb{Z}_q$, and let $V=g^{t'}_{\mathbf{m}}$. The decisional $m$-Hybrid Diffie Hellman Exponent~(HDHE) problem as defined as follows. Given the tuple $(params'',\{X_j\}_{j\in\{0,\cdots,m\}},V,Z)$, distinguish if $Z$ is $g^{t'\alpha^{(2^m)}}_{2\mathbf{m}}$ or a random element of $\mathbb{G}_{2\mathbf{m}}$.
+
+\subsubsection{Definition 3.5.} The decisional $m$-Hybrid Diffie-Hellman Exponent assumption holds for {SetUp}$''$ if, for any polynomial $m$ and a probabilistic poly-time algorithm $\mathcal{A}$, $\mathcal{A}$ has negligible advantage in solving the $m$-Hybrid Diffie-Hellman Exponent problem.
+
+\subsection{Security of the Proposed KAC}
+\label{subsec:security1}
+
+We state and prove the non-adaptive CPA security of our proposed KAC scheme.
+
+\subsubsection{Theorem 3.6.} \textit{Let \textbf{Setup}$''$ be the setup algorithm for an asymmetric multilinear map, and let the decisional $m$-Hybrid Diffie-Hellman Exponent assumption holds for {SetUp}$''$. Then our proposed basic KAC for $N$ data classes presented in Section \ref{subsec:construction} is non-adaptively CPA secure for $N=2^m-1$.}
+
+\subsubsection{Proof.} Let $\mathcal{A}$ be a poly-time adversary such that $|Adv_{\mathcal{A},N}-\frac{1}{2}| > \epsilon$ for the proposed KAC system parameterized with an identity space $\mathcal{ID}$ of size $N=2^m-1$. Here $\epsilon$ is a non-negligible positive constant. We build an algorithm $\mathcal{B}$ that has advantage at least $\epsilon$ in solving the decisional $m$-HDHE problem for \textbf{Setup}$''$. $\mathcal{B}$ takes as input a random $m$-HDHE challenge $(params'',\{X_j\}_{j\in\{0,\cdots,m\}},V,Z)$ where:
+\begin{itemize}
+ \item $param''\leftarrow SetUp''(1^{\lambda},2\mathbf{m})$
+ \item $X_j=g^{\alpha^{(2^j)}}_{\mathbf{x}_j}$ for $0\leq j \leq m-1$
+ \item $X_m=g^{\alpha^{(2^m+1)}}_{\mathbf{x}_m}$
+ \item $V=g^{t'}_{\mathbf{m}}$ for a random $t'\in\mathbb{Z}_q$ ($q$ being a $\lambda$ bit prime)
+ \item $Z$ is either $g^{t'\alpha^{(2^m)}}_{2\mathbf{m}}$ or a random element of $\mathbb{G}_{2\mathbf{m}}$
+\end{itemize}
+\noindent $\mathcal{B}$ then proceeds as follows.\\
+
+% \begin{enumerate}
+\noindent \textbf{Commit:} $\mathcal{B}$ runs $\mathcal{A}$ and receives the set $\mathcal{S}$ of data classes that $\mathcal{A}$ wishes to be challenged on. $\mathcal{B}$ then randomly chooses a data class $i\in\mathcal{S}$ and provides it to $\mathcal{A}$.\\
+ 
+\noindent \textbf{SetUp}: $\mathcal{B}$ should generate the public $param$, public key $PK$, the authentication key $U$, and the aggregate key $K_{\overline{\mathcal{S}}}$ and provide them to $\mathcal{A}$. They are generated as follows.
+%  \vspace{-0.6mm}
+\begin{itemize}
+  \item $param$ is set as $(param'',\{X_i\}_{i\in\{0,\cdots,m\}})\nonumber$.
+  \item $PK$ is set as ${g^u_{\mathbf{m}}}/{Y_i}$ where $u$ is chosen uniformly at random from $\mathbb{Z}_q$ and $Y_i$ is computed as mentioned in Claim 3.1. Note that this is equivalent to setting $msk=u-\alpha^i$.
+  \item $U$ is set as $g^{t}_{\mathbf{m}}$ where $t$ is again chosen uniformly at random from $\mathbb{Z}_q$.
+  \item $\mathcal{B}$ then computes   
+  \begin{equation}
+   K_{\overline{\mathcal{S}}} = \prod_{v\notin\mathcal{S}}\frac{Y^{u}_{2^m-v}}{Y_{2^m-v+i}}\nonumber
+  \end{equation}
+  \noindent Observe that $K_{\overline{\mathcal{S}}}=\prod_{v\notin\mathcal{S}}PK^{\alpha^{2^m-v}}$, as desired. Moreover, $\mathcal{B}$ is aware that $i\notin \overline{\mathcal{S}}$ (implying $i\neq v$), and hence has all the resources to compute $K_{\overline{\mathcal{S}}}$.  
+\end{itemize}
+ 
+\noindent Since the $g_{\mathbf{m}}$, $\alpha$, $u$, $t'$ and $t$ values are chosen uniformly at random, \emph{the public parameters and the public, private and authentication keys have an identical distribution to that in the actual construction}.\\
+ 
+\noindent \textbf{Challenge}: $\mathcal{A}$ picks at random two messages $\mathcal{M}_0$ and $\mathcal{M}_1$ from the set of possible plaintext messages in $\mathbb{G}_{2\mathbf{m}}$, and provides them to $\mathcal{B}$. $\mathcal{B}$ randomly picks $b\in\{0,1\}$, and sets the challenge as $(\mathcal{C},\mathcal{M}_0,\mathcal{M}_1)$, where 
+\begin{equation}
+ \mathcal{C}=(U^{-1}V,V^u,\mathcal{M}_b.Z) \nonumber
+\end{equation}
+\noindent We claim that when $Z=g^{t\alpha^{(2^m)}}_{2\mathbf{m}}$ (i.e. the input to $\mathcal{B}$ is a valid $m$-HDHE tuple), then $(\mathcal{C},\mathcal{M}_0,\mathcal{M}_1)$ is a valid challenge to $\mathcal{A}$ as in a real attack. To see this, let $r=t'-t$. Then we have
+\begin{eqnarray}
+U^{-1}V=g^r_{\mathbf{m}}  &\text{ and }&  V^u= \left(g^u_{\mathbf{m}}\right)^{t'}=(PK.Y_i)^{t'}\nonumber \\
+\mathcal{M}_b.Z&=&\mathcal{M}_b.g^{t'\alpha^{(2^m)}}_{2\mathbf{m}}\nonumber
+\end{eqnarray}
+
+\noindent Thus, by definition, $\mathcal{C}$ is a valid encryption of the message $\mathcal{M}_b$ in class $i$ and hence, $(\mathcal{C},\mathcal{M}_0,\mathcal{M}_1)$ is a valid challenge to $\mathcal{A}$. \\
+ 
+\noindent \textbf{Guess}: The adversary $\mathcal{A}$ outputs a guess $b'$ of $b$. If $b' = b$, $\mathcal{B}$ outputs $0$ (indicating that $Z=g^{t'\alpha^{(2^m)}}_{2\mathbf{m}}$). Otherwise, it outputs $1$ (indicating that $Z$ is a random element in $\mathbb{G}_{2\mathbf{m}}$).\\ 
+
+\noindent We conclude that $\mathcal{B}$ has the same advantage $\epsilon$ as $\mathcal{A}$, which must therefore be negligible, as desired. This completes the proof of Theorem 3.6. Note that this proof is in the standard model and does not use random oracles. \hfill\qed 
+
+\subsubsection{CCA Security.} The CPA secure construction of Section \ref{subsec:construction} may be efficiently combined with a signature scheme to obtain a CCA secure construction. For details, refer Appendix \ref{app_sec:CCA1}.
+
+
+\subsection{Extension to Multi-User Scenario}
+\label{subsec:multiuserKAC}
+
+We now generalize the KAC construction to a scenario where multiple data users wish to access a part of the data shared online by a single data owner. Assume that there are a maximum of $N_1$ data classes and and a maximum of $N_2$ users in the system. For simplicity, let $N_1=N_2=N$. The data owner grants access to a subset $\mathcal{S}$ of her data classes to a subset $\hat{\mathcal{S}}$ of the data users in the system. Here, both $\mathcal{S}$ and $\hat{\mathcal{S}}$ are arbitrary subset of $\{1,\cdots,N\}$, not necessarily equal. We show how the construction from Section \ref{subsec:construction} may be cleverly combined with the public-key based broadcast encryption scheme proposed in \cite{boneh2014low} to achieve a fully identity-based public key solution to this problem. 
+% 
+\subsubsection{Construction.} Let $N=2^m-1$ and $Setup''$ be as described before. The crux of the generalized scheme lies in the combination of the aggregate key with the broadcast encryption secret, although though they lie in different groups. Note that we do not need any additional parameters for incorporating broadcast encryption. Also note that generalization does not significantly blow up the overhead for any component of the system. In particular, the generalized scheme also consists of parameters that have size at most logarithmic in the number of data (and user) classes $N$. This allows $N$ to be exponentially large. Hence, the generalized system is fully identity-based with each data class and each user associated with a unique identity string $id\in\{0,1\}^{*}$. The class index $i$ and the user index $\hat{i}$ (where $1\leq i,\hat{i} \leq N$) are obtained by hashing the corresponding $id$ strings.\\\\
+% 
+\noindent\textbf{SetUp}$(1^{\lambda},m)$: Same as the construction in Section \ref{subsec:construction}.\\\\
+% 
+\noindent\textbf{OwnerKeyGen}(): Randomly pick $\gamma_1, \gamma_2, t \in \mathbb{Z}_q$. Set the master secret key $msk$ to $(\gamma_1,\gamma_2,t)$. Set $PK=(g^{\gamma_1}_{\mathbf{m}},g^{\gamma_2}_{\mathbf{m}})$ and $U=g^{t}_{\mathbf{m}}$. Output the tuple $(msk,PK,U)$.\\\\
+% 
+\noindent\textbf{Encrypt}$(params,PK,i,\mathcal{M})$: Take as input a message $\mathcal{M} \in \mathbb{G}_{2\mathbf{m}}$ belonging to class $i \in \mathcal{ID}$. Randomly choose $r\in\mathbb{Z}_q$ and let $t'=t+r \in\mathbb{Z}_q$. Recall that $Y_i=g^{\alpha^i}_{\mathbf{m}}$ and can be computed as per the formulation in Claim 3.1 for $1\leq i\leq N$. Also, let $PK=(PK_1,PK_2)$. Output the ciphertext $\mathcal{C}$ as 
+\begin{equation}
+ \mathcal{C}=\left(g^r_{\mathbf{m}},PK^r_1,(PK_1.Y_i)^{t'},\mathcal{M}.g^{t'\alpha^{(2^m)}}_{2\mathbf{m}}\right)\nonumber
+\end{equation}
+\noindent Note that the additional group element in the tuple blows up the ciphertext overhead by only a constant factor.\\
+
+\noindent\textbf{UserKeyGen}$(params,msk,\hat{i})$: Let $msk=(msk_1,msk_2,msk_3)$. Output the secret key for data user $\hat{i}$ as \begin{equation}
+ d_{\hat{i}}=Y^{msk_2}_{\hat{i}}\nonumber
+\end{equation}
+
+\noindent\textbf{Extract}$(params,msk,\mathcal{S},\hat{\mathcal{S}})$: The \textbf{Extract} operation now broadcasts the aggregate key $K_{\mathcal{S}}$ to all users in $\hat{\mathcal{S}}$ as follows. Let $msk=(msk_1,msk_2,msk_3)$. For the input subset of data class indices $\mathcal{S}$, compute $K_{\mathcal{S}} = \prod_{v\in\mathcal{S}}Y^{\gamma_1}_{2^m-v}$. Now, it is necessary to distribute this aggregate key to all users in $\hat{\mathcal{S}}$. For this, randomly choose $\hat{t}\in\mathbb{Z}_q$ and set $b_{\hat{\mathcal{S}}}=\left(\prod_{\hat{v}\in\hat{\mathcal{S}}}Y_{2^m-\hat{v}}\right)$. Output 
+\begin{equation}
+K_{\left(\mathcal{S},\hat{\mathcal{S}}\right)}=\left(g^{\hat{t}}_{\mathbf{m}},\left(g^{msk_2}_{\mathbf{m}}.b^{\hat{t}}_{\hat{\mathcal{S}}}\right),\mathcal{K}\right)\nonumber
+\end{equation}
+\noindent where 
+\begin{equation}
+\mathcal{K} = \left(\left(g^{\hat{t}\alpha^{(2^m)}}_{2\mathbf{m}}\right).\left(e(K_{\mathcal{S}},g^{msk_3}_{\mathbf{m}})\right)\right)\nonumber
+\end{equation}
+\noindent Note that the actual group element corresponding to $K_{\mathcal{S}}$ is difficult to recover from $\mathcal{K}$. However, as we demonstrate next, this knowledge is not explicitly necessary for decryption.\\\\
+%  
+\noindent\textbf{Decrypt}$(\mathcal{C},K_{\left(\mathcal{S},\hat{\mathcal{S}}\right)},i,\hat{i},d_{\hat{i}},\mathcal{S},\hat{\mathcal{S}},U)$: If $i\notin\mathcal{S}$ or $\hat{i}\notin\hat{\mathcal{S}}$, output $\bot$. Otherwise, set
+\begin{eqnarray}
+ a_{\hat{\mathcal{S}}}=\left(\prod_{\hat{v}\in\hat{\mathcal{S}},\hat{v}\neq \hat{i}}Y_{2^m-\hat{v}+\hat{i}}\right)&\text{ , }&
+ a_{\mathcal{S}}=\left(\prod_{v\in\mathcal{S},v\neq i}Y_{2^m-v+i}\right)\nonumber\\ 
+ \text{and }b_{\mathcal{S}}&=&\left(\prod_{v\in\mathcal{S}}Y_{2^m-v}\right)\nonumber
+\end{eqnarray}
+\noindent Let $\mathcal{C}=(c_0,c_1,c_2,c_3)$ and $K_{\left(\mathcal{S},\hat{\mathcal{S}}\right)}=(\hat{k}_0,\hat{k}_1,\hat{k}_2)$. Output the decrypted message as  
+\begin{eqnarray} 
+\hat{\mathcal{M}}&=&c_3.\hat{k}_2.\left(\frac{e(b_{\mathcal{S}},c_1){e}(a_{\mathcal{S}},U.c_0)}{{e}(b_{\mathcal{S}},c_2)}\right).\left(\frac{e(d_{\hat{i}}.a_{\hat{\mathcal{S}}},\hat{k}_0)}{e(Y_{\hat{i}},\hat{k}_1)}\right) \nonumber
+\end{eqnarray}
+
+\noindent Correctness of this scheme may be easily proven. We demonstrate next that this scheme is non-adaptively CPA secure in the standard model. We first describe the complexity assumption that is used to prove security. 
+
+\subsubsection{The Extended Hybrid Diffie-Hellman Exponent Assumption.} Let $param''$ is generated by \textbf{SetUp}$''(1^{\lambda},2\mathbf{m})$, where $\mathbf{m}$ is the $m+1$ length vector consisting of all ones. Choose $\alpha \in \mathbb{Z}_q$ at random (where $q$ is a $\lambda$-bit prime), and let $X_j=g^{\alpha^{(2^j)}}_{\mathbf{x}_j}$ for $0\leq j \leq m-1$. Also, define $X_m=g^{\alpha^{(2^m+1)}}_{\mathbf{x}_m}$. Choose random $t',\hat{t}\in\mathbb{Z}_q$, and let $V_1=g^{t'}_{\mathbf{m}}$ and $V_2=g^{\hat{t}}_{\mathbf{m}}$. The decisional $m$-Extended Hybrid Diffie Hellman Exponent~(EHDHE) problem as defined as follows. Given the tuple
+\begin{equation}
+\left(params'',\{X_j\}_{j\in\{0,\cdots,m\}},(V_1,V_2),(Z_1,Z_2)\right)\nonumber
+\end{equation}
+\noindent distinguish if $(Z_1,Z_2)$ is $\left(g^{t'\alpha^{(2^m)}}_{2\mathbf{m}},g^{\hat{t}\alpha^{(2^m)}}_{2\mathbf{m}}\right)$ or a random element in $\mathbb{G}_{2\mathbf{m}}\times\mathbb{G}_{2\mathbf{m}}$.\\
+
+\subsubsection{Definition 3.7.} The decisional $m$-EHDHE assumption holds for {SetUp}$''$ if, for any polynomial $m$ and a probabilistic poly-time algorithm $\mathcal{A}$, $\mathcal{A}$ has negligible advantage in solving the $m$-EHDHE problem.\\
+
+It is not difficult to show that the $m$-EHDHE assumption holds for {SetUp}$''$ if the $m$-HDHE assumption holds for {SetUp}$''$.
+
+
+\subsection{Security of the Multi-User Extension}
+\label{subsec:security1_1}
+
+We state and prove the non-adaptive CPA security of the extended multi-user KAC.
+
+\subsubsection{Theorem 3.8.} \textit{Let \textbf{Setup}$''$ be the setup algorithm for an asymmetric multilinear map, and let the decisional $m$-EHDHE assumption holds for {SetUp}$''$. Then the extended multi-user KAC for $N$ data classes is non-adaptively CPA secure for $N=2^m-1$.}
+
+\subsubsection{Proof.} Let $\mathcal{A}$ be a poly-time adversary such that $|Adv_{\mathcal{A},N}-\frac{1}{2}| > \epsilon$ for the extended KAC parameterized with an identity space $\mathcal{ID}$ of size $N=2^m-1$. Here $\epsilon$ is a non-negligible positive constant. We build an algorithm $\mathcal{B}$ that has advantage at least $\epsilon$ in solving the decisional $m$-EHDHE problem for \textbf{Setup}$''$. $\mathcal{B}$ takes as input a random $m$-EHDHE challenge $(params'',\{X_j\}_{j\in\{0,\cdots,m\}},(V_1,V_2),(Z_1,Z_2))$ where:
+\begin{itemize}
+ \item $param''\leftarrow SetUp''(1^{\lambda},2\mathbf{m})$
+ \item $X_j=g^{\alpha^{(2^j)}}_{\mathbf{x}_j}$ for $0\leq j \leq m-1$
+ \item $X_m=g^{\alpha^{(2^m+1)}}_{\mathbf{x}_m}$
+ \item $(V_1,V_2)=\left(g^{t'}_{\mathbf{m}},g^{\hat{t}}_{\mathbf{m}}\right)$ for a random $t'\in\mathbb{Z}_q$ ($q$ being a $\lambda$ bit prime)
+ \item $(Z_1,Z_2)$ is either $\left(g^{t'\alpha^{(2^m)}}_{2\mathbf{m}},g^{\hat{t}\alpha^{(2^m)}}_{2\mathbf{m}}\right)$ or a random element of $\mathbb{G}_{2\mathbf{m}}\times\mathbb{G}_{2\mathbf{m}}$.
+\end{itemize}
+\noindent $\mathcal{B}$ then proceeds as follows.\\
+
+% \begin{enumerate}
+\noindent \textbf{Commit:} $\mathcal{B}$ runs $\mathcal{A}$ and receives the set $\mathcal{S}$ of data classes and the set $\hat{\mathcal{S}}$ of data users that $\mathcal{A}$ wishes to be challenged on. $\mathcal{B}$ then randomly chooses a data class $i\in\mathcal{S}$ and provides it to $\mathcal{A}$.\\
+ 
+\noindent \textbf{SetUp}: $\mathcal{B}$ sets the following parameters and provides them to $\mathcal{A}$.
+%  \vspace{-0.6mm}
+\begin{itemize}
+  \item $param$ is set as $(param'',\{X_i\}_{i\in\{0,\cdots,m\}})\nonumber$.
+  \item $PK$ is set as 
+  \begin{equation}
+   (PK_1,PK_2) = \left(\frac{g^{\gamma_1}_{\mathbf{m}}}{Y_i},\frac{g^{\gamma_2}_{\mathbf{m}}}{\prod_{\hat{v}\in\hat{\mathcal{S}}}Y_{2^m-\hat{v}}}\right)\nonumber
+  \end{equation}
+  \noindent where $\gamma_1,\gamma_2$ are chosen uniformly at random from $\mathbb{Z}_q$, and $Y_i$ is computed as mentioned in Claim 3.1. 
+  \item $U$ is set as $V_1/g^{r}_{\mathbf{m}}$ where $r$ is chosen uniformly at random from $\mathbb{Z}_q$.  
+\end{itemize}
+
+\noindent Note that this is equivalent to setting $msk$ as
+\begin{equation}
+ (msk_1,msk_2) = \left(\gamma_1-\alpha^i,\gamma_2-\sum_{\hat{v}\in\hat{\mathcal{S}}}\alpha^{2^m-\hat{v}},t'-r\right)\nonumber
+\end{equation}
+\noindent Further, since the $g_{\mathbf{m}}$, $\alpha$, $\gamma_1$, $\gamma_2$, $r$ and $\hat{t}$ values are uniformly random, \emph{the public parameters and the public, private and authentication keys have an identical distribution to that in the actual construction}.\\
+
+\noindent\textbf{Query Phase:} $A$ is allowed to query secret keys for users $\hat{i}\notin\mathcal{S}$. $\mathcal{B}$ responds with 
+\begin{equation}
+ d_{\hat{i}} = \frac{Y^{\gamma_2}_{\hat{i}}}{\prod_{\hat{v}\in\hat{\mathcal{S}}}Y_{2^m-\hat{v}+\hat{i}}}\nonumber
+\end{equation}
+\noindent Observe that $d_{\hat{i}}=Y^{msk_2}_{\hat{i}}$, as desired. In addition, $\mathcal{A}$ may also query for $K_{\left(\overline{\mathcal{S}},\hat{\mathcal{S}}\right)}$. This query models a collusion scenario where users in the set $\mathcal{S}$ itself may also collude to leak information about data classes not in $\mathcal{S}$. In response, $\mathcal{B}$ computes   
+\begin{equation}
+ K_{\overline{\mathcal{S}}} = \prod_{v\notin\mathcal{S}}\frac{Y^{u}_{2^m-v}}{Y_{2^m-v+i}}\nonumber
+\end{equation}
+\noindent and sets
+\begin{equation}
+ \overline{\mathcal{K}} = \left(Z_2.\left(e(K_{\mathcal{S}},U)\right)\right)\nonumber
+\end{equation}
+\noindent Finally, $\mathcal{B}$ provides $\mathcal{A}$ with the aggregate key 
+\begin{equation} 
+ K_{\left(\overline{\mathcal{S}},\hat{\mathcal{S}}\right)}=\left(V_2,V^{\gamma_2}_2,\mathcal{K}\right)\nonumber
+\end{equation}
+
+\noindent It can be easily shown that this is a valid aggregate key that allows any user in $\hat{\mathcal{S}}$ to decrypt any class $i\notin\mathcal{S}$.\\
+
+\noindent \textbf{Challenge}: $\mathcal{A}$ picks at random two messages $\mathcal{M}_0$ and $\mathcal{M}_1$ from the set of possible plaintext messages in $\mathbb{G}_{2\mathbf{m}}$, and provides them to $\mathcal{B}$. $\mathcal{B}$ randomly picks $b\in\{0,1\}$, and sets the challenge as $(\mathcal{C},\mathcal{M}_0,\mathcal{M}_1)$, where 
+\begin{equation}
+ \mathcal{C}=(g^{r}_{\mathbf{m}},PK^r_1,V^{\gamma_1}_1,\mathcal{M}_b.Z_1) \nonumber
+\end{equation}
+\noindent As before, it can be easily that when $Z_1=g^{t\alpha^{(2^m)}}_{2\mathbf{m}}$ (i.e. the input to $\mathcal{B}$ is a valid $m$-EHDHE tuple), then $(\mathcal{C},\mathcal{M}_0,\mathcal{M}_1)$ is a valid challenge to $\mathcal{A}$, as in a real attack. \\
+
+\noindent \textbf{Guess}: $\mathcal{A}$ outputs a guess $b'$ of $b$. If $b' = b$, $\mathcal{B}$ outputs $0$ (indicating that $(Z_1,Z_2)=\left(g^{t'\alpha^{(2^m)}}_{2\mathbf{m}},g^{\hat{t}\alpha^{(2^m)}}_{2\mathbf{m}}\right)$). Otherwise, it outputs $1$ (indicating that $(Z_1,Z_2)$ is a random element in $\mathbb{G}_{2\mathbf{m}}\times\mathbb{G}_{2\mathbf{m}}$).\\ 
+
+\noindent We conclude that $\mathcal{B}$ has the same advantage $\epsilon$ as $\mathcal{A}$, which must therefore be negligible. This completes the proof of Theorem 3.8. Note that once again, this proof is in the standard model and does not use random oracles. \hfill\qed 
+
+
+
+
+
+\subsection{Extension to a Multi-Owner Scenario}
+\label{subsec:multiownerKAC}
+
+The final generalization to the aforementioned KAC construction is to allow multiple data owners to share their data online. The main requirement in a multi-owner environment is data privacy. In particular, the aggregate key supplied by one data owner should not leak information about another data owner to an unauthorized user. This problem can be tackled easily by running several parallel instances of the single owner- multi user KAC construction, one for each data owner. Each instance can handle $N=2^m-1$ data classes. In order to distinguish between data classes belonging to different instances, each data class is assigned a double index $(i_1,i_2)$, where $i_1$ is the instance index, and $i_2$ is the class index specific to the instance. Each instance $i_1$ is characterized by its own master secret key $msk^{i_1}$, public key $PK^{i_1}$, and authentication key $U^{i_1}$. However, the main advantage of this approach is that all the parallel instances can share the same public $param$, which needs to be setup exactly once by the system administrator. Also note that the number of unique ordered tuples $\left(msk^{i_1},PK^{i_1},U^{i_1}\right)$ is $q^3$. For $q=O(N)$, a single setup can support an exponentially large number of data owners. Finally, iff a data owner wishes to store more than $N$ classes of data, she may instantiate multiple instances of the single owner- multi user KAC construction. 
+
+% Any data class now has a double index $(i_1,i_2)$ where $i_1$ is the super-class index, while $i_2$ is the sub-class index within the superclass. Each superclass $i_1$ is characterized by its own master secret key $msk^{i_1}$, public key $PK^{i_1}$, and authentication key $U^{i_1}$. 
+% 
+% 
+% 
+% The generalized version of KAC accommodates a single data owner with $N$ data classes to be . In a practical deployment scenario, we would ideally want a system where multiple users can store their own data, and delegate multiple users with decryption rights to their own data classes. The challenge in designing such a system is to ensure that data owned by different data owners should be isolated and the aggregate key for one data owner should not reveal the data for another data owner. This concept is referred to as \emph{local aggregation}.
+% 
+% We tackle this issue by proposing a generalized KAC construction that uses the cryptographic security provided by the basic KAC and extends it to accommodate multiple users. The basic idea is to run several parallel instances of the basic KAC, one for each data owner. Each basic KAC can handle $N=2^m-1$ data classes. If a data owner wishes to store more than $N$ classes of data, she may request for more basic KAC instances. We refer to each of the individual owner units as \emph{data superclasses}.  Each data class now has a double index $(i_1,i_2)$ where $i_1$ is the super-class index that identifies the data owner, while $i_2$ is the sub-class index specific to the data owner. Each superclass $i_1$ is characterized by its own master secret key $msk^{i_1}$, public key $PK^{i_1}$, and authentication key $U^{i_1}$. However, the main advantage of this approach is that all the parallel instances can share the same public $param$, which needs to be setup exactly once by the system administrator. The system achieves local aggregation within each superclass in the sense that decryption rights to any subset of data classes in the same superclass can be aggregated into a single aggregate key with the same overhead as before. The ciphertext overhead corresponding to each plaintext message also remains unchanged.
+
+% The proposed construction is highly scalable to an arbitrary number of data owners, who can register and share their data without having to alter the underlying basic KAC set-up in any way. This also implies that the basic security assumption of the system is still the $m$-HDHE assumption, and is not altered by the increase in the number of data classes.
+
+
+
+
+
+
+
+
+
+

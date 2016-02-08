@@ -1,0 +1,112 @@
+\section{Security Under The Generic Multilinear Map Setting}
+\label{sec:generic_security}
+
+Finally, we investigate the security of our proposed KAC schemes in the generic multilinear map model. We first give a brief overview of the model. We then review the security of our proposed KAC schemes under this model. Finally, we propose a third KAC construction that is adaptively secure under this model for much smaller values of the prime group order $q$. 
+
+\subsection{Generic Multilinear Maps}
+\label{subsec:generic}
+
+Just as multilinear maps are an extension of bilinear maps, the generic multilinear map model is an extension of the generic bilinear map model \cite{boneh2005hierarchical}. We describe the model here for completeness. In this model, the group $\mathbb{G}_{\mathbf{v}}$ (where $\mathbf{v}\in\mathbb{Z}_l$) is represented by a random injective function $\xi:\mathbb{Z}_q\times\mathbb{Z}^l\rightarrow\{0,1\}^n$ \cite{boneh2014low}. Suppose that the target vector is $\mathbf{n}\in\mathbb{Z}^l$. Any algorithm in the generic multilinear map model is said to interact with the map using the tuple of algorithms (\textbf{Encode},\textbf{Mult},\textbf{Pair}) described below.\\
+
+\noindent\textbf{Encode}$(x,\mathbf{v})$: Takes as input a non-negative integer vector $\mathbf{v}\leq\mathbf{m}$ and outputs $\xi(x,\mathbf{v})$.\\
+
+\noindent\textbf{Mult}$(\xi_1,\xi_2,\diamond)$: Takes as input $\xi_1=\xi(x_1,\mathbf{v})$, $\xi_2=\xi(x_2,\mathbf{v})$ and $\diamond\in\{+,-\}$. Outputs $\xi(x_1\diamond x_2,\mathbf{v})$.\\
+
+\noindent\textbf{Pair}$(\xi_1,\xi_2)$: Takes as input $\xi_1=\xi(x_1,\mathbf{v}_1)$ and $\xi_2=\xi(x_2,\mathbf{v}_2)$ where $\mathbf{v}_1+\mathbf{v}_2=\mathbf{v}\leq\mathbf{m}$. Outputs $\xi(x_1.x_2,\mathbf{v})$.\\
+
+\noindent Note that if the inputs are not valid, each off the above algorithms returns $\bot$. Also, \textbf{Mult} and \textbf{Pair} here are assumed to be oracles to compute the induced group multiplication and multilinear map operations. 
+
+\subsection{Security of Our KAC Constructions} 
+\label{subsec:sec_duo}
+
+Boneh, Boyen and Goh \cite{boneh2005hierarchical} introduced a general technique to prove computational lower bounds on the difficulty of breaking Diffie-Hellman-type complexity assumptions in a generic bilinear group model. An extension of these techniques can be used to prove that the $m$-HDHE and the $(m,l)$-MDHE assumptions are hard in the generic multilinear map model. However, the presence of high degree exponents such as $\alpha^{2^m}$ in these assumptions means that the adversary can construct polynomials with degree as high as $m2^m$ in the secret $\alpha$. As pointed out in \cite{boneh2014low}, this means the upper bound on the advantage of a generic adversary making at most $t$ queries is only $\approx \left(t^22^m/q\right)$. This in turn implies that both non-adaptive and adaptive $\lambda$-bit security for our earlier KAC constructions demands a prime group order $q\approx2^{3\lambda}$ instead of $2^{\lambda}$. This motivates us to present an identity-based KAC construction that is adaptively secure in the generic multilinear map model for $q=2^{\lambda}$.
+
+\section{An Adaptively Secure KAC in the Generic Multilinear Map Model}
+\label{sec:proposal3}
+
+In this section, we present a fully collusion resistant key-aggregate cryptosystem that is adaptively CPA secure in the generic multilinear map model for standard group order parameter $q$. 
+
+\subsubsection{The Basic Idea.}  As in the previous constructions, the idea is to somehow embed the $O(N)$ public parameters in a set of $O(\log N)$ parameters such that the overall resource requirement of the system is reduced from linear to at most polylogarithmic. However, this scheme is slightly different from the earlier constructions in the sense that the public parameters in this scheme are not derived from a single scalar $\alpha$. In fact, each parameter is to be derived from a separate random scalar. The other main challenge presented by this scheme is that the ciphertext does not consist of a constant number of group elements, unlike in the previous constructions. However, again we need to ensure that the overhead remains bounded by $O(\log N)$ and does not blow up to $O(N)$. Thus we need to have a way to reduce both the public parameter and ciphertext size overhead. As demonstrated in the construction, we handle both of these requirements by resorting to the use of Naor-Reingold-style pseudorandom functions~(PRFs) \cite{naor2004number}.          
+
+\subsection{Construction}
+\label{subsec:construction_third}
+
+Let $Setup'(1^\lambda,m)$ be the setup algorithm for an $m$-linear map with groups of prime order $q$ ($q$ being a $\lambda$ bit prime) and the target group $\mathbb{G}_{m}$. Our third and final identity-based KAC consists of the following algorithms.\\
+
+\noindent\textbf{SetUp}$(1^{\lambda},m)$: Set up the KAC system for $\mathcal{ID}$ consisting of all $m$ bit class identities. Let $param'\leftarrow SetUp'(1^{\lambda},m+1)$ be the public parameters for a symmetric multilinear map, with $\mathbb{G}_{m+1}$ being the target group. For $j=0,\cdots,m-1$ and $b=0,1$, generate random $\alpha_{j,b}\in\mathbb{Z}_q$ and let $X_{j,b}=g^{\alpha_{j,b}}_1$. Output the public parameter as
+\begin{equation}
+ param = (param',\{X_{j,b}\}_{j\in\{0,\cdots,m-1\},b\in\{0,1\}})\nonumber
+\end{equation}
+\noindent Discard all $\alpha_{j,b}$ after $param$ has been output. 
+
+\subsubsection{Claim 7.1.} For any class index number $i\in\mathcal{ID}$, one can compute $Y_i=g^{\prod_{j=0}^{m-1}\alpha_{j,i_j}}_m$ where $i_j$ is the $j$th bit in the binary representation of $i$.\\
+
+\noindent \textbf{Proof.} Compute $Y_i$ as $e(X_{0,i_0},X_{1,i_1},\cdots,X_{m-1,i_{m-1}})$. Note that each $Y_i$ value is essentially the output of a Naor-Reingold-style PRF.\\
+
+\noindent \textbf{KeyGen}(): Randomly pick $\gamma,x,t \in \mathbb{Z}_q$. Set $msk=(\gamma,x)$, $PK=(g^{\gamma}_{m},g^{x}_1)$ and $U=g^{t}_{1}$. Output the tuple $(msk,PK,U)$.\\
+
+\noindent \textbf{Encrypt}$(PK,i,\mathcal{M})$: Take as input message $\mathcal{M}$ in class $i \in \mathcal{ID}$ and $PK=(PK_1,PK_2)$. Randomly choose $r\in\mathbb{Z}_q$ and let $t'=t+r \in\mathbb{Z}_q$. Set
+\begin{eqnarray}
+ c_0&=&g^{r}_1 \nonumber\\
+ c_{j+1}&=&X^{t'}_{j,\left(1-u_{j}\right)} \text{ for } j=0,1,\cdots,m-1\nonumber\\
+ c_{m+1}&=&{\left(PK_1.Y_i\right)}^{t'}\nonumber\\
+ c_{m+2}&=&\mathcal{M}.\left(g^{\gamma x}_{m+1}\right)^{t'}=\mathcal{M}.\left(e(PK_1,PK_2)\right)^{t'}
+\end{eqnarray}
+\noindent Finally, output the ciphertext as 
+\begin{equation}
+ \mathcal{C}=(\{c_j\}_{j\in\{0,\cdots,m+2\}})\nonumber
+\end{equation}
+
+\subsubsection{Claim 7.2.} For any class index $v\neq i$, one can compute $Y^{t'}_v$ given $\mathcal{C}$.\\
+
+\noindent \textbf{Proof.} Let $\mathcal{C}=(c_0,\cdots,c_{m+2})$. Since $v\neq i$, there exists a bit position $j\in\{0,\cdots,m-1\}$ such that $v_j\neq i_j$. This allows one to compute $Y^{t'}_v$ as follows:
+\begin{equation}
+\begin{split}
+ e(X_{0,v_0},\cdots,X_{j-1,v_j-1},c_{j+1},X_{j+1,v_j+1},\cdots,X_{m-1,v_{m-1}}) &=g^{t'\alpha_{j,v_j}.\prod_{j'\neq j}\alpha_{j',v_{j'}}}_m\\
+ &=g^{t'.\prod_{j'=0}^{m-1}\alpha_{j',v_{j'}}}_m\\
+ &=Y^{t'}_v\nonumber
+\end{split}
+\end{equation}
+\noindent Note that for a given $i$, each $Y^{t'}_v$ for $v\neq i$ and random $t'$ is also the output of a Naor-Reingold style PRF. Moreover, the PRF is punctured at $i$ to generate $Y^{t'}_v$ for $v\neq i$ \emph{without} the knowledge of $Y^{t'}_i$.\\  
+ 
+\noindent \textbf{Extract}$(msk,\mathcal{S})$: Let the input $msk=(msk_1,msk_2)$. For the input subset of data class indices $\mathcal{S}$, the aggregate key is computed as 
+\begin{equation}
+ K_{\mathcal{S}} = \left(\prod_{v\in\mathcal{S}}{Y_{v}}\right)^{msk_2}\nonumber
+\end{equation} 
+% \noindent Recall that $Y^1_{2^m-1-j}$ can be computed as per Claim 4.3 for $j\in\mathcal{ID}$. Note that this is indirectly equivalent to setting $K_{\mathcal{S}}$ to $\prod_{j\in\mathcal{S}}{\left(g^{msk}_{m-1}\right)}^{\alpha^{2^m-1-j}}$.\\
+
+\noindent \textbf{Decrypt}$(\mathcal{C},i,\mathcal{S},K_{\mathcal{S}},U,PK)$: We slightly alter the semantics of the \textbf{Decrypt} operation in the sense that it also takes $PK=(PK_1,PK_2)$ as input. This is a reasonable alteration since $PK$ is publicly available. Now, if $i\notin\mathcal{S}$, output $\bot$. Otherwise, use the result from Claim 7.2 to set
+\begin{equation}
+a_{\mathcal{S}}=\left(\prod_{v\in\mathcal{S},v\neq i}Y^{t'}_{v}\right)\nonumber
+\end{equation}
+Let $\mathcal{C}=(c_0,\cdots,c_{m+1},c_{m+2})$. Output the decrypted message as  
+\begin{eqnarray} 
+\hat{\mathcal{M}}&=&c_{m+2}\frac{{e}(K_{\mathcal{S}},U.c_0)}{{e}(c_{m+1}.a_{\mathcal{S}},PK_2)}\nonumber
+\end{eqnarray}
+
+\subsubsection{Correctness.} Refer Appendix \ref{app_sec:proof_correctness_3}.\\
+
+\noindent Note that in the above scheme no high degree terms exist in the public parameters. This means that the system administrator need not know the secret parameters for the multilinear map to set up the system. Also, if we use the graph induced multilinear map candidate to instantiate this scheme, then the Kilian style randomization parameters would be necessary for the groups $\mathbb{G}_1$ and $\mathbb{G}_m$. Also, the total multilinearity in handling $2^{\lambda}$ identities for this scheme is $\lambda+1$, as compared to $2\lambda$ and $1.44(\lambda+(\log_2\lambda)/2)-1$ respectively in the first and second KAC constructions presented earlier. Although no security proof for this scheme in the standard model is known, it can be proven to be adaptively secure in the generic multilinear map model (see Appendix \ref{app_sec:proofgeneric}) with better better generic security guarantees than the previous constructions. The only flip side of this scheme is that the ciphertext size is $O(\log N)$ group elements, as compared to $O(1)$ group elements in the previous constructions. Finally, this construction can be generalized for multi-data owner systems, just as the previous ones. 
+
+% \subsection{Tradeoffs}
+% \label{subsec:comp_prev}
+% 
+% This scheme  
+% 
+% We point out certain advantages and disadvantages that this scheme has as compared to the previous constructions.
+% 
+% \let\labelitemi\labelitemii
+% 
+% \begin{itemize}
+%  \item No high-degree terms are generated hence the system administrator does not need the secret parameters for the multilinear map to setup the system. Randomization parameters are needed only for groups $\mathbb{G}_1$ and $\mathbb{G}_m$.\\
+%  \item The total multilinearity in handling $2^{\lambda}$ identities is $\lambda+1$, as compared to $2\lambda$ and $1.44(\lambda+(\log_2\lambda)/2)-1$ respectively in the previous constructions.\\
+%  \item A flip side is that the ciphertext size is $O(\log N)$ group elements, as compared to $O(1)$ group elements in the previous constructions.\\
+%  \item The security proof for this scheme is in the generic multilinear map model, based on a better generic security theorem that for the previous constructions. 
+% \end{itemize}
+% 
+% \noindent Finally, this construction can be generalized for multi-data owner systems just as in the previous constructions. 
+% 
+% 
+% 
+
+  

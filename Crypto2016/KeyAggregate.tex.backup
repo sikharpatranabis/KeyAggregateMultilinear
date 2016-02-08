@@ -1,0 +1,63 @@
+\documentclass{class/llncs}
+\usepackage[margin=1.3in]{geometry}
+% \addtolength{\topmargin}{-.2in}
+% \addtolength{\topmargin}{-.2in}
+\usepackage{amssymb}
+\usepackage{amsmath}
+%\usepackage{tabularx}
+\usepackage[table]{xcolor}
+\usepackage{color}
+\usepackage{caption}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+% \usepackage{algorithm2e}
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\usepackage{comment}
+\usepackage{mathrsfs} 
+\usepackage{subcaption}
+\usepackage{threeparttable}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{mathrsfs} 
+\usepackage{booktabs}
+
+\newtheorem{Theorem}{Theorem}
+\newtheorem{Definition}{Definition}
+\newtheorem{Observation}{Observation}
+
+
+\title{Dynamic Key-Aggregate Cryptosystem on Elliptic Curves for Online Data Sharing}
+\begin{document}
+
+\author{Sikhar Patranabis, Yash Shrivastava and Debdeep Mukhopadhyay}
+\institute{Department of Computer Science and Engineering\\ IIT Kharagpur, India
+\\sikhar.patranabis@cse.iitkgp.ernet.in, yash.shrivastava@cse.iitkgp.ernet.in, debdeep@cse.iitkgp.ernet.in}
+\maketitle
+\toctitle{Lecture Notes in Computer Science}
+\tocauthor{Authors' Instructions}
+
+
+\begin{abstract}
+To Be Written  
+\end{abstract}
+
+\input{Source_IndoCrypt/Introduction}
+% \input{Source_IndoCrypt/RelWork}
+\input{Source_IndoCrypt/Prelims}
+\input{Source_IndoCrypt/Proposal}
+\input{Source_IndoCrypt/General}
+\input{Source_IndoCrypt/Extended}
+\input{Source_IndoCrypt/Results}
+\input{Source_IndoCrypt/Conclusions}
+
+\begin{scriptsize}
+\bibliographystyle{unsrt}
+\bibliography{bib/KeyAggregate}
+\end{scriptsize}
+
+% \newpage
+\input{Source_IndoCrypt/Appendix.tex}
+
+
+\end{document}

@@ -1,0 +1,67 @@
+\documentclass{class/llncs}
+\usepackage[margin=1.7445in]{geometry}
+% \addtolength{\topmargin}{-.2in}
+% \addtolength{\topmargin}{-.2in}
+\usepackage{amssymb}
+\usepackage{amsmath}
+%\usepackage{tabularx}
+\usepackage[table]{xcolor}
+\usepackage{color}
+\usepackage{caption}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+% \usepackage{algorithm2e}
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\usepackage{comment}
+\usepackage{mathrsfs} 
+\usepackage{subcaption}
+\usepackage{threeparttable}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{mathrsfs} 
+\usepackage{booktabs}
+
+\newtheorem{Theorem}{Theorem}
+\newtheorem{Definition}{Definition}
+\newtheorem{Observation}{Observation}
+
+
+\title{Identity-Based Key Aggregate Cryptosystem from Multilinear Maps}
+\begin{document}
+% 
+\author{}
+\institute{}
+
+% \author{Sikhar Patranabis and Debdeep Mukhopadhyay}
+% \institute{Department of Computer Science and Engineering\\ Indian Institute of Technology Kharagpur
+% \\\{sikhar.patranabis, debdeep\}@cse.iitkgp.ernet.in}
+\maketitle
+\toctitle{Lecture Notes in Computer Science}
+\tocauthor{Authors' Instructions}
+
+
+\begin{abstract}
+
+The recent advent of cloud computing has made secure online data sharing a vital application with far reaching impact in various fields. In this paper, we provide a public-key based solution to the online access delegation problem in which a data owner owning $N$ classes of encrypted data, wishes to securely grant access to any subset $S$ of these data classes among a subset $\hat{S}$ of data users. Our proposed solution is a $O(\log N)$-way multilinear map-based \emph{key-aggregate cryptosystem}~(KAC) that supports access delegation to $N$ data classes among $N$ different users. Our constructions have short ciphertexts, and low overhead public and private system parameters comprising of $O(\log N)$ group elements. Access to any arbitrary subset of data classes is provided by a single low overhead \emph{aggregate key}, which is then securely broadcast among the target subset of users. The systems are fully collusion resistant against any number of colluding parties and are agnostic of pre-defined data hierarchies. We propose three different KAC constructions based on symmetric and asymmetric multilinear maps, with distinct security parameters and implementation trade-offs. Each of these constructions can be used to build identity-based online data sharing systems suitable for real life applications. Additionally, the possibility of implementing our schemes using recently proposed graph-induced multilinear maps from random lattices is discussed.\\  
+
+\noindent{\textbf{Keywords:}} Identity-based Key-Aggregate Cryptoystem, Online Data Sharing, Multilinear Maps, Collusion-resistant
+\end{abstract}
+
+\input{Source_Crypto/Introduction}
+\input{Source_Crypto/Prelims}
+\input{Source_Crypto/Proposal1}
+\input{Source_Crypto/Applications}
+\input{Source_Crypto/Proposal2}
+\input{Source_Crypto/Proposal3}
+\input{Source_Crypto/Conclusions}
+
+% \begin{scriptsize}
+\bibliographystyle{alpha}
+\bibliography{bib/KeyAggregate}
+% \end{scriptsize}
+
+\newpage
+\input{Source_Crypto/Appendix.tex}
+
+\end{document}

@@ -1,0 +1,56 @@
+This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: KeyAggregateMLinear_NormalMargin.aux
+The style file: alpha.bst
+Database file #1: bib/KeyAggregate.bib
+Warning--entry type for "googledrive" isn't style-file defined
+--line 1193 of file bib/KeyAggregate.bib
+Warning--entry type for "dropbox" isn't style-file defined
+--line 1199 of file bib/KeyAggregate.bib
+Repeated entry---line 1242 of file bib/KeyAggregate.bib
+ : @incollection{boneh2005hierarchical
+ :                                    ,
+I'm skipping whatever remains of this entry
+Warning--can't use both volume and number fields in moshkovitz2010alternative
+You've used 27 entries,
+            2543 wiz_defined-function locations,
+            710 strings with 9242 characters,
+and the built_in function-call counts, 13613 in all, are:
+= -- 1419
+> -- 648
+< -- 23
++ -- 234
+- -- 232
+* -- 947
+:= -- 2114
+add.period$ -- 95
+call.type$ -- 27
+change.case$ -- 189
+chr.to.int$ -- 26
+cite$ -- 28
+duplicate$ -- 566
+empty$ -- 989
+format.name$ -- 260
+if$ -- 2923
+int.to.chr$ -- 2
+int.to.str$ -- 0
+missing$ -- 25
+newline$ -- 137
+num.names$ -- 81
+pop$ -- 211
+preamble$ -- 1
+purify$ -- 216
+quote$ -- 0
+skip$ -- 480
+stack$ -- 0
+substring$ -- 791
+swap$ -- 172
+text.length$ -- 23
+text.prefix$ -- 4
+top$ -- 0
+type$ -- 216
+warning$ -- 1
+while$ -- 139
+width$ -- 30
+write$ -- 364
+(There was 1 error message)
