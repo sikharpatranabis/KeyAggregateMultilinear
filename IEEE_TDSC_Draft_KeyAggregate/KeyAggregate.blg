@@ -1,0 +1,59 @@
+This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: KeyAggregate.aux
+The style file: unsrt.bst
+Database file #1: bib/KeyAggregate.bib
+Repeated entry---line 1119 of file bib/KeyAggregate.bib
+ : @article{hess2006eta
+ :                     ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 1175 of file bib/KeyAggregate.bib
+ : @inproceedings{benaloh2009patient
+ :                                  ,
+I'm skipping whatever remains of this entry
+Warning--entry type for "googledrive" isn't style-file defined
+--line 1184 of file bib/KeyAggregate.bib
+Warning--entry type for "dropbox" isn't style-file defined
+--line 1190 of file bib/KeyAggregate.bib
+You've used 24 entries,
+            1791 wiz_defined-function locations,
+            585 strings with 7883 characters,
+and the built_in function-call counts, 6777 in all, are:
+= -- 651
+> -- 261
+< -- 11
++ -- 97
+- -- 73
+* -- 430
+:= -- 982
+add.period$ -- 80
+call.type$ -- 24
+change.case$ -- 24
+chr.to.int$ -- 0
+cite$ -- 24
+duplicate$ -- 317
+empty$ -- 674
+format.name$ -- 73
+if$ -- 1588
+int.to.chr$ -- 0
+int.to.str$ -- 24
+missing$ -- 20
+newline$ -- 121
+num.names$ -- 24
+pop$ -- 90
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 186
+stack$ -- 0
+substring$ -- 511
+swap$ -- 116
+text.length$ -- 11
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 72
+width$ -- 26
+write$ -- 266
+(There were 2 error messages)

@@ -1,0 +1,80 @@
+\section{Extending Dynamic KAC for Chosen Ciphertext Security}
+\label{sec:CCA}
+
+We now demonstrate how to extend dynamic KAC to obtain chosen ciphertext security. For clarity of understanding, we demonstrate the extension for the basic dynamic KAC proposed in Section \ref{sec:proposal}. The resulting KAC system is CCA secure \emph{without using random oracles}. To the best of our knowledge, this is the first CCA secure KAC proposed in literature. The extension methodology is inspired by ideas presented in \cite{boneh2005collusion}. The extensions for the two-tier and $M$-tier scheme, follow similarly.
+
+\subsection{Additional Requirements}
+\label{subsec:additional}
+
+We have the following additional requirements for the CCA secure dynamic KAC:
+
+\begin{itemize}
+ \item A signature scheme $(SigKeyGen,Sign,Verify)$. 
+ \item A collision resistant hash function for mapping verification keys to $\mathbb{Z}_q$. 
+\end{itemize}
+
+For simplicity of presentation, we assume here that the signature verification keys are encoded as elements of $\mathbb{Z}_q$. Hence the hash function is not mentioned in each location, since it is implicit that any signature value we refer to in the forthcoming discussion is essentially the hash value corresponding to the original signature.
+
+\subsection{The Construction of CCA-Secure Dynamic KAC}
+\label{subsec:construction_CCA}
+
+We will demonstrate in the following section that the security of CCA-secure Dynamic KAC for $n$ ciphertext classes is based on the $(n+1)$-BDHE assumption, instead of the $n$-BDHE assumption for the basic scheme. For consistency of notation, we describe here the CCA-secure dynamic KAC for $n-1$ users, such that the security assumption is still the $n$-BDHE assumption as before. We now describe the working of the system. Note that the bilinear additive elliptic curve sub-group $\mathbb{G}$ and the multiplicative group $\mathbb{G}_T$, as well as the pairing $\hat{e'}$ are the same as described so far. 
+
+\begin{enumerate}
+ \item \textbf{Setup}$(1^{\lambda},n-1)$: Randomly pick $\alpha \in \mathbb{Z}_q$. Compute $P_i = {\alpha^{i}}P \in \mathbb{G}$ for $i = 1,\cdots,n,n+2,\cdots,2n$. Output the system parameter as\\
+ $param = (P,P_1,\cdots,P_n,P_{n+2},\cdots,P_{2n})$. The system also randomly chooses a secret parameter $t \in \mathbb{Z}_q$ which is not made public. It is only known to data owners with credentials to control client access rights.
+ \item \textbf{Keygen}(): Pick $\gamma \in \mathbb{Z}_q$, output the public and master-secret key pair : \\$(PK={\gamma}P,msk=\gamma)$.
+ \item \textbf{Encrypt}$(PK,i,m)$: Run the $SigKeyGen$ algorithm to obtain a signature signing key $K_{SIG}$ and a verification key $V_{SIG} \in \mathbb{Z}_q$. Then, randomly choose $r\in\mathbb{Z}_q$ and let $t'=t+r \in\mathbb{Z}_q$. Then compute\\ $\mathcal{C}'=(rP,t'{(PK+P_i+V_{SIG}P_n)},m.\hat{e'}(P_n,t'P_1),)$ $=$ $(c_1,c_2,c_3)$. Output the ciphertext\\
+ $\mathcal{C}=(\mathcal{C}',Sign(\mathcal{C}',K_{SIG}),V_{SIG})$.
+ \item \textbf{Extract}$(msk=\gamma,\mathcal{S})$: For the set $\mathcal{S}$ of indices $j$ the aggregate key is computed as\\ $K_{\mathcal{S}} = \sum_{j\in\mathcal{S}}{\gamma}P_{n+1-j}$ = $\sum_{j\in\mathcal{S}}\alpha^{n+1-j}PK$\\ and the dynamic access control parameter $U$ is computed as $tP$. Thus the net aggregate key is $(K_{\mathcal{S}},U)$ which is transmitted via a secure channel to users that have access rights to $\mathbb{S}$.
+ \item \textbf{Decrypt}$(K_{\mathcal{S}}, U, \mathcal{S},i,\mathcal{C})$: Let $\mathcal{C}=(\mathcal{C}',\sigma,V_{SIG})$. Verify that $\sigma$ is a valid signature of $\mathcal{C}'$ under the key $V_{SIG}$. If not, output $\bot$. Also, if $i\notin\mathcal{S}$, output $\bot$. Otherwise, pick a random $w\in \mathbb{Z}_q$. Let $SIG_{mathcal{S}}=\sum_{j\in\mathcal{S}}V_{SIG}P_{2n+1-j}$. This can be computed as $1\leq j\leq n-1$. Next, compute\\ $\hat{d_1}=K_{\mathcal{S}}+SIG_{\mathcal{S}}+\sum_{j\in\mathcal{S},j\neq i}P_{n+1-j+i} + w(PK+P_i+V_{SIG}P_n)$, and $\hat{d_2}=(\sum_{j\in\mathcal{S}}P_{n+1-j})+wP$. Return the message $\hat{m}=c_3\frac{\hat{e'}(\hat{d_1},U+c_1)}{\hat{e'}(\hat{d_2},c_2)}$. 
+\end{enumerate}
+
+The proof of correctness of this scheme is very similar to the proof for the basic dynamic KAC scheme presented in Section \ref{sec:proposal}, and it can be easily shown that $\frac{\hat{e'}(\hat{d_2},c_2)}{\hat{e'}(\hat{d_1},U+c_1)}=\hat{e'}(P_n,t'P_1)$. Note that the ciphertext size is still constant and everything else, including the public and private parameters, as well as the aggregate key, remains unchanged. The main change from the original scheme is in the fact that decryption requires a randomization value $w\in\mathbb{Z}_q$. This randomization makes sure that that the pair $(\hat{d_1},\hat{d_2})$ is chosen from the distribution $(x(PK+P_i+V_{SIG}P_n)-P_{n+1},xP)$ where $x$ is chosen uniformly from $\mathbb{Z}_q$. To verify this claim, set $x=w+\sum_{j\in\mathcal{S}}\alpha^{n+1-j}$. Then $\hat{d_2}=xP$ and $\hat{d_1}=x(PK+P_i+V_{SIG}P_n)-P_{n+1}$. Also, since $w$ is uniformly random in $\mathbb{Z}_q$, so is $x$. \emph{This randomization is a vital aspect from the point of view of CCA-security}.
+
+ 
+\subsection{Proof of CCA-Security}
+\label{subsec:proof_cca}
+
+We begin by pointing out that a signature scheme $(SigKeyGen,Sign,Verify)$ is $(t,\epsilon,q_S)$ strongly existentially unforgeable if no $t$-time adversary who makes at most $q_{S}$ signature signature queries and is unable to produce some new (message,signature) pair with probability at least $\epsilon$ \cite{}. The proof of security uses a reduced version of the modified KAC scheme, analogous to the reduced scheme used for proving the security of the basic KAC. The adversarial model is also the assumed to be the same as for the basic KAC. Once again, the security proof presented here uses the first complexity assumption stated in \ref{subsubsec:asm_1}. Let $\mathbb{G}$ be a bilinear elliptic curve subgroup of prime order $q$. For any pair of positive integer $n$ the modified reduced key-aggregate encryption scheme is $(\tau,\epsilon_1+\epsilon_2,n-1,q_D)$ CCA-secure if the decision $(\tau,\epsilon_1,n)$-BDHE assumption holds in $\mathbb{G}$ and the signature scheme is $(t,\epsilon_2,1)$ strongly existentially unforgeable.
+
+\textbf{\noindent{Proof:}} Let $\mathcal{A}$ be a $\tau$-time adversary that has advantage greater than $\epsilon_1+\epsilon_2$ in solving the \emph{reduced scheme} parameterized with a fixed $n$. Using $\mathcal{A}$, we build an algorithm $\mathcal{B}$ that has advantage at least $\epsilon_1$ in solving the $n$-BDHE problem in $\mathbb{G}$. Algorithm $\mathcal{B}$ takes as input a random $n$-BDHE challenge $(P,H,Y_{(P,\alpha,n)},Z)$ (where $Z$ is either $\hat{e'}(P_{n+1},H)$ or a random value in $\mathbb{G}_T$), and proceeds as follows.
+
+\begin{enumerate}
+ \item \textbf{Init:} $\mathcal{B}$ runs $\mathcal{A}$ and receives the set ${\mathcal{S}}^{*}$ of ciphertext classes that $\mathcal{A}$ wishes to be challenged on. For each ciphertext class $i\in\mathcal{S}$, challenger $\mathcal{B}$ performs the \textbf{SetUp}-$\mathbf{i}$, \textbf{Query Phase 1}-$\mathbf{i}$, \textbf{Challenge}-$\mathbf{i}$, \textbf{Query Phase 2}-$\mathbf{i}$ and \textbf{Guess}-$\mathbf{i}$ steps. Note that the number of iterations is polynomial in ${\mathcal{S}}^{*}$. Note that the number of iterations is polynomial in $|{\mathcal{S}}^{*}|$. 
+ 
+ \item \textbf{SetUp}-$\mathbf{i}$: $\mathcal{B}$ should generate the public $param$, public key $PK$, the access parameter $U$, and the aggregate key $K_{\overline{{\mathcal{S}}^{*}}}$ and provide them to $\mathcal{A}$. Algorithm $\mathcal{B}$ first runs the $SigKeyGen$ algorithm to obtain a signature signing key ${K^{*}}_{SIG}$ and a corresponding verification key ${V^{*}}_{SIG} \in \mathbb{Z}_q$. The various items to be provided to $\mathcal{A}$ are generated as follows.
+%  \vspace{-0.6mm}
+ \begin{itemize}
+  \item $param$ is set as $(P,Y_{P,\alpha,n})$.
+  \item $PK$ is set as $uP - {V^{*}}_{SIG}P_n - P_i$ where $u$ is randomly chosen from $\mathbb{Z}_q$.
+  \item $K_{\overline{{\mathcal{S}}^{*}}}$ is set as $\sum_{j\notin{\mathcal{S}}^{*}}({u}P_{n+1-j}- {V^{*}}_{SIG}P_{2n+1-j} -P_{n+1-j+i})$. Note that $K_{\overline{{\mathcal{S}}^{*}}}$ is equal to $\sum_{j\notin{\mathcal{S}}^{*}}\alpha^{n+1-j}PK$, in accordance with the specification provided by the scheme. Moreover, $\mathcal{B}$ is aware that $i\notin \overline{{\mathcal{S}}^{*}}$ (implying $i\neq j$). Also, $j\neq n$ as $1\leq j \leq n-1$. Hence, $\mathcal{B}$ has all the resources to compute $K_{\overline{{\mathcal{S}}^{*}}}$.
+  \item $U$ is set as some random element in $\mathbb{G}$.
+  
+ \end{itemize}
+ 
+ Since $P$, $\alpha$, $U$ and the $u$ values are chosen uniformly at random, \emph{the public parameters and the public key have an identical distribution to that in the actual construction}.
+ 
+ \item \textbf{Query Phase 1}-$\mathbf{i}$: Algorithm $\mathcal{A}$ issues decryption queries. Let $(j,\mathcal{S},\mathcal{C})$ be a decryption query where $\mathcal{S}\subseteq{\mathcal{S}}^{*}$ and $j\in\mathcal{S}$. Let $\mathcal{C}=((c_1,c_2),\sigma,V_{SIG})$. Algorithm $\mathcal{B}$ first runs $Verify$ to check if the signature $\sigma$ is valid on $(c_1,c_2)$ using $V_{SIG}$. If invalid, $\mathcal{B}$ returns $\bot$. If $V_{SIG} = {V^{*}}_{SIG}$, $\mathcal{B}$ outputs a random bit $b\in\{0,1\}$ and \emph{aborts} the simulation. Otherwise, the challenger picks a random $x\in\mathbb{Z}_q$. It then sets $\hat{d_2}=xP+{(V_{SIG}-{V^{*}}_{SIG})}^{-1}P_1$, and $\hat{d_1}=u\hat{d_2}+x(V_{SIG}-{V^{*}}_{SIG})P_n$. $\mathcal{B}$ responds with $K=\frac{\hat{e'}(\hat{d_2},c_2)}{\hat{e'}(\hat{d_1},c_1 + U)}$. To see that this response is as in a real attack game, let $x'=x+\alpha{(V_{SIG}-{V^{*}}_{SIG})}^{-1}$. Then $\hat{d_2}=x'P$ and $\hat{d_1}=x'(PK+P_i+V_{SIG}P_n)-P_{n+1}$. Furthermore, since $x$ is uniform in $\mathbb{Z}_q$, $x'$ is also uniform in $\mathbb{Z}_q$. 
+ 
+ \item \textbf{Challenge}-$\mathbf{i}$: To generate the challenge for the ciphertext class $i$, $\mathcal{B}$ computes $(c_1,c_2)$ as $(H-U,uH)$. It sets ${\mathcal{C}}^{*}=((c_1,c_2),Sign((c_1,c_2),{K^{*}}_{SIG}),{V^{*}}_{SIG})$. It then randomly chooses a bit $b\in{(0,1)}$ and sets $K_b$ as $Z$ and $K_{1-b}$ as a random element in $\mathbb{G}_T$. The challenge given to $\mathcal{A}$ is $({\mathcal{C}}^{*},K_0,K_1)$.  We claim that when $Z=\hat{e'}(P_{n+1},H)$ (i.e. the input to $\mathcal{B}$ is a $n$-BDHE tuple), then $({\mathcal{C}}^{*},K_0,K_1)$ is a valid challenge to $A$. Since $P$ is a generator of $\mathbb{G}$, $H=t'P$ for some $t'\in\mathbb{Z}_q$, resulting in the following.
+
+ \begin{itemize}
+  \item $U=tP$ for some $t\in\mathbb{Z}_q$
+  \item $c_1=H-U=(t'-t)P=rP$ where $r=t'-t$
+  \item $c_2=uH=(u)t'P=t'(uP)$\\$=t'((uP-{P_i}-{V^{*}}_{SIG}P_n)+P_i+{V^{*}}_{SIG}P_n)=t'(PK+P_i+{V^{*}}_{SIG}P_n)$
+  \item $K_b=Z=\hat{e'}(P_{n+1},H)=\hat{e'}(P_{n+1},t'P)$
+ \end{itemize}
+ On the other hand, if $Z$ is a random element in $\mathbb{G}_T$ (i.e. the input to $\mathcal{B}$ is a random tuple), then $K_0$ and $K_1$ are just random independent elements of $\mathbb{G}_T$.
+ 
+ \item\textbf{Query Phase 2}-$\mathbf{i}$: Same as in query phase 1-${i}$.
+ 
+ \item\textbf{Guess}-$\mathbf{i}$: The adversary $\mathcal{A}$ outputs a guess $b'$ of $b$. If $b' = b$, $\mathcal{B}$ outputs $0$ (indicating that $Z = \hat{e'}(P_{n+1},H)$), and terminates. Otherwise, it goes for the next ciphertext class in $\mathcal{S}$.
+\end{enumerate}
+
+If $\mathcal{A}$ returns $b' \neq b$ for each ciphertext class $i\in{\mathcal{S}}^{*}$, $\mathcal{B}$ outputs $1$ (indicating that $Z$ is random in $\mathbb{G}_T$). We now analyze the probability that $\mathcal{B}$ gives a correct output. If $(P,H,Y_{(P,\alpha,n)},Z)$ is sampled from $R$-BDHE, $Pr[\mathcal{B}(G,H,Y_{(P,\alpha,n)},Z)=0]$ = $\frac{1}{2}$, while if $(P,H,Y_{(P,\alpha,n)},Z)$ is sampled from $L$-BDHE, $|Pr[\mathcal{B}(G,H,Y_{(P,\alpha,n)},Z)]-\frac{1}{2}|$ $>$ $\epsilon_1+\epsilon_2-Pr[\text{abort}]$. So, the probability that $\mathcal{B}$ outputs correctly is at least $1-(1-\epsilon_1-\epsilon_2+Pr[\text{abort}])^{|{\mathcal{S}}^{*}|} \geq \epsilon_1+\epsilon_2-Pr[\text{abort}]$, implying that $\mathcal{B}$ has advantage at least $\epsilon_1+\epsilon_2-Pr[\text{abort}]$ in solving the $n$-BDHE problem in $\mathbb{G}$. 
+
+We now must provide a bound on the probability that $\mathcal{B}$ aborts the simulation as a result of one of the decryption queries by $\mathcal{A}$. We claim that $Pr[\text{abort}]<\epsilon_2$. A very brief proof of this may be stated as follows. We may construct a simulator that knows the master secret key $u$ and receives ${K^{*}}_{SIG}$ as a challenge in an existential forgery game. $\mathcal{A}$ can then cause an abort by producing a query that leads to an existential forgery under ${K^{*}}_{SIG}$ on some ciphertext. Our simulator uses this forgery to win the existential forgery game. Only one chosen message query is made by the adversary during the game to generate the signature corresponding to the challenge ciphertext. Thus we conclude that $Pr[\text{abort}]<\epsilon_2$. Thus, $\mathcal{B}$ has advantage at least $\epsilon_1$ in solving the $n-BDHE$ problem in $\mathbb{G}_1$. This completes the proof. 
+
+The tow-tier and $M$-tier KAC schemes may be similarly extended for CCA security. We mention here that in order to preserve the same security assumptions (the $n_2$-BDHE and $n_M$-BDHE assumptions respectively), the CCA security needs to be shown for dynamic KAC systems that can handle $n(1-\frac{1}{n_2})$ and $n(1-\frac{1}{n_M})$ users respectively.
+

@@ -1,0 +1,46 @@
+This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: KeyAggregate.aux
+The style file: unsrt.bst
+Database file #1: bib/KeyAggregate.bib
+You've used 36 entries,
+            1791 wiz_defined-function locations,
+            660 strings with 9903 characters,
+and the built_in function-call counts, 10867 in all, are:
+= -- 1095
+> -- 371
+< -- 19
++ -- 138
+- -- 102
+* -- 676
+:= -- 1538
+add.period$ -- 128
+call.type$ -- 36
+change.case$ -- 37
+chr.to.int$ -- 0
+cite$ -- 36
+duplicate$ -- 525
+empty$ -- 1072
+format.name$ -- 102
+if$ -- 2581
+int.to.chr$ -- 0
+int.to.str$ -- 36
+missing$ -- 32
+newline$ -- 185
+num.names$ -- 36
+pop$ -- 142
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 303
+stack$ -- 0
+substring$ -- 880
+swap$ -- 204
+text.length$ -- 19
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 117
+width$ -- 38
+write$ -- 418

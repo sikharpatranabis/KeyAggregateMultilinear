@@ -1,0 +1,114 @@
+\section{The Proposed Dynamic Key-Aggregate Scheme}
+\label{sec:proposal}
+\vspace{-4mm}
+In this section, we present the design of our proposed dynamic key-aggregate storage scheme on additive elliptic curve subgroups. We assume that there are $n$ ciphertext classes. Our scheme ensures that the ciphertext and aggregate key are of constant size, while the public parameter size is linear in the number of ciphertext classes. Unlike the scheme proposed in \cite{chu2014key}, the proposed scheme allows dynamic revocation of user access rights without having to massively change the system parameters. We also present a proof of security for the proposed scheme.
+% \vspace{-5mm}
+\subsection{The Basic Construction of the Scheme}
+\label{subsec:Construction}
+\vspace{-3mm}
+Let $\mathbb{G}$ be an additive cyclic elliptic curve subgroup of prime order $q$, where $2^{\lambda}\leq q \leq 2^{\lambda + 1}$, such that the point $P$ is a generator for $\mathbb{G}$. Also, let $\mathbb{G}_{T}$ be a multiplicative group of order $q$ with identity element $1$. We assume that there exists an efficiently computable bilinear pairing $\hat{e'}:\mathbb{G} \times \mathbb{G}\longrightarrow\mathbb{G}_T$. We now present the basic construction of our proposed key-aggregate encryption scheme. 
+
+The scheme consists of the following five phases.
+\vspace{-2mm}
+\begin{enumerate}
+ \item \textbf{Setup}$(1^{\lambda},n)$: Randomly pick $\alpha \in \mathbb{Z}_q$. Compute $P_i = {\alpha^{i}}P \in \mathbb{G}$ for $i = 1,\cdots,n,n+2,\cdots,2n$. Output the system parameter as\\
+ $param = (P,P_1,\cdots,P_n,P_{n+2},\cdots,P_{2n})$. The system also randomly chooses a secret parameter $t \in \mathbb{Z}_q$ which is not made public. It is only known to data owners with credentials to control client access rights.
+ \item \textbf{Keygen}(): Pick $\gamma \in \mathbb{Z}_q$, output the public and master-secret key pair : \\$(PK={\gamma}P,msk=\gamma)$.
+ \item \textbf{Encrypt}$(PK,i,m)$: For a message $m \in \mathbb{G}_T$ and an index $i \in \{1,2,\cdots,n\}$, randomly choose $r\in\mathbb{Z}_q$ and let $t'=t+r \in\mathbb{Z}_q$. Then the ciphertext is computed as\\ $\mathcal{C}=(rP,t'{(PK+P_i)},m.\hat{e'}(P_n,t'P_1))$ $=$ $(c_1,c_2,c_3)$
+ \item \textbf{Extract}$(msk=\gamma,\mathcal{S})$: For the set $\mathcal{S}$ of indices $j$ the aggregate key is computed as\\ $K_{\mathcal{S}} = \sum_{j\in\mathcal{S}}{\gamma}P_{n+1-j}$ = $\sum_{j\in\mathcal{S}}\alpha^{n+1-j}PK$\\ and the dynamic access control parameter $U$ is computed as $tP$. Thus the net aggregate key is $(K_{\mathcal{S}},U)$ which is transmitted via a secure channel to users that have access rights to $\mathbb{S}$.
+ \item \textbf{Decrypt}$(K_{\mathcal{S}}, U, \mathcal{S},i,\mathcal{C}=\{c_1,c_2,c_3\})$: If $i\notin\mathcal{S}$, output $\bot$. Otherwise return the message\\ $m=c_3\hat{e'}(K_{\mathcal{S}}+\sum_{j\in\mathcal{S},j\neq i}P_{n+1-j+i},U+c_1)/(\hat{e'}(\sum_{j\in\mathcal{S}}P_{n+1-j},c_2))$. 
+\end{enumerate}
+\vspace{-2mm}
+
+% We next prove the correctness of the scheme.
+
+\vspace{-2mm}
+\subsubsection{Proof of Correctness:}
+
+Let $\hat{m}$ be the output message produced by decryption corresponding to the plaintext $m$. We assume that the output is not $\bot$. Equation \ref{eq:correctness} proves the correctness of the proposed scheme. 
+\vspace{-2mm}
+\begin{scriptsize}
+\begin{equation}
+\label{eq:correctness}
+\begin{split}
+ \hat{m} &= c_3\frac{\hat{e'}(K_{\mathcal{S}}+\sum_{j\in\mathcal{S},j\neq i}P_{n+1-j+i},U+c_1)}{\hat{e'}(\sum_{j\in\mathcal{S}}P_{n+1-j},c_2)}\\
+  &= c_3\frac{\hat{e'}(\sum_{j\in \mathcal{S}}{\gamma}P_{n+1-j} + \sum_{j\in\mathcal{S},j\neq i}P_{n+1-j+i},t'P)}{\hat{e'}(\sum_{j\in\mathcal{S}}P_{n+1-j},t'(PK+P_i))}\\
+  &= c_3\frac{\hat{e'}(\sum_{j\in \mathcal{S}}{\gamma}P_{n+1-j},t'P)\hat{e'}(\sum_{j\in\mathcal{S}}(P_{n+1-j+i})-P_{n+1},t'P)}{\hat{e'}(\sum_{j\in\mathcal{S}}P_{n+1-j},t'PK)\hat{e'}(\sum_{j\in\mathcal{S}}P_{n+1-j},t'P_i))}\\
+  &= c_3\frac{\hat{e'}(\sum_{j\in\mathcal{S}}P_{n+1-j+i},t'P)}{\hat{e'}(P_{n+1},t'P)\hat{e'}(\sum_{j\in\mathcal{S}}P_{n+1-j},t'P_i))}\\
+  &= c_3\frac{\hat{e'}(\sum_{j\in\mathcal{S}}P_{n+1-j+i},t'P)}{\hat{e'}(P_{n+1},t'P)\hat{e'}(\sum_{j\in\mathcal{S}}P_{n+1-j+i},t'P))}\\
+  &= m\frac{\hat{e'}(P_n,t'P_1)}{\hat{e'}(P_{n+1},t'P)}\\
+  &= m
+\end{split}  
+\end{equation}
+\end{scriptsize}
+
+% \subsection
+\vspace{-2mm}
+\subsubsection{Dynamic Access Control:}
+
+An important aspect of the proposed scheme is the fact that it allows the data owner to dynamically update user access permissions. In KAC \cite{chu2014key}, once the data owner issues an aggregate key corresponding to a set of ciphertext classes to a user, revoking the user's access permissions to the same is not possible without changing the master secret key. However, changing the master secret key each time an user's access privileges to a ciphertext class need to be updated, is a very expensive option and may not be practically feasible. Our scheme, on the other hand, offers a solution to this problem by allowing the data owner to dynamically update user access privileges.
+
+We achieve this by making the parameter $U=tP$ a part of the aggregate key in our proposed scheme and not a part of the ciphertext. The user must have the correct value of $U$ in possession to be able to decrypt any encrypted ciphertext class in the subset $\mathcal{S}$. Now suppose the data owner wishes to alter the access rights to the subset $\mathcal{S}$. She can simply re-encrypt all ciphertexts in that class using a different random element $\hat{t}\in\mathbb{Z}_q$, and then provide the updated dynamic access parameter $\hat{U}=\hat{t}P$ to only those users who she wishes to delegate access to. The decrypted value will give the correct message $m$ only if the same $t$ is used for both encryption and decryption. This is a major difference between our scheme and the scheme proposed in \cite{chu2014key}, where the knowledge of the random parameter was only embedded as part of the ciphertext itself, and could not be used to control access rights of users. Moreover, since $U$ is of constant size and needs to be transmitted only when changed (and not for every encryption), there is no significant degradation in performance.
+% \subsection{Computation of $\hat{e'}()$:}
+\vspace{-2mm}
+\subsubsection{Performance and Efficiency:}
+\label{subsubsec:perf}
+The decryption time for any subset of ciphertext classes $\mathcal{S}$ is essentially dominated by the computation of $W_{\mathcal{S}}=\sum_{j\in\mathcal{S}}P_{n+1-j+i}$. However, if a user has already computed $\sum_{j\in\mathcal{S}'}P_{n+1-j+i}$ for a subset $S'$ similar to $S$, then she can easily compute the desired value by at most $|\mathcal{S}-\mathcal{S}'|$ operations. For similar subsets $S$ and $S'$, this value is expected to be fairly small. A suggested in \cite{boneh2005collusion}, for subsets of very large size($n-r, r\ll n$), an advantageous approach could be to pre-compute $\sum_{j=1}^{j=n}P_{n+1-j+i}$ corresponding to $i=1 to n$, which would allow the user to decrypt using only $r$ group operations, and would require only $r$ elements of $param$. Similar optimizations would also hold for the encryption operation where pre-computation of  $\sum_{j=1}^{j=n}P_{n+1-j}$ is useful for large subsets.
+% \vspace{-2mm}
+\subsection{Formal Proof of Semantic Security}
+\vspace{-2mm}
+In this section we formally prove the security of the proposed generalized key-aggregate encryption scheme. The formal definition of semantic security for key-aggregate cryptosystems is presented in Appendix \ref{app_sec:security}. Before proceeding to the main proof, we point out an important aspect of the encryption scheme.
+\vspace{-2mm}
+\subsubsection{The Reduced Scheme:}
+
+The ciphertext $\mathcal{C}=(c_1,c_2,c_3)$ output by the $Encypt$ operation essentially embeds the value of $m$ in $c_3$ by multiplying it with $\hat{e'}(P_{n},t'P_1)$. The main secret is thus $\hat{e'}(P_{n},t'P_1)=\hat{e'}(P_{n+1},t'P)$, the knowledge of which is transmitted using $(c_1,c_2)$, and is decrypted using the aggregate key $K_{\mathcal{S}}$ and the dynamic access parameter $U$. Consequently, the security of our proposed scheme is equivalent to that of a \emph{reduced} key-aggregate encryption scheme that simply uses the reduced ciphertext $(c_1,c_2)$, the aggregate key $K_{\mathcal{S}}$ and the dynamic access parameter $U$ to successfully transmit and decrypt the value of $\hat{e'}(P_{n+1},t'P)$. We prove the semantic security of this \emph{reduced scheme} parameterized with a given number of ciphertext classes $n$, which also amounts to proving the semantic security of our original encryption scheme for the same number of ciphertext classes.
+
+\vspace{-2mm}
+
+\subsubsection{The Adversarial Model:} We make the following assumptions about the adversary $\mathcal{A}$:
+\vspace{-2mm}
+\begin{enumerate}
+ \item The adversary has the aggregate key that allows her to access any ciphertext class other than those in the target subset $\mathcal{S}$, that is, she possesses $K_{\overline{\mathcal{S}}}$.
+ \item The adversary has access to the public parameters $param$ and $PK$, and also possesses the dynamic access parameter $U$.
+%  \item The adversary is authorized and and hence 
+\end{enumerate}
+
+\vspace{-2mm}
+\subsubsection{The Proof of Security:}
+
+The security proof presented here uses the first complexity assumption stated in \ref{subsubsec:asm_1}. Let $\mathbb{G}$ be a bilinear elliptic curve subgroup of prime order $q$ and $G_T$ be a multiplicative group of order $q$. Let $\hat{e'}:\mathbb{G}\times \mathbb{G}\longrightarrow\mathbb{G}_T$ be a bilinear non-degenerate pairing. We claim that for any pair of positive integers $n,n' (n'>n)$, the reduced key-aggregate encryption scheme over elliptic curve subgroups is $(\tau,\epsilon,n')$ semantically secure if the decision $(\tau,\epsilon,n)$-BDHE assumption holds in $\mathbb{G}$.
+
+\textbf{\noindent{Proof:}} Let for a given input $n'$, $\mathcal{A}$ be a $\tau$-time adversary that has advantage greater than $\epsilon$ in solving the \emph{reduced scheme} parameterized with a fixed $n$. Using $\mathcal{A}$, we build an algorithm $\mathcal{B}$ that has advantage at least $\epsilon$ in solving the $n$-BDHE problem in $\mathbb{G}$. Algorithm $\mathcal{B}$ takes as input a random $n$-BDHE challenge $(P,H,Y_{(P,\alpha,n)},Z)$ (where $Z$ is either $\hat{e'}(P_{n+1},H)$ or a random value in $\mathbb{G}_T$), and proceeds as follows.
+\vspace{-2mm}
+\begin{enumerate}
+ \item \textbf{Init:} $\mathcal{B}$ runs $\mathcal{A}$ and receives the set $\mathcal{S}$ of ciphertext classes that $\mathcal{A}$ wishes to be challenged on. For each ciphertext class $i\in\mathcal{S}$, $\mathcal{B}$ performs the \textbf{SetUp}-$\mathbf{i}$, \textbf{Challenge}-$\mathbf{i}$ and \textbf{Guess}-$\mathbf{i}$ steps. Note that the number of iterations is polynomial in $|S|$. 
+ 
+ \item \textbf{SetUp}-$\mathbf{i}$: $\mathcal{B}$ should generate the public $param$, public key $PK$, the access parameter $U$, and the aggregate key $K_{\overline{\mathcal{S}}}$ and provide them to $\mathcal{A}$. They are generated as follows.
+ \vspace{-0.6mm}
+ \begin{itemize}
+  \item $param$ is set as $(P,Y_{P,\alpha,n})$.
+  \item $PK$ is set as $uP - P_i$ where $u$ is randomly chosen from $\mathbb{Z}_q$.
+  \item $K_{\overline{\mathcal{S}}}$ is set as $\sum_{j\notin\mathcal{S}}({u}P_{n+1-j}-(P_{n+1-j+i}))$. Note that $K_{\overline{\mathcal{S}}}$ is equal to $\sum_{j\notin\mathcal{S}}\alpha^{n+1-j}PK$, in accordance with the specification provided by the scheme. Moreover, $\mathcal{B}$ is aware that $i\notin \overline{\mathcal{S}}$ (implying $i\neq j$), and hence has all the resources to compute $K_{\overline{\mathcal{S}}}$.
+  \item $U$ is set as some random element in $\mathbb{G}$.
+ \end{itemize}
+ 
+ Since $P$, $\alpha$, $U$ and the $u$ values are chosen uniformly at random, \emph{the public parameters and the public key have an identical distribution to that in the actual construction}.
+ 
+ \item \textbf{Challenge}-$\mathbf{i}$: To generate the challenge for the ciphertext class $i$, $\mathcal{B}$ computes $(c_1,c_2)$ as $(H-U,uH)$. It then randomly chooses a bit $b\in{(0,1)}$ and sets $T_b$ as $Z$ and $T_{1-b}$ as a random element in $\mathbb{G}_T$. The challenge given to $\mathcal{A}$ is $((c_1,c_2),T_0,T_1)$.  We claim that when $Z=\hat{e'}(P_{n+1},H)$ (i.e. the input to $\mathcal{B}$ is a $n$-BDHE tuple), then $((c_1,c_2),T_0,T_1)$ is a valid challenge to $A$. Since $P$ is a generator of $\mathbb{G}$, $H=t'P$ for some $t'\in\mathbb{Z}_q$, resulting in the following.
+ \vspace{-1.2mm}
+ \begin{itemize}
+  \item $U=tP$ for some $t\in\mathbb{Z}_q$
+  \item $c_1=H-U=(t'-t)P=rP$ where $r=t'-t$
+  \item $c_2=uH=ut'P=t'(uP)=t'(uP-{P_i}+P_i)=t'(PK+P_i)$
+  \item $K_b=Z=\hat{e'}(P_{n+1},H)=\hat{e'}(P_{n+1},t'P)$
+ \end{itemize}
+ On the other hand, if $Z$ is a random element in $\mathbb{G}_T$ (i.e. the input to $\mathcal{B}$ is a random tuple), then $K_0$ and $K_1$ are just random independent elements of $\mathbb{G}_T$.
+ 
+ \item\textbf{Guess}-$\mathbf{i}$: The adversary $\mathcal{A}$ outputs a guess $b'$ of $b$. If $b' = b$, $\mathcal{B}$ outputs $0$ (indicating that $Z = \hat{e'}(P_{n+1},H)$), and terminates. Otherwise, it goes for the next ciphertext class in $\mathcal{S}$.
+\end{enumerate}
+% \vspace{-2mm}
+The loop terminates if $\mathcal{B}$ has returned $0$ or for all $|\mathcal{S}|$ iterations, $b' \neq b$ for each ciphertext class $i\in\mathcal{S}$. In the latter case, $\mathcal{B}$ outputs $1$ (indicating that $Z$ is random in $\mathbb{G}_T$). We now analyze the probability that $\mathcal{B}$ gives a correct output. If $(P,H,Y_{(P,\alpha,n)},Z)$ is sampled from $R$-BDHE, $Pr[\mathcal{B}(G,H,Y_{(P,\alpha,n)},Z)=0]$ = $\frac{1}{2}$, while if $(P,H,Y_{(P,\alpha,n)},Z)$ is sampled from $L$-BDHE, $|Pr[\mathcal{B}(G,H,Y_{(P,\alpha,n)},Z)]-\frac{1}{2}|$ $\geq$ $\epsilon$. So, the probability that $\mathcal{B}$ outputs correctly is at least $1-(1-\epsilon)^{|\mathcal{S}|} \geq \epsilon$, implying that $\mathcal{B}$ has advantage at least $\epsilon$ in solving the $n$-BDHE problem in $\mathbb{G}$. This concludes the proof.
+
+It is important to note that our proposed scheme fixes the number of ciphertext classes beforehand, thus limiting the scope for ciphertext class extension. The only way to increase the number of classes is to change the public key parameters, which would therefore require some kind of administrative privileges, and cannot be done by an user for her own purposes. However, in online data sharing environments, users may wish to register their own public key-private key pairs for new ciphertext classes according to their own requirements. Such an extension to the scheme would make extremely convenient and attractive to potential users. A proposal made in \cite{chu2014key} recommends that the user be allowed to register new public-private key pairs, at the cost of increasing the number of ciphertext classes by $n$ each time. This is both impractical and wasteful. In the next section, we present a two-tier generalization of our scheme that tackles this issue in a more economical fashion.   
+
+

@@ -1,0 +1,68 @@
+\documentclass{class/llncs}
+% \usepackage[margin=1.3in]{geometry}
+% \addtolength{\topmargin}{-.2in}
+% \addtolength{\topmargin}{-.2in}
+\usepackage{amssymb}
+\usepackage{amsmath}
+%\usepackage{tabularx}
+\usepackage[table]{xcolor}
+\usepackage{color}
+\usepackage{caption}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+% \usepackage{algorithm2e}
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\usepackage{comment}
+\usepackage{mathrsfs} 
+\usepackage{subcaption}
+\usepackage{threeparttable}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{mathrsfs} 
+\usepackage{booktabs}
+
+\newtheorem{Theorem}{Theorem}
+\newtheorem{Definition}{Definition}
+\newtheorem{Observation}{Observation}
+
+
+\title{Dynamic Key-Aggregate Cryptosystem on Elliptic Curves for Online Data Sharing}
+\begin{document}
+% 
+% \author{}
+% \institute{}
+
+\author{Sikhar Patranabis, Yash Shrivastava and Debdeep Mukhopadhyay}
+\institute{Department of Computer Science and Engineering\\ Indian Institute of Technology Kharagpur
+\\\{sikhar.patranabis, yash.shrivastava, debdeep\}@cse.iitkgp.ernet.in}
+\maketitle
+\toctitle{Lecture Notes in Computer Science}
+\tocauthor{Authors' Instructions}
+
+
+\begin{abstract}
+The recent advent of cloud computing and the IoT has made it imperative to have efficient and secure cryptographic schemes for online data sharing. Data owners would ideally want to store their data/files online in an encrypted manner, and delegate decryption rights for some of these to users with appropriate credentials. An efficient and recently proposed solution in this regard is to use the concept of aggregation that allows users to decrypt multiple classes of data using a single key of constant size. In this paper, we propose a secure and dynamic key aggregate encryption scheme for online data sharing that operates on elliptic curve subgroups while allowing dynamic revocation of user access rights. We augment this basic construction to a generalized two-level hierarchical structure that achieves optimal space and time complexities, and also efficiently accommodates extension of data classes. Finally, we propose an extension to the generalized scheme that allows use of efficiently computable bilinear 
+pairings for encryption and decryption operations. Each scheme is formally proven to be semantically secure. Practical experiments have been conducted to validate all claims made in the paper.\\
+\noindent{\textbf{Keywords:}} Key-Aggregate Cryptoystem, Online data sharing, Semantic security, Dynamic access rights
+\end{abstract}
+
+\input{Source_IndoCrypt/Introduction}
+\input{Source_IndoCrypt/RelWork}
+\input{Source_IndoCrypt/Prelims}
+\input{Source_IndoCrypt/Proposal}
+\input{Source_IndoCrypt/General}
+\input{Source_IndoCrypt/Extended}
+\input{Source_IndoCrypt/Results}
+\input{Source_IndoCrypt/Conclusions}
+
+\begin{scriptsize}
+\bibliographystyle{unsrt}
+\bibliography{bib/KeyAggregate}
+\end{scriptsize}
+
+\newpage
+\input{Source_IndoCrypt/Appendix.tex}
+
+
+\end{document}

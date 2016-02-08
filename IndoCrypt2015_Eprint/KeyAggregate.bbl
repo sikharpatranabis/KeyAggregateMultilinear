@@ -1,0 +1,225 @@
+\begin{thebibliography}{10}
+
+\bibitem{cryptoeprint:2009:579}
+Cong Wang, Sherman S.-M. Chow, Qian Wang, Kui Ren, and Wenjing Lou.
+\newblock Privacy-preserving public auditing for secure cloud storage.
+\newblock Cryptology ePrint Archive, Report 2009/579, 2009.
+\newblock \url{http://eprint.iacr.org/}.
+
+\bibitem{chow2012dynamic}
+Sherman~SM Chow, Cheng-Kang Chu, Xinyi Huang, Jianying Zhou, and Robert~H Deng.
+\newblock Dynamic secure cloud storage with provenance.
+\newblock In {\em Cryptography and Security: From Theory to Applications},
+  pages 442--464. Springer, 2012.
+
+\bibitem{chu2014key}
+Cheng-Kang Chu, Sherman~SM Chow, Wen-Guey Tzeng, Jianying Zhou, and Robert~H
+  Deng.
+\newblock Key-aggregate cryptosystem for scalable data sharing in cloud
+  storage.
+\newblock {\em Parallel and Distributed Systems, IEEE Transactions on},
+  25(2):468--477, 2014.
+
+\bibitem{boneh2005collusion}
+Dan Boneh, Craig Gentry, and Brent Waters.
+\newblock Collusion resistant broadcast encryption with short ciphertexts and
+  private keys.
+\newblock In {\em Advances in Cryptology--CRYPTO 2005}, pages 258--275.
+  Springer, 2005.
+
+\bibitem{akl1983cryptographic}
+Selim~G Akl and Peter~D Taylor.
+\newblock Cryptographic solution to a problem of access control in a hierarchy.
+\newblock {\em ACM Transactions on Computer Systems (TOCS)}, 1(3):239--248,
+  1983.
+
+\bibitem{chick1990flexible}
+Gerald~C Chick and Stafford~E Tavares.
+\newblock Flexible access control with master keys.
+\newblock In {\em Advances in Cryptology—CRYPTO’89 Proceedings}, pages
+  316--322. Springer, 1990.
+
+\bibitem{tzeng2002time}
+Wen-Guey Tzeng.
+\newblock A time-bound cryptographic key assignment scheme for access control
+  in a hierarchy.
+\newblock {\em Knowledge and Data Engineering, IEEE Transactions on},
+  14(1):182--188, 2002.
+
+\bibitem{ateniese2012provably}
+Giuseppe Ateniese, Alfredo De~Santis, Anna~Lisa Ferrara, and Barbara Masucci.
+\newblock Provably-secure time-bound hierarchical key assignment schemes.
+\newblock {\em Journal of cryptology}, 25(2):243--270, 2012.
+
+\bibitem{sandhu1988cryptographic}
+Ravinderpal~S Sandhu.
+\newblock Cryptographic implementation of a tree hierarchy for access control.
+\newblock {\em Information Processing Letters}, 27(2):95--98, 1988.
+
+\bibitem{sun2004scalable}
+Yan Sun and KJ~Liu.
+\newblock Scalable hierarchical access control in secure group communications.
+\newblock In {\em INFOCOM 2004. Twenty-third AnnualJoint Conference of the IEEE
+  Computer and Communications Societies}, volume~2, pages 1296--1306. IEEE,
+  2004.
+
+\bibitem{king2015centralized}
+William~C King and Bjorn Hjelm.
+\newblock Centralized key management, March~24 2015.
+\newblock US Patent 8,990,555.
+
+\bibitem{atallah2009dynamic}
+Mikhail~J Atallah, Marina Blanton, Nelly Fazio, and Keith~B Frikken.
+\newblock Dynamic and efficient key management for access hierarchies.
+\newblock {\em ACM Transactions on Information and System Security (TISSEC)},
+  12(3):18, 2009.
+
+\bibitem{benaloh2009patient}
+Josh Benaloh, Melissa Chase, Eric Horvitz, and Kristin Lauter.
+\newblock Patient controlled encryption: ensuring privacy of electronic medical
+  records.
+\newblock In {\em Proceedings of the 2009 ACM workshop on Cloud computing
+  security}, pages 103--114. ACM, 2009.
+
+\bibitem{benaloh2009key}
+Josh Benaloh.
+\newblock Key compression and its application to digital fingerprinting.
+\newblock Technical report, Technical Report Technical Report, Microsoft
+  Research, 2009.
+
+\bibitem{alomair2009information}
+Basel Alomair and Radha Poovendran.
+\newblock Information theoretically secure encryption with almost free
+  authentication.
+\newblock {\em J. UCS}, 15(15):2937--2956, 2009.
+
+\bibitem{shamir1985identity}
+Adi Shamir.
+\newblock Identity-based cryptosystems and signature schemes.
+\newblock In {\em Advances in cryptology}, pages 47--53. Springer, 1985.
+
+\bibitem{boneh2003identity}
+Dan Boneh and Matthew Franklin.
+\newblock Identity-based encryption from the weil pairing.
+\newblock {\em SIAM Journal on Computing}, 32(3):586--615, 2003.
+
+\bibitem{cocks2001identity}
+Clifford Cocks.
+\newblock An identity based encryption scheme based on quadratic residues.
+\newblock In {\em Cryptography and coding}, pages 360--363. Springer, 2001.
+
+\bibitem{guo2007identity}
+Fuchun Guo, Yi~Mu, and Zhide Chen.
+\newblock Identity-based encryption: how to decrypt multiple ciphertexts using
+  a single decryption key.
+\newblock In {\em Pairing-Based Cryptography--Pairing 2007}, pages 392--406.
+  Springer, 2007.
+
+\bibitem{guo2008multi}
+Fuchun Guo, Yi~Mu, Zhide Chen, and Li~Xu.
+\newblock Multi-identity single-key decryption without random oracles.
+\newblock In {\em Information Security and Cryptology}, pages 384--398.
+  Springer, 2008.
+
+\bibitem{sahai2005fuzzy}
+Amit Sahai and Brent Waters.
+\newblock Fuzzy identity-based encryption.
+\newblock In {\em Advances in Cryptology--EUROCRYPT 2005}, pages 457--473.
+  Springer, 2005.
+
+\bibitem{goyal2006attribute}
+Vipul Goyal, Omkant Pandey, Amit Sahai, and Brent Waters.
+\newblock Attribute-based encryption for fine-grained access control of
+  encrypted data.
+\newblock In {\em Proceedings of the 13th ACM conference on Computer and
+  communications security}, pages 89--98. Acm, 2006.
+
+\bibitem{bethencourt2007ciphertext}
+John Bethencourt, Amit Sahai, and Brent Waters.
+\newblock Ciphertext-policy attribute-based encryption.
+\newblock In {\em Security and Privacy, 2007. SP'07. IEEE Symposium on}, pages
+  321--334. IEEE, 2007.
+
+\bibitem{chase2007multi}
+Melissa Chase.
+\newblock Multi-authority attribute based encryption.
+\newblock In {\em Theory of cryptography}, pages 515--534. Springer, 2007.
+
+\bibitem{li2013scalable}
+Ming Li, Shucheng Yu, Yao Zheng, Kui Ren, and Wenjing Lou.
+\newblock Scalable and secure sharing of personal health records in cloud
+  computing using attribute-based encryption.
+\newblock {\em Parallel and Distributed Systems, IEEE Transactions on},
+  24(1):131--143, 2013.
+
+\bibitem{ateniese2006improved}
+Giuseppe Ateniese, Kevin Fu, Matthew Green, and Susan Hohenberger.
+\newblock Improved proxy re-encryption schemes with applications to secure
+  distributed storage.
+\newblock {\em ACM Transactions on Information and System Security (TISSEC)},
+  9(1):1--30, 2006.
+
+\bibitem{liu2011reliable}
+Qin Liu, Chiu~C Tan, Jie Wu, and Guojun Wang.
+\newblock Reliable re-encryption in unreliable clouds.
+\newblock In {\em Global Telecommunications Conference (GLOBECOM 2011), 2011
+  IEEE}, pages 1--5. IEEE, 2011.
+
+\bibitem{miller1986use}
+Victor Miller.
+\newblock Use of elliptic curves in cryptography.
+\newblock In {\em Advances in Cryptology—CRYPTO’85 Proceedings}, pages
+  417--426. Springer, 1986.
+
+\bibitem{frey1994remark}
+Gerhard Frey and Hans-Georg R{\"u}ck.
+\newblock A remark concerning 𝑚-divisibility and the discrete logarithm in
+  the divisor class group of curves.
+\newblock {\em Mathematics of computation}, 62(206):865--874, 1994.
+
+\bibitem{hess2006eta}
+Florian Hess, Nigel~P Smart, and Frederik Vercauteren.
+\newblock The eta pairing revisited.
+\newblock {\em Information Theory, IEEE Transactions on}, 52(10):4595--4602,
+  2006.
+
+\bibitem{zhao2008note}
+Chang-An Zhao, Fangguo Zhang, and Jiwu Huang.
+\newblock A note on the ate pairing.
+\newblock {\em International Journal of Information Security}, 7(6):379--382,
+  2008.
+
+\bibitem{oliveira2007tinytate}
+Leonardo~B Oliveira, Diego~F Aranha, Eduardo Morais, Felipe Daguano, Julio
+  L{\'o}pez, and Ricardo Dahab.
+\newblock Tinytate: Computing the tate pairing in resource-constrained sensor
+  nodes.
+\newblock In {\em Network Computing and Applications, 2007. NCA 2007. Sixth
+  IEEE International Symposium on}, pages 318--323. IEEE, 2007.
+
+\bibitem{ghosh2013secure}
+Santosh Ghosh, Debdeep Mukhopadhyay, and Dipanwita Roychowdhury.
+\newblock Secure dual-core cryptoprocessor for pairings over barreto-naehrig
+  curves on fpga platform.
+\newblock {\em Very Large Scale Integration (VLSI) Systems, IEEE Transactions
+  on}, 21(3):434--442, 2013.
+
+\bibitem{barreto2006pairing}
+Paulo~SLM Barreto and Michael Naehrig.
+\newblock Pairing-friendly elliptic curves of prime order.
+\newblock In {\em Selected areas in cryptography}, pages 319--331. Springer,
+  2006.
+
+\bibitem{cryptoeprint:2005:133}
+Paulo S. L.~M. Barreto and Michael Naehrig.
+\newblock Pairing-friendly elliptic curves of prime order.
+\newblock Cryptology ePrint Archive, Report 2005/133, 2005.
+\newblock \url{http://eprint.iacr.org/}.
+
+\bibitem{devegili2007implementing}
+Augusto~Jun Devegili, Michael Scott, and Ricardo Dahab.
+\newblock Implementing cryptographic pairings over barreto-naehrig curves.
+\newblock In {\em Pairing-Based Cryptography--Pairing 2007}, pages 197--207.
+  Springer, 2007.
+
+\end{thebibliography}

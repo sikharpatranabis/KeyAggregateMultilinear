@@ -1,0 +1,43 @@
+\section{Related Work}
+\label{sec:relwork}
+
+In this section we present a brief overview of public and private key cryptographic schemes in literature for secure online data sharing. While many of them focus on key aggregation in some form or the other, very few have the ability to provide constant size keys to decrypt an arbitrary number of encrypted entities.
+
+\subsection{Hierarchical Encryption}
+\label{subsec:hierarchy}
+
+One of the most popular techniques for access control in online data storage is to use a pre-defined hierarchy of secret keys \cite{akl1983cryptographic,chick1990flexible,tzeng2002time,ateniese2012provably} in the form of a tree-like structure, where access to the key corresponding to any node implicitly grants access to all the keys in the subtree rooted at that node. For instance, \cite{sandhu1988cryptographic} uses repeated evaluations of a pseudo-random function/block cipher on a fixed secret to generate a tree hierarchy of symmetric keys. Some more advanced schemes \cite{sun2004scalable,king2015centralized,atallah2009dynamic} extend access control to cyclic and acyclic graphs. A major disadvantage of hierarchical encryption schemes is that granting access to only a selected set of branches within a given subtree warrants an increase in the number of granted secret keys. This in turn blows up the size of the key shared. Thus while hierarchical cryptosystems provide a neat key delegation mechanism when 
+all files in a given branch is to be shared, its efficiency drops drastically as the complexity of the delegation increases.
+
+\subsection{Compact Key Symmetric Encryption}
+\label{subsec:symmetric}
+
+Compact key encryption for the symmetric key setting has been used in \cite{benaloh2009patient,benaloh2009key} to solve the problem of concisely transmitting  large number of keys in the broadcast scenario. The basic methodology is to divide the entire ciphertext space into a finite set of classes, followed by a constant size aggregate key generation for the set of classes to be delegated. This scheme thus solves the problem of multi-class delegation faced by hierarchical schemes. However, symmetric key sharing via a secured channel is costly and not always practically viable for many applications on the cloud. Some other schemes in the symmetric key setting also attempt to reduce the key size \cite{alomair2009information}, but they are not aimed at decryption key delegation and are hence not very relevant to the present discussion.
+
+\subsection{Compact Key Identity-Based Encryption}
+\label{subsec:IBE}
+
+Identity-Based Encryption (IBE) is a public key-based encryption scheme in which the public key for any user is an identity-string corresponding to that user. Proposed initially in \cite{shamir1985identity}, IBE was concretized by the proposition of two very widely cited and popular IBEs - The Boneh-Franklin scheme  \cite{boneh2003identity} and Cocks' encryption scheme \cite{cocks2001identity}. An IBE system comprises of a trusted private key generator that holds a master-secret key and issues a secret key to each user based on the user identity. Each user receives a message that has been encrypted using her id and some public parameters, and can decrypt the same using the secret key allotted to her by the trusted party. Compact key IBEs have been proposed in \cite{guo2007identity} and \cite{guo2008multi}. The former approach involves the use of random oracles while the latter shuns the use of oracles. Both these schemes allow aggregation of keys; however each key must come from a different identity division.
+ Fuzzy IBE \cite{sahai2005fuzzy} allows for a single compact key to decrypt multiple ciphertexts, but they must have been encrypted under a closed set of identities, and the scheme does not work in practical scenarios for arbitrary identities. 
+
+\subsection{Attribute Based Encryption}
+\label{subsec:ABE}
+
+Attribute-based encryption (ABE) \cite{goyal2006attribute,bethencourt2007ciphertext,chase2007multi} allows each user to be identified by a set of attributes. An encrypted file stored in cloud can only be decrypted by an user who has access to the corresponding secret key. The secret key is securely transmitted to the user who satisfies the access control policies set by the data owner. A major drawback of this scheme is that each time the access right to a particular user is revoked the entire ciphertext has to be recrypted in the cloud. The idea of ABE has been extended to shared keys for user groups in \cite{li2013scalable} with the focus on collusion resistance and not on key size compression.  
+
+\subsection{Proxy Re-Encryption}
+\label{subsec:PBE}
+
+Proxy re-encryption is another technique to achieve fine-grained access control and scalable user revocation in unreliable clouds \cite{ateniese2006improved}. In this method the data owner and a semi trusted proxy cloud share a secret key in advance, with which the cloud can be delegated to re-encrypt data on behalf of the data owner. The semi-trusted proxy re-encrypts the data using the data owner's public key, thus converting it into a file that can in turn be decrypted by the secret key of the client. In the whole process, the proxy has no knowledge of the data being sent. An extension to this technique has been proposed in \cite{liu2011reliable} that allows the cloud servers to automatically re-encrypt data based on their internal clocks, without any external trigger. However, proxy re-encryption essentially transfers the responsibility for secure key storage from the delegatee to the proxy and is susceptible to collusion attacks. It is also important to ensure that the transformation key of the proxy is 
+well protected, and every decryption would require a separate interaction with the proxy, which is inconvenient for applications on the cloud.
+
+\subsection{Key-Aggregate Cryptosystems (KAC)}
+\label{subsec:aggregate}
+
+The authors of \cite{chu2014key} proposes an efficient scheme, namely KAC, that allows secure and efficient sharing of data on the cloud. The scheme is a public-key cryptosystem that uses constant size ciphertexts such that efficient delegation of decryption rights for any set of ciphertexts are possible. When a user demands for a particular subset of the available classes of data, the data owner computes an aggregate key which integrates the power of the individual decryption keys corresponding to each class of data. However, KAC as proposed in \cite{chu2014key} suffers from three major drawbacks, each of which we address in this paper. First of all, the security assumption of KAC seems to be the Bilinear Diffie Hellman Exponent (BDHE) assumption \cite{miller1986use}; however no concrete proofs of semantic security are provided by the authors in \cite{chu2014key}. Secondly, with respect to user access rights, KAC is a static scheme in the sense that once a user is in possession of the aggregate key corresponding to a subset of files from data owner, the owner cannot dynamically revoke the permission of the client for accessing one or more updated files. Since dynamic changes in access rights is extremely common in online data storage, this scenario needs to be tackled. Finally, the public key extension of KAC proposed in \cite{chu2014key} is extremely cumbersome and resource consuming since registration of each new public key-private key pair requires the number of classes to be extended by the original number of classes. 
+
+
+
+
+
+

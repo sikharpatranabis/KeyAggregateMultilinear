@@ -1,0 +1,38 @@
+\section{Introduction}
+\label{sec:Intro}
+
+The advent of cloud computing and the Internet of Things (IOT) has led to a massive rise in the demand for online data storage and data sharing services. Two very important paradigms that any data sharing service provider must ensure are privacy and flexibility. Since online data almost always resides in shared environments (for instance, multiple virtual machines running on the same physical device), ensuring privacy is a non trivial task. Current technology for secure data sharing come in two major flavors - trusting a third party auditor \cite{cryptoeprint:2009:579,wang2013storing} or using the user's own key to encrypt her data \cite{chow2012dynamic}. Figure \ref{fig:intro} describes a realistic online data sharing set-up. Suppose a data owner stores multiple classes of encrypted data online with the intention of providing users decryption keys to one or more such ciphertext classes, based on their respective credentials. She might also wish to dynamically update the delegated access rights based on changes to the data/credibility issues. The challenge therefore is to provide her with a secure and efficient online data sharing scheme that allows updates to user access rights on the fly. 
+
+
+A n\"{a}ive (and extremely inefficient) solution is to have a different decryption key for each ciphertext class, and share them accordingly with users via secured channels. A more efficient proposition is the key-aggregate encryption (KAC) scheme proposed in \cite{chu2014key} that combines the power of individual decryption keys, for ciphertext classes in a given subset, into a single key for that subset. This key is specific to the designated subset, meaning that it cannot be used to decrypt any ciphertext class outside that subset. KAC derives its roots from the seminal work by Boneh \textit{et.al.} \cite{boneh2005collusion} that allows broadcasting of data (encrypted by the same public key) among multiple users, each of whom possess their own private keys for decryption. Both these schemes make use of bilinear mappings on multiplicative cyclic groups. 
+
+KAC as proposed in \cite{chu2014key} suffers from the following drawbacks:
+\begin{enumerate}
+ \item The security assumption of KAC seems to be the Bilinear Diffie Hellman Exponent (BDHE) assumption \cite{miller1986use}; however no concrete proofs of security are provided by the authors in \cite{chu2014key}. 
+ \item KAC uses bilinear non-degenerate pairings over multiplicative groups. Recent reports from NIST \cite{NIST2009} state that the security of RSA over multiplicative cyclic groups for a key size of $1024$ bits has the same security as RSA over additive elliptic curve groups with a key size of $160$ bits. Thus defining KAC over multiplicative groups is possibly not the most computationally efficient scheme; an adaptation of the scheme to additive elliptic curve group would certainly be more efficient.
+ \item With respect to user access rights, KAC is a static scheme in the sense that once a user is in possession of the aggregate key corresponding to a subset of files from data owner, the owner cannot dynamically revoke the permission of the client for accessing one or more updated files. Since dynamic changes in access rights is extremely common in online data storage, this scenario needs to be tackled. 
+ \item The public key extension of KAC proposed in \cite{chu2014key} is extremely cumbersome and resource consuming since registration of each new public key-private key pair requires the number of classes to be extended by the original number of classes.
+  
+ \end{enumerate}
+ 
+ \begin{figure}[!t]
+\centering
+\captionsetup{font=scriptsize}
+\includegraphics[scale=0.2]{Figs/KeyAgg.png}
+\caption{Example of Online Data Sharing}
+\label{fig:intro}
+\end{figure}
+
+% The security assumption of KAC seems to be the Bilinear Diffie Hellman Exponent (BDHE) assumption \cite{miller1986use}; however no concrete proofs of security are provided by the authors. It is a well known fact that cryptographic schemes having BDHE as their security assumption are more secure and efficiently implementable over additive elliptic curve subgroups as compared to multiplicative groups. Recent reports from the NIST \cite{NIST2009} state that RSA over multiplicative groups for a key size of $1024$ bits has the same security as RSA over additive elliptic curve groups with a key size of only $160$ bits. Hence implementing key-aggregate schemes over elliptic curve subgroups are expected to provide significant improvements in terms of performance and security at the same time.  The other drawback of KAC is that it is static in nature, meaning that once an user has gained access to the aggregate key for a given subset of ciphertext classes, the scheme cannot revoke her access rights without entirely 
+altering the overall set-up, which is extremely expensive and may not always be practical. Moreover, the public key extension to the KAC scheme proposed in the same work is wasteful in terms of increase in the number of ciphertext classes. 
+
+
+There exist many alternative public and private key cryptographic schemes in literature for secure online data sharing. These include hierarchical encryption \cite{akl1983cryptographic,chick1990flexible,tzeng2002time,ateniese2012provably,sandhu1988cryptographic,sun2004scalable,king2015centralized,atallah2009dynamic}, proxy re-encryption \cite{ateniese2006improved,liu2011reliable} and compact key identity-based encryption \cite{guo2007identity,guo2008multi}. While many of these schemes focus on key aggregation in some form or the other, very few have the ability to provide constant size keys to decrypt an arbitrary number of encrypted entities. We highlight the contributions of this work below.
+
+
+\noindent{\textbf{Contributions:}} In this paper, we first propose a key-aggregate scheme on additive elliptic subgroups that delegate decryption rights to multiple ciphertext classes using a single constant sized key. The scheme is dynamic in nature, that is, it allows the data owner to revoke access rights of users without having to change the entire set-up, unlike in the existing KAC scheme. We also provide a formal proof of security for our proposed scheme. We then generalize this scheme into a two-level construction that allows flexible public key extension and maintains constant ciphertext size, while avoiding many of the pitfalls of earlier hierarchical schemes. We further extend the generalized scheme to allow using popular and efficiently implementable elliptic curve pairing schemes. We compare the time and space requirements of the proposed generalized scheme under various operating configurations. We also compare the performance of our proposed scheme, in terms of key size and resource utilization,
+ with that of other existing schemes in literature.
+
+\noindent{\textbf{Organization:}} The rest of the paper is organized as follows. Section \ref{sec:prelims} provides a description of the complexity assumptions used to prove the semantic security of our proposed schemes. We describe the proposed dynamic key-aggregate scheme and provide a proof of semantic security in Section \ref{sec:proposal}. We then present a more generalized two-tiered construction of the scheme for efficient public key extension in Section \ref{sec:general}. A further extension for the generalized scheme that allows using efficiently implementable pairings such as Tate pairings is discussed in Section \ref{sec:extended}. Experimental results using Tate pairings based implementations of the extended scheme are presented in Section \ref{sec:results}. Finally Section \ref{sec:conclusions} concludes the paper.  
+
+

@@ -1,0 +1,77 @@
+\documentclass[10pt,journal,compsoc]{IEEEtran}
+% \usepackage[margin=1.3in]{geometry}
+% \addtolength{\topmargin}{-.2in}
+% \addtolength{\topmargin}{-.2in}
+\usepackage{amssymb}
+\usepackage{amsmath,amsthm}
+\usepackage{url}
+%\usepackage{tabularx}
+\usepackage[table]{xcolor}
+\usepackage{color}
+\usepackage{caption}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+% \usepackage{algorithm2e}
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\usepackage{comment}
+\usepackage{mathrsfs} 
+\usepackage{subcaption}
+\usepackage{threeparttable}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{mathrsfs} 
+\usepackage{booktabs}
+
+\newtheorem{Theorem}{Theorem}
+\newtheorem{Definition}{Definition}
+\newtheorem{Observation}{Observation}
+
+
+\title{Scalable Key-Aggregate Cryptosystem for Secure Online Data Sharing on the Cloud}
+\begin{document}
+% 
+% \author{}
+% \institute{}
+
+\author{Sikhar Patranabis, Yash Shrivastava and Debdeep Mukhopadhyay
+\\Department of Computer Science and Engineering\\ Indian Institute of Technology Kharagpur
+\\\{sikhar.patranabis, yash.shrivastava, debdeep\}@cse.iitkgp.ernet.in}
+\maketitle
+% \toctitle{Lecture Notes in Computer Science}
+% \tocauthor{Authors' Instructions}
+
+
+\begin{abstract}
+
+Online data sharing for increased productivity and efficiency is one of the primary requirements today for any organization. The advent of cloud computing has pushed the limits of sharing across geographical boundaries, and has enabled a multitude of users to contribute and collaborate on shared data. However, protecting online data is critical to the success of the cloud, which leads to the requirement of efficient and secure cryptographic schemes for the same. Data owners would ideally want to store their data/files online in an encrypted manner, and delegate decryption rights for some of these to users, while retaining the power to revoke access at any point of time. An efficient solution in this regard would be one that allows users to decrypt multiple classes of data using a single key of constant size that can be efficiently broadcast to multiple users. In this paper, we address this problem by proposing  a dynamic, scalable and efficient key aggregate encryption scheme with provable security and user revocation properties. We lay special focus on how the scheme can be actually deployed on the cloud for multiple data owners and data users. We present simulation results to prove the efficiency of the scheme and compare its performance with other existing cryptosystems for online data sharing in literature.
+
+\begin{IEEEkeywords}
+ Cloud Computing, Data Sharing, Data Security, Key-Aggregate Cryptosystem, Provable Security, Scalability, Revocation
+\end{IEEEkeywords}
+
+% \noindent{\textbf{Keywords:}} Key-Aggregate Cryptoystem, Online data sharing, Semantic security, Dynamic access rights
+\end{abstract}
+
+\input{Source_TDSC/Introduction}
+\input{Source_TDSC/Prelims}
+\input{Source_TDSC/Proposal}
+\input{Source_TDSC/Results}
+\input{Source_TDSC/Applications}
+\input{Source_TDSC/TwoTier}
+\input{Source_TDSC/CCASecure}
+% \input{Source_TDSC/Hierarchical}
+
+
+\input{Source_TDSC/Conclusions}
+
+\begin{scriptsize}
+\bibliographystyle{unsrt}
+\bibliography{bib/KeyAggregate}
+\end{scriptsize}
+
+% \newpage
+% \input{Source_TDSC/Appendix.tex}
+
+
+\end{document}

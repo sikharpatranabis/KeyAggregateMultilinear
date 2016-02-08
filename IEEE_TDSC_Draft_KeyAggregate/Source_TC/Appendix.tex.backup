@@ -1,0 +1,368 @@
+\appendix
+
+\section{Popular Alternative Encryption Schemes for Online Data Storage}
+\label{app_sec:relwork}
+
+In this section we present a brief overview of public and private key cryptographic schemes in literature for secure online data sharing. While many of them focus on key aggregation in some form or the other, very few have the ability to provide constant size keys to decrypt an arbitrary number of encrypted entities.
+
+\subsection{Hierarchical Encryption}
+\label{subsec:hierarchy}
+
+One of the most popular techniques for access control in online data storage is to use a pre-defined hierarchy of secret keys \cite{akl1983cryptographic,chick1990flexible,tzeng2002time,ateniese2012provably} in the form of a tree-like structure, where access to the key corresponding to any node implicitly grants access to all the keys in the subtree rooted at that node. For instance, \cite{sandhu1988cryptographic} uses repeated evaluations of a pseudo-random function/block cipher on a fixed secret to generate a tree hierarchy of symmetric keys. Some more advanced schemes \cite{sun2004scalable,king2015centralized,atallah2009dynamic} extend access control to cyclic and acyclic graphs. A major disadvantage of hierarchical encryption schemes is that granting access to only a selected set of branches within a given subtree warrants an increase in the number of granted secret keys. This in turn blows up the size of the key shared. Thus while hierarchical cryptosystems provide a neat key delegation mechanism when 
+all files in a given branch is to be shared, its efficiency drops drastically as the complexity of the delegation increases.
+
+\subsection{Compact Key Symmetric Encryption}
+\label{subsec:symmetric}
+
+Compact key encryption for the symmetric key setting has been used in \cite{benaloh2009patient,benaloh2009key} to solve the problem of concisely transmitting  large number of keys in the broadcast scenario. The basic methodology is to divide the entire ciphertext space into a finite set of classes, followed by a constant size aggregate key generation for the set of classes to be delegated. This scheme thus solves the problem of multi-class delegation faced by hierarchical schemes. However, symmetric key sharing via a secured channel is costly and not always practically viable for many applications on the cloud. Some other schemes in the symmetric key setting also attempt to reduce the key size \cite{alomair2009information}, but they are not aimed at decryption key delegation and are hence not very relevant to the present discussion.
+
+\subsection{Compact Key Identity-Based Encryption}
+\label{subsec:IBE}
+
+Identity-Based Encryption (IBE) is a public key-based encryption scheme in which the public key for any user is an identity-string corresponding to that user. Proposed initially in \cite{shamir1985identity}, IBE was concretized by the proposition of two very widely cited and popular IBEs - The Boneh-Franklin scheme  \cite{boneh2003identity} and Cocks' encryption scheme \cite{cocks2001identity}. An IBE system comprises of a trusted private key generator that holds a master-secret key and issues a secret key to each user based on the user identity. Each user receives a message that has been encrypted using her id and some public parameters, and can decrypt the same using the secret key allotted to her by the trusted party. Compact key IBEs have been proposed in \cite{guo2007identity} and \cite{guo2008multi}. The former approach involves the use of random oracles while the latter shuns the use of oracles. Both these schemes allow aggregation of keys; however each key must come from a different identity division.
+ Fuzzy IBE \cite{sahai2005fuzzy} allows for a single compact key to decrypt multiple ciphertexts, but they must have been encrypted under a closed set of identities, and the scheme does not work in practical scenarios for arbitrary identities. 
+
+\subsection{Attribute Based Encryption}
+\label{subsec:ABE}
+
+Attribute-based encryption (ABE) \cite{goyal2006attribute,bethencourt2007ciphertext,chase2007multi} allows each user to be identified by a set of attributes. An encrypted file stored in cloud can only be decrypted by an user who has access to the corresponding secret key. The secret key is securely transmitted to the user who satisfies the access control policies set by the data owner. A major drawback of this scheme is that each time the access right to a particular user is revoked the entire ciphertext has to be recrypted in the cloud. The idea of ABE has been extended to shared keys for user groups in \cite{li2013scalable} with the focus on collusion resistance and not on key size compression.  
+
+\subsection{Proxy Re-Encryption}
+\label{subsec:PBE}
+
+Proxy re-encryption is another technique to achieve fine-grained access control and scalable user revocation in unreliable clouds \cite{ateniese2006improved}. In this method the data owner and a semi trusted proxy cloud share a secret key in advance, with which the cloud can be delegated to re-encrypt data on behalf of the data owner. The semi-trusted proxy re-encrypts the data using the data owner's public key, thus converting it into a file that can in turn be decrypted by the secret key of the client. In the whole process, the proxy has no knowledge of the data being sent. An extension to this technique has been proposed in \cite{liu2011reliable} that allows the cloud servers to automatically re-encrypt data based on their internal clocks, without any external trigger. However, proxy re-encryption essentially transfers the responsibility for secure key storage from the delegatee to the proxy and is susceptible to collusion attacks. It is also important to ensure that the transformation key of the proxy is 
+well protected, and every decryption would require a separate interaction with the proxy, which is inconvenient for applications on the cloud.
+
+\subsection{Key-Aggregate Cryptosystems (KAC)}
+\label{subsec:aggregate}
+
+The authors of \cite{chu2014key} proposes an efficient scheme, namely KAC, that allows secure and efficient sharing of data on the cloud. The scheme is a public-key cryptosystem that uses constant size ciphertexts such that efficient delegation of decryption rights for any set of ciphertexts are possible. When a user demands for a particular subset of the available classes of data, the data owner computes an aggregate key which integrates the power of the individual decryption keys corresponding to each class of data. The security assumption of KAC seems to be the Bilinear Diffie Hellman Exponent (BDHE) assumption \cite{miller1986use}; however no concrete proofs of security are provided by the authors. It is a well known fact that cryptographic schemes having BDHE as their security assumption are more secure and efficiently implementable over additive elliptic curve subgroups as compared to multiplicative groups. Recent reports from the NIST \cite{NIST2009} state that RSA over multiplicative groups for a key 
+size of $1024$ bits has the same security as RSA over additive elliptic curve groups with a key size of only $160$ bits. Hence implementing key-aggregate schemes over elliptic curve subgroups are expected to provide significant improvements in terms of performance and security at the same time.  The other drawback of KAC is that it is static in nature, meaning that once an user has gained access to the aggregate key for a given subset of ciphertext classes, the scheme cannot revoke her access rights without entirely altering the overall set-up, which is extremely expensive and may not always be practical. Moreover, the public key extension to the KAC scheme proposed in the same work is wasteful in terms of increase in the number of ciphertext classes. 
+
+% However, KAC suffers from the following major drawbacks:
+% 
+% \begin{enumerate}
+%  \item KAC uses bilinear non-degenerate pairings over multiplicative groups. Recent reports from NIST \cite{NIST2009} have demonstrated that the security of RSA over multiplicative cyclic groups for a key size of $1024$ bits has the same security as RSA over additive elliptic curve groups with a key size of $160$ bits. Thus defining KAC over multiplicative groups is possibly not the most computationally efficient scheme; an adaptation of the scheme to additive elliptic curve group would certainly be more efficient.
+%  \item KAC is a static scheme in the sense that once a user is in possession of the aggregate key corresponding to a subset of files from data owner, the owner cannot dynamically revoke the permission of the client for accessing one or more updated files. Since dynamic changes in access rights is extremely common in shared data storage on cloud, this scenario needs to be tackled. 
+%  \item The public key extension of KAC proposed in \cite{chu2014key} is extremely cumbersome and resource consuming since registration of each new public key-private key pair requires the number of classes to be extended by th original number of classes.
+%  \end{enumerate}
+
+% In this work, we aim to scheme for online data sharing that overcomes to a large extent all of the above mentioned drawbacks of KAC.
+
+% In this paper we aim to present a scheme the above drawbacks of KAC. We also present security proofs for our proposed scheme. We then further extend the scheme using the ideas presented in \cite{} to make it secure against chosen ciphertext attacks.
+
+
+
+
+\section{Bilinear Maps and the BDHE on Elliptic Curves}
+\label{app_sec:prelims}
+
+\subsection{Bilinear Pairings}
+
+We  present a brief outline of the necessary facts about bilinear pairings on elliptic curves that are used in the forthcoming discussion. Let $\mathbb{K}=F_{p}$ be a field of prime order $p$, and let an elliptic curve over $\mathbb{K}$ be defined by the Weierstrass \cite{miller1986use} equation:
+\begin{equation*}
+ E(\mathbb{K}) : y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_4x + a_6
+\end{equation*}
+
+where $a_1, a_2, a_3, a_4, a_5 \in \mathbb{K}$. The curve must be non-singular. In particular, if $char(\mathbb{K})\neq2,3$, the equation takes the special form $y^2=x^3+a_4x+a_6$ with $4{a_4}^3+27{a_6}^2\neq0$. Let $\overline{K} = F_{p^k}$ be the smallest extension field of $K=F_p$ that contains the $q^{th}$ roots of unity. Here, $k$ is called the embedding degree with respect to $K$ and $q$. We denote the set of $q$-torsion points on the elliptic curve as $E(\overline{K})[q]$ ($q$-torsion points essentially have order $q$).
+
+A pairing is a bilinear map defined over elliptic curve subgroups. Let $\mathbb{G}_{1}$ and $\mathbb{G}_{2}$ be two such additive cyclic subgroups of the same prime order $q$ and let $\mathbb{G}_{T}$ be a multiplicative group, also of order $q$ with identity element $1$. Let $P$ and $Q$ be generators for $\mathbb{G}_1$ and $\mathbb{G}_2$ respectively. A pairing $\hat{e'}:\mathbb{G}_1 \times \mathbb{G}_2\longrightarrow\mathbb{G}_T$ satisfying the following the following properties is said to be a bilinear mapping. 
+
+\begin{itemize}
+ \item Bilinear: $\forall P_1,P_2 \in \mathbb{G}_1, Q_1,Q_2\in\mathbb{G}_2$, and $a,b \in \mathbb{Z}$, we have the following:
+ \begin{eqnarray}
+   \hat{e'}(aP_1,bQ_1) &= \hat{e'}(P_1,Q_1)^{ab}\nonumber\\
+   \hat{e'}(P_1+P_2,Q_1) &= \hat{e'}(P_1,Q_1)\hat{e'}(P_2,Q_1)\nonumber\\
+   \hat{e'}(P_1,Q_1+Q_2) &= \hat{e'}(P_1,Q_1)\hat{e'}(P_1,Q_2)\nonumber
+ \end{eqnarray}
+ \item Non-degeneracy: If for all $P_i \in \mathbb{G}_1, \hat{e'}(P_1,Q_1)=1$ then $Q_1=\mathcal{0}$. Alternatively, if $P$ and $Q$ be the generators for $\mathbb{G}_1$ and $\mathbb{G}_2$ respectively where neither group only contains the point at infinity, then $\hat{e'}(P,Q)\neq1$ 
+ \item Computability: There exists an efficient algorithm to compute $\hat{e'}(R,S)\forall R \in \mathbb{G}_1, S\in\mathbb{G}_2$
+\end{itemize}
+
+It is important to note that $\mathbb{G}_1$ and $\mathbb{G}_2$ could be identical groups as well.
+
+% \subsection{The Decisional Bilinear Diffie-Hellman Problem (DBDH)}
+
+% The three-party Diffie-Hellman key agreement \cite{} lends itself to the decisional form - the decisional bilinear Diffie-Hellman (DBDH) problem. DBDH requires a participant to determine if some target element is either a special combination of given parameters or a random element
+
+% Let $\mathbb{G}$ be an additive cyclic elliptic curve subgroup of prime order $q$, where $2^{\lambda}\leq q \leq 2^{\lambda + 1}$, such that the point $P$ is a generator for $\mathbb{G}$. Also, let $\mathbb{G}_{T}$ be a multiplicative group of order $q$ with identity element $1$. We assume that there exists an efficiently computable bilinear pairing $\hat{e'}:\mathbb{G} \times \mathbb{G}\longrightarrow\mathbb{G}_T$. The DBDH problem is defined as follows.  Given $aP, bP, cP \in \mathbb{G}$ where $a,b,c\in \mathbb{Z}_q$, and $T\in \mathbb{G}_T$, determine if $T=\hat{e'}(P,P)^{abc}$. 
+
+% \subsection{The Bilinear Diffie-Hellman Exponent Problem (BDHE)}
+
+
+
+
+
+\section{Relation between the Complexity Assumption Statements 1 and 2}
+\label{app_sec:hardness}
+
+We prove here that the decision $(\tau,\epsilon,l,l)$-BDHE assumption for elliptic curves holds in equi-prime order subgroups $(\mathbb{G}_1,\mathbb{G}_2)$ if the decision $(\tau,\epsilon,l)$-BDHE assumption for elliptic curves holds in $\mathbb{G}_1$. Let $\hat{e'}:\mathbb{G}_1\times \mathbb{G}_1\longrightarrow\mathbb{G}_T$ and $\hat{e''}:\mathbb{G}_1\times \mathbb{G}_2\longrightarrow\mathbb{G}_T$ be bilinear pairings. Also, let $P$ and $Q$ are the generators for $\mathbb{G}_1$ and $\mathbb{G}_2$ respectively. We first make the following observation. 
+
+\noindent{\textbf{Observation 1:}} Since $G_1$ and $G_2$ have the same prime order (say $q$), there exists a bijection $\varphi:\mathbb{G}_1\longrightarrow\mathbb{G}_2$ such that $\varphi(aP)=aQ$ for all $a\in\mathbb{Z}_q$. Similarly, since $\mathbb{G}_T$ also has order $q$, there also exists a mapping $\phi:\mathbb{G}_T\longrightarrow\mathbb{G}_T$ such that $\phi(\hat{e'}(H_1,H_2))=\hat{e''}(H_1,\varphi(H_2))$ for all $H_1,H_2 \in \mathbb{G}_1$.
+
+Now, we assume $\mathcal{A}$ to be a $\tau$-time adversary that has advantage greater than $\epsilon$ in solving the decision $(l,l)$-BDHE problem over equi-prime order subgroups $(\mathbb{G}_1,\mathbb{G}_2)$. We build an algorithm $\mathcal{B}$ that has advantage at least $\epsilon$ in solving the $l$-BDHE problem in $\mathbb{G}_1$. Algorithm $\mathcal{B}$ takes as input a random $l$-BDHE challenge $(P,H,Y_{(P,\alpha,l)},Z)$ where $Z$ is either $\hat{e'}(P_{l+1},H)$ or a random value in $\mathbb{G}_T$. $\mathcal{B}$ computes $Y'_{Q,\alpha,l}$ by setting $Q_i=\varphi(P_i)$ for $i=1,2,\cdots,l$. $\mathcal{B}$ also computes $H'=\varphi(H)\in\mathbb{G}_2$ and $Z'=\phi(Z)\in\mathbb{Z}$. then randomly chooses a bit $b\in{(0,1)}$ and sets $T_b$ as $Z'$ and $T_{1-b}$ as a random element in $\mathbb{G}_T$. The challenge given to $\mathcal{A}$ is 
+$((P,Q,H',Y_{(P,\alpha,l)},Y'_{Q,\alpha,l}),T_0,T_1)$. Quite evidently, when $Z=\hat{e'}(P_{l+1},H)$ (i.e. the input to $\mathcal{B}$ is a $l$-BDHE tuple), then $((P,Q,H',Y_{(P,\alpha,l)},Y'_{Q,\alpha,l}),T_0,T_1)$ is a valid challenge to $A$. This is because in such a case, $K_b=Z'=\phi(Z)=\phi(\hat{e'}(P_{l+1},H))=\hat{e''}(P_{l+1},H')$. On the other hand, if $Z$ is a random element in $\mathbb{G}_T$ (i.e. the input to $\mathcal{B}$ is a random tuple), then $K_0$ and $K_1$ are just random independent elements of $\mathbb{G}_T$.
+
+$\mathcal{A}$ outputs a guess $b'$ of $b$. If $b' = b$, $\mathcal{B}$ outputs $0$ (indicating that $Z = \hat{e'}(P_{l+1},H)$). Otherwise, it outputs $1$ (indicating that $Z$ is random in $\mathbb{G}_T$). We now analyze the probability that $\mathcal{B}$ gives a correct output. If $(P,H,Y_{(P,\alpha,l)},Z)$ is sampled from $R$-BDHE, $Pr[\mathcal{B}(G,H,Y_{(P,\alpha,l)},Z)=0]$ = $\frac{1}{2}$, while if $(P,H,Y_{(P,\alpha,l)},Z)$ is sampled from $L$-BDHE, $|Pr[\mathcal{B}(G,H,Y_{(P,\alpha,l)},Z)]-\frac{1}{2}|$ $\geq$ $\epsilon$. So, the probability that $\mathcal{B}$ outputs correctly is at least $\epsilon$, which in turn implies that $\mathcal{B}$ has advantage at least $\epsilon$ in solving the $l$-BDHE problem. This concludes the proof.
+
+\section{Semantic Security of Key-Aggregate Schemes}
+\label{app_sec:security}
+
+We now define the semantic security of a key-aggregate encryption system against an adversary using the following game between an attack algorithm $\mathcal{A}$ and a challenger $\mathcal{B}$. Both $\mathcal{A}$ and $\mathcal{B}$ are given $n$, the total number of ciphertext classes, as input. The game proceeds through the following stages.
+
+\begin{enumerate}
+ \item \textbf{Init:} Algorithm $\mathcal{A}$ begins by outputting a set $\mathcal{S} \subset \{1,2,\cdots,n\}$ of receivers that it wants to
+attack.  For each ciphertext class $i\in\mathcal{S}$, challenger $\mathcal{B}$ performs the \textbf{SetUp}-$\mathbf{i}$, \textbf{Challenge}-$\mathbf{i}$ and \textbf{Guess}-$\mathbf{i}$ steps. Note that the number of iterations is polynomial in $|S|$.
+
+ \item \textbf{SetUp}-$\mathbf{i}$: Challenger $\mathcal{B}$ generates the public $param$, public key $PK$, the access parameter $U$, and provides them to $\mathcal{A}$. In addition, $\mathcal{B}$ also generates and furnishes $\mathcal{A}$ with the aggregate key $K_{\overline{\mathcal{S}}}$ that allows $\mathcal{A}$ to decrypt any ciphertext class $j\notin\mathcal{S}$. 
+ \item \textbf{Challenge}-$\mathbf{i}$: Challenger $\mathcal{B}$ performs an encryption of the secret message $m_i$ belonging to the $i^{th}$ class to obtain the ciphertext $\mathcal{C}$. Next, $\mathcal{B}$ picks a random $b\in{(0,1)}$. It sets $T_b = m_i$ and picks a random $T_{1- b}$ from the set of possible plaintext messages. It then gives $(\mathcal{C}, T_0, T_1)$ to algorithm $\mathcal{A}$ as a challenge.
+
+ 
+ \item\textbf{Guess}-$\mathbf{i}$: The adversary $\mathcal{A}$ outputs a guess $b'$ of $b$. If $b' = b$, $\mathcal{A}$ wins. Otherwise, the game moves on to the next ciphertext class in $\mathcal{S}$ until all ciphertext classes in $\mathcal{S}$ are exhausted.
+\end{enumerate}
+% \vspace{-2mm}
+If $\mathcal{A}$ fails to predict correctly for all ciphertext classes in $\mathcal{S}$, then $\mathcal{A}$ loses the game. Let $AdvKAC_{\mathcal{A},n}$ denote the probability that $\mathcal{A}$ wins the game when the challenger is given $n$ as input. We say that a key-aggregate encryption system is $(\tau,\epsilon,n)$ semantically secure if for all $\tau$-time algorithms $\mathcal{A}$ we have that $|AdvKAC_{\mathcal{A},n}-\frac{1}{2}| < \epsilon$ where $\epsilon$ is a very small quantity. 
+
+The above mentioned game could be looked upon as analogous to a practical attack scenario where users with decryption rights to ciphertext classes not in $\mathcal{S}$, launch a combined attack on $\mathcal{S}$. The adversary $\mathcal{A}$ chooses the subset $\mathcal{S}$ of ciphertext classes she wishes to attack. Note that the adversary $\mathcal{A}$ is non-adaptive; it chooses $\mathcal{S}$, and obtains the aggregate decryption key for all ciphertext classes outside of $\mathcal{S}$, before it even sees the public parameters $param$ or the public key $PK$. An adaptive adversary could request ciphertext classes adaptively. We prove the security of our proposed schemes in the non-adaptive settings described above. We also note that our definition of semantic security for key-aggregate cryptosystems is similar to that for broadcast encryption systems proposed in \cite{boneh2005collusion}.
+
+ 
+
+\section{Proof of Correctness of the Generalized Key-Aggregate Encryption Scheme}
+\label{app_sec:correct_general}
+
+In this section, we present a proof of correctness for the generalized key-aggregate encryption scheme. Let $\hat{m}$ be the output message produced by decryption corresponding to the plaintext $m$. We assume that the output is not $\bot$. 
+
+\begin{scriptsize}
+\begin{equation}
+\begin{split}
+ \hat{m} &= c_3\frac{\hat{e'}(k^{i_1}_{\mathcal{S}}+\sum_{(i_1,j_2)\in\mathcal{S},j_2\neq i_2}P_{n_2+1-j_2+i_2},U+c_1)}{\hat{e'}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2},c_2)}\\
+  &= c_3\frac{\hat{e'}(\sum_{(i_1,j_2)\in \mathcal{S}}{\gamma_{i_1}}P_{n_2+1-j_2} + \sum_{(i_1,j_2)\in\mathcal{S},j_2\neq i_2}P_{n_2+1-j_2+i_2},t'P)}{\hat{e'}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2},t'(pk_{i_1}+P_{i_2})}\\
+  &= c_3\frac{\hat{e'}(\sum_{(i_1,j_2)\in \mathcal{S}}{\gamma_{i_1}}P_{n_2+1-j_2},t'P)\hat{e'}(\sum_{(i_1,j_2)\in\mathcal{S}}(P_{n_2+1-j_2+i_2})-P_{n_2+1},t'P)}{\hat{e'}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2},t'pk_{i_1})\hat{e'}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2},t'P_{i_2})}\\
+  &= c_3\frac{\hat{e'}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2+i_2},t'P)}{\hat{e'}(P_{n_2+1},t'P)\hat{e'}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2},t'P_{i_2})}\\
+  &= c_3\frac{\hat{e'}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2+i_2},t'P)}{\hat{e'}(P_{n_2+1},t'P)\hat{e'}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2+i_2},t'P)}\\
+  &= m\frac{\hat{e'}(P_{n_2},t'P_1)}{\hat{e'}(P_{n_2+1},t'P)}\\
+  &= m
+\end{split}  
+\end{equation}
+\end{scriptsize}
+
+
+\section{Proof of Semantic Security of the Generalized Key-Aggregate Encryption Scheme}
+\label{app_sec:proof_general}
+
+\subsection{The Reduced Generalized Scheme}
+
+As in the original scheme, we may analogously define a reduced version of the generalized encryption scheme. We note that once again, in the generalized scheme, the ciphertext $\mathcal{C}=(c_1,c_2,c_3)$ output by the $Encypt$ operation essentially embeds the value of $m$ in $c_3$ by multiplying it with $\hat{e'}(P_{n_2},tP_1)$. Consequently, the security of our proposed scheme is equivalent to that of a \emph{reduced} generalized key-aggregate encryption scheme that simply uses the reduced ciphertext $(c_1,c_2)$, the aggregate key $K_{\mathcal{S}}$ and the dynamic access parameter $U$ to successfully transmit and decrypt the value of $\hat{e'}(P_{n_2},t'P_1)=\hat{e'}(P_{n_2+1},t'P)$. We prove the semantic security of this \emph{reduced scheme} parameterized with a given number of ciphertext classes $n_2$ for each instance, which also amounts to proving the semantic security of our original encryption scheme for the same number of ciphertext classes. Note that the proof of security is independent of the 
+number of instances $n_1$ that run in parallel.
+
+\subsection{The Adversarial Model} We make the following assumptions about the adversary $\mathcal{A}$:
+
+\begin{enumerate}
+ \item The adversary has the aggregate key that allows her to access any ciphertext class other than those in the target subset $\mathcal{S}$, that is, she possesses $K_{\overline{\mathcal{S}}}$.
+ \item The adversary has access to the public parameters $param$ and $PK$, and also possesses the dynamic access parameter $U$.
+%  \item The adversary is authorized and and hence 
+\end{enumerate}
+
+
+\subsection{The Security Proof}
+
+The security proof presented here uses the first complexity assumption stated in \ref{subsubsec:asm_1}. Let $\mathbb{G}$ be a bilinear elliptic curve subgroup of prime order $q$ and $G_T$ be a multiplicative group of order $q$. Let $\hat{e'}:\mathbb{G} \times \mathbb{G}\longrightarrow\mathbb{G}_T$ be a bilinear non-degenerate pairing. For any pair of positive integers $n_2,n' (n'>n_2)$ our proposed $n_2$-generalized reduced key-aggregate encryption scheme over elliptic curve subgroups is $(\tau,\epsilon,n')$ semantically secure if the decision $(\tau,\epsilon,n_2)$-BDHE assumption holds in $\mathbb{G}$. We now prove this statement below.
+
+\textbf{\noindent{Proof:}} Let for a given input $n'$, $\mathcal{A}$ be a $\tau$-time adversary that has advantage greater than $\epsilon$ for the \emph{reduced scheme} parameterized with a given $n_2$. We build an algorithm $\mathcal{B}$ that has advantage at least $\epsilon$ in solving the $n_2$-BDHE problem in $\mathbb{G}$. Algorithm $\mathcal{B}$ takes as input a random $n_2$-BDHE challenge $(P,H,Y_{(P,\alpha,n_2)},Z)$ where $Z$ is either $\hat{e'}(P_{n_2+1},H)$ or a random value in $\mathbb{G}_T$. Algorithm $\mathcal{B}$ proceeds as follows.
+
+\begin{enumerate}
+ \item \textbf{Init:} Algorithm $\mathcal{B}$ runs $\mathcal{A}$ and receives the set $\mathcal{S}$ of ciphertext classes that $\mathcal{A}$ wishes to be challenged on. For each ciphertext class $(i_1,i_2)\in\mathcal{S}$, $\mathcal{B}$ performs the \textbf{SetUp}-$\mathbf{(i_1,i_2)}$, \textbf{Challenge}-$\mathbf{(i_1,i_2)}$ and \textbf{Guess}-$\mathbf{(i_1,i_2)}$ steps. Note that the number of iterations is polynomial in $|S|$. 
+ 
+ \item \textbf{SetUp}-$\mathbf{(i_1,i_2)}$: $\mathcal{B}$ should generate the public $param$, public key $PK$, the access parameter $U$, and the aggregate key $K_{\overline{\mathcal{S}}}$. For the iteration corresponding to ciphertext class $(i_1,i_2)$, they are generated as follows.
+ \begin{itemize}
+  \item $param$ is set as $(P,Y_{P,\alpha,n_2})$.
+  \item Randomly generate $u_1,u_2,\cdots,u_{n_1} \in \mathbb{Z}_q$. Then, set\\ $PK$=$(pk_1,pk_2,\cdots,pk_{n_1})$, where $pk_{j_1}$ is set as $u_{j_1}P - P_{i_2}$ for $j_1=1,2,\cdots,n_1$.
+  \item $K_{\overline{\mathcal{S}}}$ is set as $(k^{1}_{\overline{\mathcal{S}}},k^{2}_{\overline{\mathcal{S}}},\cdots,k^{n_1}_{\overline{\mathcal{S}}})$ where $k^{j_1}_{\overline{\mathcal{S}}}$ = $\sum_{(j_1,j_2)\notin\mathcal{S}}({u}P_{n_2+1-j_2}-(P_{n_2+1-j_2+i_2}))$ for $j_1=1,2,\cdots,n_1$. Note that this implies $k^{j_1}_{\overline{\mathcal{S}}}$ is equal to $\sum_{(j_1,j_2)\notin\mathcal{S}}\alpha^{n_2+1-j_2}pk_{j_1}$, as is supposed to be as per the scheme specification. Note that $\mathcal{B}$ knows that $(i_1,i_2)\notin \overline{\mathcal{S}}$, and hence has all the resources to compute this aggregate key for $\overline{\mathcal{S}}$. 
+  \item $U$ is set as some random element in $\mathbb{G}$.
+ \end{itemize}
+ 
+ Note that since $P$, $\alpha$, $U$ and the $u_{j_1}$ values are chosen uniformly at random, the public key has an identical distribution to that in the actual construction.
+ 
+ \item \textbf{Challenge}-$\mathbf{(i_1,i_2)}$: To generate the challenge for the ciphertext class $(i_1,i_2)$, $\mathcal{B}$ computes $(c_1,c_2)$ as $(H-U,u_{i_1}H)$. It then randomly chooses a bit $b\in{(0,1)}$ and sets $T_b$ as $Z$ and $T_{1-b}$ as a random element in $\mathbb{G}_T$. The challenge given to $\mathcal{A}$ is $((c_1,c_2),T_0,T_1)$. 
+ 
+ We claim that when $Z=\hat{e'}(P_{n_2+1},H)$ (i.e. the input to $\mathcal{B}$ is a $n_2$-BDHE tuple), then $((c_1,c_2),T_0,T_1)$ is a valid challenge to $A$. We prove this claim here. we point out that $P$ is a generator of $\mathbb{G}$ and so $H=t'P$ for some $t'\in\mathbb{Z}_q$. Putting $H$ as $t'P$ gives us the following:
+ \begin{itemize}
+  \item  $U=tP$ for some $t\in\mathbb{Z}_q$
+  \item $c_1=H-U=(t'-t)P=rP$ for $r=t'-t$
+  \item $c_2=u_{i_1}H=(u_{i_1})t'P=t'(u_{i_1}P)=t'(u_{i_1}P-P_{i_2}+P_{i_2})=t'(pk_{i_1}+P_{i_2})$
+  \item $K_b=Z=\hat{e'}(P_{n_2+1},H)=\hat{e'}(P_{n_2+1},t'P)$
+ \end{itemize}
+ On the other hand, if $Z$ is a random element in $\mathbb{G}_T$ (i.e. the input to $\mathcal{B}$ is a random tuple), then $K_0$ and $K_1$ are just random independent elements of $\mathbb{G}_T$.
+ 
+ \item\textbf{Guess}-$\mathbf{(i_1,i_2)}$: The adversary $\mathcal{A}$ outputs a guess $b'$ of $b$. If $b' = b$, $\mathcal{B}$ outputs $0$ (indicating that $Z = \hat{e'}(P_{n+1},H)$), and terminates. Otherwise, it goes for the next ciphertext class in $\mathcal{S}$.
+\end{enumerate}
+If after $|\mathcal{S}|$ iterations, $b' \neq b$ for each ciphertext class $(i_1,i_2)\in\mathcal{S}$, the algorithm $\mathcal{B}$ outputs $0$ (indicating that $Z = \hat{e'}(P_{n_2+1},H)$). Otherwise, it outputs $1$ (indicating that $Z$ is random in $\mathbb{G}_T$). We now analyze the probability that $\mathcal{B}$ gives a correct output. If $(P,H,Y_{(P,\alpha,n_2)},Z)$ is sampled from $R$-BDHE, $Pr[\mathcal{B}(G,H,Y_{(P,\alpha,n_2)},Z)=0]$ = $\frac{1}{2}$, while if $(P,H,Y_{(P,\alpha,n_2)},Z)$ is sampled from $L$-BDHE, $|Pr[\mathcal{B}(G,H,Y_{(P,\alpha,n_2)},Z)]-\frac{1}{2}|$ $\geq$ $\epsilon$. So, the probability that $\mathcal{B}$ outputs correctly is at least $1-(\frac{1}{2}-\epsilon)^{|\mathcal{S}|} \geq \frac{1}{2}+\epsilon$. Thus $\mathcal{B}$ has advantage at least $\epsilon$ in solving the $n_2$-BDHE problem. This concludes the proof.
+
+
+\section{Proof of Correctness of the Extended Key-Aggregate Encryption Scheme:}
+\label{app_sec:correct_extended}
+
+In this section, we present a proof of correctness for the extended key-aggregate encryption scheme. Let $\hat{m}$ be the output message produced by decryption corresponding to the plaintext $m$. We assume that the output is not $\bot$. 
+
+\begin{scriptsize}
+\begin{equation}
+\begin{split}
+ \hat{m} &= c_3\frac{\hat{e''}(k^{i_1}_{\mathcal{S}}+\sum_{(i_1,j_2)\in\mathcal{S},j_2\neq i_2}P_{n_2+1-j_2+i_2},U+c_1)}{\hat{e''}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2},c_2)}\\
+  &= c_3\frac{\hat{e''}(\sum_{(i_1,j_2)\in \mathcal{S}}{\gamma_{i_1}}P_{n_2+1-j_2} + \sum_{(i_1,j_2)\in\mathcal{S},j_2\neq i_2}P_{n_2+1-j_2+i_2},t'Q)}{\hat{e''}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2},t'({pk^2}_{i_1}+Q_{i_2}))}\\
+  &= c_3\frac{\hat{e''}(\sum_{(i_1,j_2)\in \mathcal{S}}{\gamma_{i_1}}P_{n_2+1-j_2},t'Q)\hat{e''}(\sum_{(i_1,j_2)\in\mathcal{S}}(P_{n_2+1-j_2+i_2})-P_{n_2+1},t'Q)}{\hat{e''}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2},\gamma_{i_1}(t'Q))\hat{e''}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2},\alpha^{i_2}(t'Q))}\\
+  &= c_3\frac{\hat{e''}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2+i_2},t'Q)}{\hat{e''}(P_{n_2+1},t'Q)\hat{e''}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2},\alpha^{i_2}(t'Q))}\\
+  &= c_3\frac{\hat{e''}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2+i_2},t'Q)}{\hat{e''}(P_{n_2+1},t'Q)\hat{e''}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2+i_2},t'Q)}\\
+  &= m\frac{\hat{e''}(P_{n_2},t'Q_1)}{\hat{e''}(P_{n_2+1},t'Q)}\\
+  &= m
+\end{split}  
+\end{equation}
+\end{scriptsize}
+
+\section{Proof of Semantic Security of the Extended Key-Aggregate Encryption Scheme}
+\label{app_sec:proof_extended}
+
+\subsection{The Reduced Version of the Extended Key-Aggregate Scheme}
+
+As in the earlier schemes, we define a reduced version of the extension to the generalized encryption scheme. The security of our proposed extended scheme is equivalent to that of a \emph{reduced} scheme that simply uses the reduced ciphertext $(c_1,c_2)$, the aggregate key $K_{\mathcal{S}}$ and the dynamic access parameter $U$ to successfully transmit and decrypt the value of $\hat{e'}(P_{n_2},t'Q_1)=\hat{e'}(P_{n_2+1},t'Q)$. We prove the semantic security of this \emph{reduced scheme} parameterized with a given number of ciphertext classes $n_2$ for each instance, which also amounts to proving the semantic security of our original encryption scheme for the same number of ciphertext classes. Note that the proof of security is independent of the number of instances $n_1$ that run in parallel.
+
+\subsection{The Adversarial Model} We make the following assumptions about the adversary $\mathcal{A}$:
+
+\begin{enumerate}
+ \item The adversary has the aggregate key that allows her to access any ciphertext class other than those in the target subset $\mathcal{S}$, that is, she possesses $K_{\overline{\mathcal{S}}}$.
+ \item The adversary has access to the public parameters $param$, $PK^1$ and $PK^2$, and also possesses the dynamic access parameter $U$.
+%  \item The adversary is authorized and and hence 
+\end{enumerate}
+
+
+\subsection{The Security Proof}
+
+The security proof presented here uses the second complexity assumption stated in \ref{subsubsec:asm_2}. Let $\mathbb{G_1}$ and $\mathbb{G}_2$ be additive elliptic curve subgroups of prime order $q$, and $G_T$ be a multiplicative group of order $q$. Let $\hat{e''}:\mathbb{G}_1 \times \mathbb{G}_2\longrightarrow\mathbb{G}_T$ be a bilinear non-degenerate pairing. We claim that for any pair of positive integers $n_2,n' (n'>n_2)$ our proposed extension to the $n_2$-generalized reduced key-aggregate encryption scheme over elliptic curve subgroups is $(\tau,\epsilon,n')$ semantically secure if the decision $(\tau,\epsilon,n_2,n_2)$-BDHE assumption holds in $(\mathbb{G}_1,\mathbb{G}_2)$. \textbf{As already proved in Appendix \ref{app_sec:hardness}, the decision $(\tau,\epsilon,l,l)$-BDHE assumption for elliptic curves holds in equi-prime order subgroups $(\mathbb{G}_1,\mathbb{G}_2)$ if the decision $(\tau,\epsilon,l)$-BDHE assumption for elliptic curves holds in $\mathbb{G}_1$}. Thus proving the aforementioned 
+claim amounts to proving that our proposed extension to the $n_2$-generalized reduced key-aggregate encryption scheme over elliptic curve subgroups is $(\tau,\epsilon,n')$ semantically secure if the decision $(\tau,\epsilon,l)$-BDHE assumption for elliptic curves holds in $\mathbb{G}_1$. We now prove the claim below.
+
+\textbf{\noindent{Proof:}} Let for a given input $n'$, $\mathcal{A}$ be a $\tau$-time adversary that has advantage greater than $\epsilon$ for the \emph{reduced scheme} parameterized with a given $n_2$. We build an algorithm $\mathcal{B}$ that has advantage at least $\epsilon$ in solving the $(n_2,n_2)$-BDHE problem in $\mathbb{G}$. Algorithm $\mathcal{B}$ takes as input a random $(n_2,n_2)$-BDHE challenge $(P,Q,H,Y_{(P,\alpha,n_2),Y'_{Q,\alpha,n_2}},Z)$ where $Z$ is either $\hat{e''}(P_{n_2+1},H)$ or a random value in $\mathbb{G}_T$. Algorithm $\mathcal{B}$ proceeds as follows.
+
+\begin{enumerate}
+ \item \textbf{Init:} Algorithm $\mathcal{B}$ runs $\mathcal{A}$ and receives the set $\mathcal{S}$ of ciphertext classes that $\mathcal{A}$ wishes to be challenged on. For each ciphertext class $(i_1,i_2)\in\mathcal{S}$, $\mathcal{B}$ performs the \textbf{SetUp}-$\mathbf{(i_1,i_2)}$, \textbf{Challenge}-$\mathbf{(i_1,i_2)}$ and \textbf{Guess}-$\mathbf{(i_1,i_2)}$ steps. Note that the number of iterations is polynomial in $|S|$. 
+ 
+ \item \textbf{SetUp}-$\mathbf{(i_1,i_2)}$: $\mathcal{B}$ should generate the public $param$, public keys $PK^1,PK^2$, the access parameter $U$, and the aggregate key $K_{\overline{\mathcal{S}}}$. For the iteration corresponding to ciphertext class $(i_1,i_2)$, they are generated as follows.
+ \begin{itemize}
+  \item $param$ is set as $(P,Q,Y_{P,\alpha,n_2},Y'_{Q,\alpha,n_2})$.
+  \item Randomly generate $u_1,u_2,\cdots,u_{n_1} \in \mathbb{Z}_q$. Then, set\\ $PK^1$=$({pk^1}_1,{pk^1}_2,\cdots,{pk^1}_{n_1})$, where ${pk^1}_{j_1}$ is set as $u_{j_1}P - P_{i_2}$ for $j_1=1,2,\cdots,n_1$, and set\\ $PK^2$=$({pk^2}_1,{pk^2}_2,\cdots,{pk^2}_{n_1})$, where ${pk^2}_{j_1}$ is set as $u_{j_1}Q - Q_{i_2}$ for $j_1=1,2,\cdots,n_1$
+  \item $K_{\overline{\mathcal{S}}}$ is set as $(k^{1}_{\overline{\mathcal{S}}},k^{2}_{\overline{\mathcal{S}}},\cdots,k^{n_1}_{\overline{\mathcal{S}}})$ where $k^{j_1}_{\overline{\mathcal{S}}}$ = $\sum_{(j_1,j_2)\notin\mathcal{S}}({u}P_{n_2+1-j_2}-(P_{n_2+1-j_2+i_2}))$ for $j_1=1,2,\cdots,n_1$. Note that this implies $k^{j_1}_{\overline{\mathcal{S}}}$ is equal to $\sum_{(j_1,j_2)\notin\mathcal{S}}\alpha^{n_2+1-j_2}{pk^{1}}_{j_1}$, as is supposed to be as per the scheme specification. Note that $\mathcal{B}$ knows that $(i_1,i_2)\notin \overline{\mathcal{S}}$, and hence has all the resources to compute this aggregate key for $\overline{\mathcal{S}}$. 
+  \item $U$ is set as some random element in $\mathbb{G}_2$.
+ \end{itemize}
+ 
+ Note that since $P$, $Q$, $\alpha$, $U$ and the $u_{j_1}$ values are chosen uniformly at random, the public key has an identical distribution to that in the actual construction.
+ 
+ \item \textbf{Challenge}-$\mathbf{(i_1,i_2)}$: To generate the challenge for the ciphertext class $(i_1,i_2)$, $\mathcal{B}$ computes $(c_1,c_2)$ as $(H-U,u_{i_1}H)$. It then randomly chooses a bit $b\in{(0,1)}$ and sets $T_b$ as $Z$ and $T_{1-b}$ as a random element in $\mathbb{G}_T$. The challenge given to $\mathcal{A}$ is $((c_1,c_2),T_0,T_1)$. 
+ 
+ We claim that when $Z=\hat{e''}(P_{n_2+1},H)$ (i.e. the input to $\mathcal{B}$ is a $n_2$-BDHE tuple), then $((c_1,c_2),T_0,T_1)$ is a valid challenge to $A$. We prove this claim here. we point out that $Q$ is a generator of $\mathbb{G}_2$ and so $H=t'P$ for some $t'\in\mathbb{Z}_q$. Putting $H$ as $t'Q$ gives us the following:
+ \begin{itemize}
+  \item  $U=tQ$ for some $t\in\mathbb{Z}_q$
+  \item $c_1=H-U=(t'-t)Q=rQ$ where $r=t'-t$
+  \item $c_2=u_{i_1}H=(u_{i_1})t'Q=t'(u_{i_1}Q)=t'(u_{i_1}Q-Q_{i_2}+Q_{i_2})=t'({pk^2}_{i_1}+Q_{i_2})$
+  \item $K_b=Z=\hat{e'}(P_{n_2+1},H)=\hat{e'}(P_{n_2+1},t'Q)$
+ \end{itemize}
+ On the other hand, if $Z$ is a random element in $\mathbb{G}_T$ (i.e. the input to $\mathcal{B}$ is a random tuple), then $K_0$ and $K_1$ are just random independent elements of $\mathbb{G}_T$.
+ 
+ \item\textbf{Guess}-$\mathbf{(i_1,i_2)}$: The adversary $\mathcal{A}$ outputs a guess $b'$ of $b$. If $b' = b$, $\mathcal{B}$ outputs $0$ (indicating that $Z = \hat{e''}(P_{n+1},H)$), and terminates. Otherwise, it goes for the next ciphertext class in $\mathcal{S}$.
+\end{enumerate}
+If after $|\mathcal{S}|$ iterations, $b' \neq b$ for each ciphertext class $(i_1,i_2)\in\mathcal{S}$, the algorithm $\mathcal{B}$ outputs $0$ (indicating that $Z = \hat{e'}(P_{n_2+1},H)$). Otherwise, it outputs $1$ (indicating that $Z$ is random in $\mathbb{G}_T$). We now analyze the probability that $\mathcal{B}$ gives a correct output. If $(P,H,Y_{(P,\alpha,n_2)},Z)$ is sampled from $R'$-BDHE, $Pr[\mathcal{B}(G,H,Y_{(P,\alpha,n_2)},Z)=0]$ = $\frac{1}{2}$, while if $(P,H,Y_{(P,\alpha,n_2)},Z)$ is sampled from $L'$-BDHE, $|Pr[\mathcal{B}(G,H,Y_{(P,\alpha,n_2)},Z)]-\frac{1}{2}|$ $\geq$ $\epsilon$. So, the probability that $\mathcal{B}$ outputs correctly is at least $1-(\frac{1}{2}-\epsilon)^{|\mathcal{S}|} \geq \frac{1}{2}+\epsilon$. Thus $\mathcal{B}$ has advantage at least $\epsilon$ in solving the $(n_2,n_2)$-BDHE problem. This concludes the proof.
+
+\section{Implementation of Tate pairings Using BN Curves}
+\label{app_sec:implementation}
+
+\subsection{The Tate pairing}
+% \label{app_subsec:tate}
+
+We first provide a brief overview of the Tate pairing. Let $\mathbb{K}$ be a field of prime order $p$, and let an elliptic curve $E(K)$ over $\mathbb{K}$ be defined by the Weierstrass \cite{miller1986use} equation. Also, Let $\overline{K} = F_{p^k}$ be the smallest extension field of $K=F_p$ that contains the $q^{th}$ roots of unity. We refer to $k$ as the embedding degree with respect to $K$ and $q$. Further, we refer to the set of $q$-torsion points on the elliptic curve as $E(\overline{K})[q]$ ($q$-torsion points essentially have order $q$). Before defining the Tate pairing, we briefly state the Miller's function \cite{miller1986use}. Let $[a]P$ denote the multiplication of a point $P \in E$ by a scalar $a \in \mathbb{Z}$ (equivalent to adding $P$ $a$ times), and let $\mathcal{O} \in E$ denote the point at infinity. A Miller function is any rational function on $E$ that has a divisor of the form
+  \begin{equation}
+   (f_{q,P}) = q(P)-([q]P)-(q-1)\mathcal{O}.
+  \end{equation}
+A Miller function has $q$ zeros at $P$, one pole at $[q]P$ and $q-1$ poles at $\mathcal{O}$. For every point $Q\neq P, [q]P, \mathcal{0}$, we have $(f_{q,P})\in {\overline{K}}^{*}$. We now define the Tate pairing over elliptic curves. 
+
+The Tate pairing $e_{T}:\mathbb{G}_1\times \mathbb{G}_2\longrightarrow \mathbb{G}_T$ is a well-defined, non-degenerate, bilinear pairing with $\mathbb{G}_1 = E(K)[q]$, $\mathbb{G}_2=E(\overline{K})/qE(\overline{K})$, and $\mathbb{G}_T = {\overline{K}}^*/({\overline{K}}^{*})^q$. Let $P \in E(\overline{K})[q]$ and $Q \in E(\overline{K})/qE(\overline{K})$. Then the Tate pairing of $P,Q$ is computed as 
+\begin{equation}
+ e_T(P,Q)=f_{q,P}(Q)^{\frac{p^k-1}{q}}
+\end{equation}
+
+
+\subsubsection{Properties:}
+% \label{tate_pairing_properties}
+Tate pairing satisfies following properties that make the pairing suitable for use in cryptography.
+\begin{itemize}
+% [font=$\bullet$]
+ \item Well defined:  $e_T(\mathcal{O},Q) =  1$ for all $Q \in E(\overline{K})$ and $e_T(P,Q) \in (\overline{K}^*)^q$ for all $P \in E(\overline{K})[q]$ and all $Q \in qE(\overline{K})$.
+ \item Bilinearity: For all $P, P_1, P_2 \in E(\overline{K})[q]$ and $Q, Q_1, Q_2 \in E(\overline{K})$, we have
+ \subitem $e_T(P_1+P_2,Q) = e_T(P_1,Q) \cdot e_T(P_2,Q)$.
+ \subitem $e_T(P,Q_1+Q_2) = e_T(P,Q_1) \cdot e_T(P,Q_2)$.
+ \item Non-degeneracy: For each point $E(\overline{K})[q] \backslash {\mathcal{O}}$ there is some point $Q \in E(\overline{K})$ such that $e_T(P,Q) \notin (\overline{K})^q$.
+\end{itemize}
+
+\subsection{Pairing Friendly Curves}
+
+% \section{Barreto-Naehrig Curves}
+% \label{bn}
+Barreto and Naehrig \cite{barreto2006pairing} developed a method for constructing a method for constructing pairing-friendly elliptic curves over prime fields, with prime order and embedding degree $k = 12$. The equation of the curve is $E : y^2 = x^3 + b$, with $b \neq 0$. The trace (of Frobenius) of the curve, the curve order and the characteristic of $\mathbb{F}_p$  are parameterized as:
+\begin{align*}
+t(x) &= 6x^2 + 1\\
+n(x) &= 36x^4-36x^3+18x^2-6x+1\\
+p(x) &= 36x^4-36x^3+24x^2-6x+1\\
+\end{align*}
+respectively. Such a curve is often referred to in literature a Barreto-Naehrig or BN curve. Since every point on the BN curve has order $n$, the value of $q$ (a large prime dividing the curve order) can be taken to be the same as $n$.
+
+\subsubsection{Suitability of Barreto-Naehrig curves:}
+BN curves are especially well suited for the $128$-bit security level. This is because, if $p$ is 256-bit prime, then the Pollard’s rho method for computing discrete logarithms in $E(\mathbb{F}_p)$ has running time approximately $2^{128}$, as does the number field sieve algorithm for computing discrete logarithms in the extension field $\mathbb{F}_{p^{12}}$. The biggest advantage of using BN curves is that they admit \emph{sextic twists} with degree six, implying that there exists a distortion map between $\mathbb{F}_{p^2}$ and $\mathbb{F}_{p^12}$. This is of great advantage from the computational point of view since many computations can now be restricted to the field $\mathbb{F}_{p^2}$. The other advantage of using BN curves is their flexibility in terms of order of the prime $p$.  Barreto and Naehrig have defined in \cite{barreto2006pairing} a whole family of BN curves to choose from, corresponding to primes of any given order.  
+\subsubsection{Barreto-Naehrig curve used in implementation}
+The BN curve used in our implementation for $256$ bit primes is given by 
+\begin{equation}
+E : Y^2 = X^3 + 3
+\end{equation}
+with BN parameter $x = 6000000000001F2D$ (in hexadecimal). The corresponding prime $p(x) = 36x^4-36x^3+24x^2-6x+1$ is a 256-bit prime of Hamming weight 87, $n(x) = 36x^4-36x^3+18x^2-6x+1$ is 256-bit prime of Hamming weight 91, and $t-1 = p-r = 6z^2+1$ is a 128-bit integer of Hamming weight 28(here $t = p+1-r$ is the trace of $E$). Note that the choice of $p$ is made such that $p\equiv{7(mod8)}$, $p\equiv{4(mod9)}$ $p\equiv{1(mod6)}$. The reason for this is as follows.
+
+\begin{enumerate}
+ \item The first condition ensures that $-2$ is a quadratic non-residue.
+ \item The second condition ensures efficient computation of cube roots \cite{cryptoeprint:2005:133}.
+ \item The third condition ensures that there exists $\xi \in \mathbb{F}_{p^2}$ such that $W^6 - \xi$ is irreducible over $\mathbb{F}_{p^2}[W]$.  
+ 
+\end{enumerate}
+
+
+\subsection{The Finite Field Extensions}
+
+As per the proposition in \cite{devegili2007implementing}, we construct the extension field $\mathbb{F}_{p^{12}}$ using the following tower field extensions: 
+\begin{enumerate}
+ \item $\mathbb{F}_{p^2} = \mathbb{F}_p[u]/(u^2+2)$,
+ \item $\mathbb{F}_{p^6} =\mathbb{F}_{p^2}[v]/(v^3-\xi)$ where $\xi =-u-1$, and
+ \item $\mathbb{F}_{p^{12}}=\mathbb{F}_{p^6}[w]/(w^2-v)$.
+\end{enumerate}
+
+The quadratic/cubic non-residues and reduction polynomials are detailed in Table \ref{table:field_extensions} for $a_0,a_1\in \mathbb{F}_{p}$, $b_0,b_1,b_2\in\mathbb{F}_{p^2}$, and $c_0,c_1\in\mathbb{F}_{p^6}$.
+\begin{table}[h!]
+\captionsetup{font=scriptsize}
+\caption{Extension fields}
+\centering
+\label{table:field_extensions}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Extension & Non-Residue & Construction & Representation \\
+\hline
+$\mathbb{F}_{p^2}$ & $\beta$ = -2 & $\mathbb{F}_p$[$X$]/($X^2$ - $\beta$) & $a$= $a_0$ + $a_1X$ \\
+$\mathbb{F}_{p^6}$ & $\xi$ = -1-$\sqrt[]\beta$ & $\mathbb{F}_{p^2}$[$Y$]/($Y^3$ - $\xi$) & $b$= $b_0$ + $b_1Y$ + $b_2Y^2$ \\
+$\mathbb{F}_{p^{12}}$ & $\xi'$ = $\sqrt[3]\xi$ & $\mathbb{F}_{p^6}$[$Z$]/($Z^2$ - $\xi'$) & $c$= $c_0$ + $c_1Z$ \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{The Actual Implementation}
+
+The computation of the Tate pairing can be broadly divided into two major parts - the Miller's algorithm and the final exponentiation. A detailed  implementation of the Miller's algorithm has been presented in \cite{ghosh2013secure} and we use the same for our experiments. The final exponentiation can also be efficiently implemented using the following factorization.
+
+\begin{align*}
+ f^{\frac{p^{12}-1}{q}} &= f^{(p^6-1)\cdot\frac{p^6+1}{p^4-p^2+1}\cdot\frac{p^4-p^2+1}{q}}\\
+ &=((f^{p^6-1})^{p^2+1})^\frac{p^4-p^2+1}{q}
+\end{align*}
+
+
+
+% end{align*}

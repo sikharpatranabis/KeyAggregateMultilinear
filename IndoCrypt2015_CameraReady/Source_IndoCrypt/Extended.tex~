@@ -1,0 +1,25 @@
+\section{Extending the Generalized Scheme for Efficient Pairings on Elliptic Curve Subgroups}
+\label{sec:extended}
+
+The encryption schemes proposed so far use the assumption that the elliptic curve pairing bilinear pairing $\hat{e'}:\mathbb{G}_1 \times \mathbb{G}_1\longrightarrow\mathbb{G}_T$ satisfies the property $\hat{e'}(P,P) \neq 1$, where $P$ is the generator for $G_1$. In this section, we propose an extension to the generalized $n_2$-scheme that allows using pairings of the form $\hat{e''}:\mathbb{G}_1 \times \mathbb{G}_2\longrightarrow\mathbb{G}_T$, where $G_1$ and $G_2$ are two elliptic curve subgroups of the same prime order. The motivation behind this extension is that many popular pairing algorithms such as the Tate \cite{frey1994remark}, Eta \cite{hess2006eta}, and Ate \cite{zhao2008note} pairings are defined over two different elliptic curve subgroups $G_1$ and $G_2$. For instance, the Tate pairing is a well-defined, non-degenerate bilinear pairing with $G_1=E(\mathbb{F}_{p^k})[q], G_2=E(\mathbb{F}_{p^k})/qE(\mathbb{F}_{p^k})$ and $G_T={\mathbb{F}^{*}}_{p^k}/{({\mathbb{F}^{*}}_{p^k})}^q$, each of which have order $q$ ($q$ being a prime 
+and $k$ being the embedding degree). On a special class of 
+elliptic curves known as BN curves \cite{barreto2006pairing} (that allow efficient computation of pairings), Tate Pairing $e_{T}(P,Q)$ is computed by taking $P$ such that both coordinates of $P$ are in $\mathbb{F}_p$ and $Q$ such that both coordinates of $Q$ are in $\mathbb{F}_{p^2}$. Many efficient implementations of Tate Pairings on sensor nodes such as TinyTate \cite{oliveira2007tinytate} have been proposed in literature. This motivates us to modify our scheme in a manner that allows using such well-known pairings. The modified encryption scheme described below allows using a pairing $\hat{e''}:\mathbb{G}_1 \times \mathbb{G}_2\longrightarrow\mathbb{G}_T$ with $P$ generator of $G_1$ and $Q$ generator of $G_2$. 
+\vspace{-2mm}
+
+\subsection{Construction of the Extended Generalized Scheme}
+\label{subsec:construction}
+
+\begin{enumerate}
+ \item \textbf{Setup}$(1^{\lambda},n_2)$: Randomly pick $\alpha \in \mathbb{Z}_q$. Compute $P_i$ = ${\alpha^{i}}P \in \mathbb{G}_1$ for $i = 1,\cdots,n_2,n_2+2,\cdots,2n_2$ and $Q_i$ = ${\alpha^{i}}Q \in \mathbb{G}_2$ for $i = 1,\cdots,n_2$. Output the system parameter as\\
+ $param$ = $(P,P_1,\cdots,P_{n_2},P_{n_2+2},\cdots,P_{2n_2}$,$Q,Q_1,\cdots,Q_{n_2})$. The system also randomly chooses secret parameters $t \in \mathbb{Z}_q$ which is not made public. It is only transferred through a secure channel to data owners with credentials to control client access rights.
+ \item \textbf{Keygen}(): Pick $\gamma_1,\gamma_2,\cdots,\gamma_{n_1} \in \mathbb{Z}_q$, output the public and master-secret key tuple:\\ $(PK^1$=$({pk^1}_1,{pk^1}_{2},\cdots,{pk^1}_{n_1})=(\gamma_1P,\gamma_2P,\cdots,\gamma_{n_1}P)$,\\$PK^2$=$({pk^2}_1,{pk^2}_{2},\cdots,{pk^2}_{n_1})=(\gamma_1Q,\gamma_2Q,\cdots,\gamma_{n_1}Q)$, and $msk$=$(\gamma_1,\gamma_2,\cdots,\gamma_{n_1}))$.
+ 
+ \item \textbf{Encrypt}$(pk_{i_1},(i_1,i_2),m)$: For a message $m \in \mathbb{G}_T$ and an index $(i_1,i_2) \in \{1,2,\cdots,n_1\}\times\{1,2,\cdots,n_2\}$,randomly choose $r\in\mathbb{Z}_q$ and let $t'=t+r \in\mathbb{Z}_q$. Then compute the ciphertext as\\
+ $\mathcal{C}$=$(rQ,t'({pk^2}_{i_1}+Q_{i_2}),m.\hat{e''}(P_{n_2},t'Q_1))$ = $(c_1,c_2,c_3)$.
+ \item \textbf{Extract}$(msk=\gamma,\mathcal{S})$: For the set $\mathcal{S}$ of indices $(j_1,j_2)$ the aggregate key is computed as\\ $K_{\mathcal{S}}$ = $(k^{1}_{\mathcal{S}},k^{2}_{\mathcal{S}},\cdots,k^{n_1}_{\mathcal{S}})$\\ = $(\sum_{(1,j_2)\in\mathcal{S}}{\gamma_{1}}P_{n_2+1-j_2},\sum_{(2,j_2)\in\mathcal{S}}{\gamma_{2}}P_{n_2+1-j_2},\cdots,\sum_{(n_1,j_2)\in\mathcal{S}}{\gamma_{n_1}}P_{n_2+1-j_2})$\\ and the dynamic access control parameter $U$ is computed as $tQ$. Thus the net aggregate key is $(K_{\mathcal{S}},U)$ which is transmitted via a secure channel to users that have access rights to $\mathbb{S}$. Note that  $k^{j_1}_{\mathcal{S}}=\sum_{(j_1,j_2)\in\mathcal{S}}\alpha^{n+1-j}{pk^1}_{j_1}$ for $j_1=1,2,\cdots,n_1$. 
+ \item \textbf{Decrypt}$(K_{\mathcal{S}}, U, \mathcal{S},(i_1,i_2),\mathcal{C}=\{c_1,c_2,c_3\})$: If $(i_1,i_2)\notin\mathcal{S}$, output $\bot$. Otherwise return the message\\ $m$ = $c_3\frac{\hat{e''}(k^{i_1}_{\mathcal{S}}+\sum_{(i_1,j_2)\in\mathcal{S},j_2\neq i_2}P_{n_2+1-j_2+i_2},U+c_1)}{\hat{e''}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2},c_2)}$. 
+\end{enumerate}
+
+Appendix \ref{app_sec:correct_extended} provides the proof of correctness for this scheme. \textbf{ The extended scheme is secure under the $(l,l)$-BDHE assumption that we proposed in Section \ref{subsubsec:asm_2}}. Due to space constraints, the detailed proof is presented in Appendix \ref{app_sec:proof_extended}. 
+
+

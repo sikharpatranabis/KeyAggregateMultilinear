@@ -1,0 +1,204 @@
+%% 
+%% This is file `psfrag.sty', generated 
+%% on <1995/4/26> with the docstrip utility (2.2i).
+%% 
+%% The original source files were:
+%% 
+%% psfrag.dtx  (with options: `package,dvips,longnames')
+%% 
+%% Copyright (c) 1995 Craig Barratt and Michael C. Grant. 
+%% All rights reserved. 
+%% 
+%% This file is part of the PSfrag package. 
+%% 
+\NeedsTeXFormat{LaTeX2e}[1994/12/01]
+\ProvidesPackage{psfrag}
+    [1995/04/04 v2.0 PSfrag (MCG)]
+\RequirePackage{graphics}
+\let\pfg@x\Gin@urx \let\pfg@mx\Gin@nat@width
+\let\pfg@y\Gin@ury \let\pfg@my\Gin@nat@height
+\newif\ifpfg@file \newif\ifpfg@found \newif\ifpfg@spec
+\newif\ifpfg@compat \if@compatibility\pfg@compattrue\fi
+\newread\pfg@file
+\newtoks\pfg@proc \newtoks\pfg@str
+\DeclareOption{showall}{%
+  \let\psfragshowfalse\relax
+  \let\psfragshowdefault\relax
+  \psfragshowtrue}
+\if@compatibility
+\DeclareOption{2emode}{\pfg@compatfalse}
+\else
+\DeclareOption{209mode}{\pfg@compattrue}
+\fi
+\def\pfg@rawps#1{\special{ps: #1}}
+\let\pfg@include@eps\Ginclude@eps
+\def\Ginclude@eps#1{%
+   \pfg@scan{#1}\ifpfg@found
+     \ifpsfragshow\else\pfg@hidestart\fi
+     \pfg@include@eps{#1}%
+     \ifpsfragshow\else\pfg@hideend\fi
+     \the\pfg@proc\global\pfg@proc={}%
+   \else\pfg@include@eps{#1}\fi}
+\newif\ifpsfragshow \psfragshowfalse
+\let\psfragshowall\psfragshowtrue
+\let\psfragshowdefault\psfragshowfalse
+\ProcessOptions
+\edef\pfg@dflt{\ifpfg@compat bl\else Bl\fi}
+\def\psfrag#1{\@ifnextchar [{\@psfraga{#1}}%
+                            {\@psfrag{#1}[\pfg@dflt][\pfg@dflt][1][0]}}
+\def\@psfraga#1[#2]{\@ifnextchar [{\@psfragb{#1}[#2]}%
+                                  {\@psfrag{#1}[#2][\pfg@dflt][1][0]}}
+\def\@psfragb#1[#2][#3]{\@ifnextchar [{\@psfragc{#1}[#2][#3]}%
+                                      {\@psfrag{#1}[#2][#3][1][0]}}
+\def\@psfragc#1[#2][#3][#4]{\@ifnextchar [{\@psfrag{#1}[#2][#3][#4]}%
+                                          {\@psfrag{#1}[#2][#3][#4][0]}}
+\long\def\@psfrag#1[#2][#3][#4][#5]#6{%
+  \@ifundefined{pfg@n@#1}{}{%
+    \def\@tempa{#1}\ifx\@tempa\@empty\else
+      \PackageWarning{PSfrag}%
+        {Replacement for PostScript fragment `#1' on
+         page \thepage \space redefined.}\fi}%
+    \@namedef{pfg@m@#1}{\edef\pfg@posn{#2}\edef\pfg@psposn{#3}%
+                        \edef\pfg@scale{#4pt}\edef\pfg@rotn{#5pt}}%
+    \@namedef{pfg@n@#1}{#6}\ignorespaces}
+\newenvironment{psfrags}{\ignorespaces}{\global\@ignoretrue}
+\def\pfg@excl{!}
+\def\pfg@tfor#1\do{\@tfor\@tempa:=#1\do}
+\def\pfg@info #1(#2,#3)(#4,#5)(#6,#7)#8#9{%
+  \bgroup\@nameuse{pfg@m@#1}%
+    \pfg@x=#2bp \advance\pfg@x by-\Gin@llx \pfg@mx=0.5bp%
+    \pfg@y=#3bp \advance\pfg@y by-\Gin@lly \pfg@my=0.5bp%
+    \expandafter\pfg@tfor\pfg@psposn\do{%
+      \if l\@tempa\pfg@mx=0\else\if r\@tempa\pfg@mx=1\else
+      \if b\@tempa\pfg@my=0\else\if t\@tempa\pfg@my=1\else
+      \if B\@tempa\pfg@my=#9\fi\fi\fi\fi\fi bp}%
+    \advance\pfg@x by#4\pfg@mx \advance\pfg@y by#5\pfg@mx
+    \advance\pfg@x by#6\pfg@my \advance\pfg@y by#7\pfg@my
+    \ifx\Gin@scalex\pfg@excl\let\Gin@scalex\Gin@scaley
+    \else\ifx\Gin@scaley\pfg@excl\let\Gin@scaley\Gin@scalex\fi\fi
+    \pfg@x=\Gin@scalex\pfg@x \pfg@y=\Gin@scaley\pfg@y
+    \setbox\z@\vbox{\hbox{\@nameuse{pfg@n@#1}}}%
+    \dimen@=\ht\z@ \advance\dimen@ by\dp\z@
+    \pfg@mx=0.5\wd\z@ \pfg@my=0.5\dimen@
+    \expandafter\pfg@tfor\pfg@posn\do{%
+      \if l\@tempa \pfg@mx=0bp\else\if r\@tempa \pfg@mx=\wd\z@\else
+      \if b\@tempa \pfg@my=0bp\else\if B\@tempa \pfg@my=\dp\z@\else
+      \if t\@tempa \pfg@my=\dimen@\fi\fi\fi\fi\fi}%
+    \setbox\z@\hbox to\z@{\hskip-\pfg@mx
+       \vbox to\z@{\vss\box\z@\vskip-\pfg@my}\hss}%
+    \pfg@mx=#8pt \advance\pfg@mx by\pfg@rotn \pfg@my=\pfg@scale
+    \ifdim\pfg@mx=0pt\else
+       \edef\Grot@angle{\strip@pt\pfg@mx}%
+       \setbox\z@\hbox to\z@{\Grot@start\box\z@\Grot@end}\fi
+    \ifdim\pfg@my=1pt\else
+       \edef\Gscale@x{\strip@pt\pfg@my}\let\Gscale@y\Gscale@x
+       \setbox\z@\hbox to\z@{\Gscale@start\box\z@\Gscale@end}\fi
+    \@killglue\raise\pfg@y\hbox to\z@{\kern\pfg@x\box\z@\hss}%
+  \egroup\ignorespaces}
+\ifpfg@compat
+  \typeout{PSfrag Compatibility Mode Enabled.}%
+\else
+\def\pfg@scan#1{%
+  \edef\pfg@fname{#1}%
+  \immediate\openin\pfg@file=#1\relax
+  \pfg@foundfalse
+  \ifeof\pfg@file\else
+    \bgroup
+      \let\do\@makeother\dospecials\catcode`\ 10 %
+      \@makeother\^^D\catcode\endlinechar9 %
+      \catcode`\{1\catcode`\}2 %
+      \pfg@filetrue\loop\read\pfg@file to\pfg@line
+         \ifeof\pfg@file\pfg@filefalse
+         \else\ifx\pfg@line\@empty\pfg@filefalse
+         \else\expandafter\pfg@find\pfg@line.....\\\fi\fi
+      \ifpfg@file\repeat
+    \egroup
+    \ifpfg@found
+      \global\pfg@foundfalse
+      \bgroup
+        \catcode`\% 0 %
+        \pfg@filetrue\loop
+          \read\pfg@file to\pfg@line
+          \ifeof\pfg@file\pfg@filefalse\else\pfg@line\\\fi
+        \ifpfg@file\repeat
+      \egroup
+    \fi\immediate\closein\pfg@file\fi}
+\fi
+{\catcode`\%=12\global\let\pfg@pcnt=%}
+\def\pfg@find#1{%
+  \ifx#1\pfg@pcnt\expandafter\pfg@@find\else
+  \pfg@filefalse\expandafter\pfg@gobble\fi}
+\def\pfg@pfx{PSfra}
+\def\pfg@@find#1#2#3#4#5{%
+  \def\pfg@{#1#2#3#4#5}\ifx\pfg@\pfg@pfx
+    \global\pfg@foundtrue\global\pfg@filefalse\fi\pfg@gobble}
+\def\pfg@gobble#1\\{}
+\def\PSfragNext#1\\{%
+  \def\pfg@m@{}\global\pfg@proc=\expandafter{\the\pfg@proc\psfrag{}#1}}
+\def\PSfragInfo#1#2\\{%
+  \@ifundefined{pfg@m@#1}{}{%
+    \global\pfg@foundtrue
+    \global\pfg@proc=\expandafter{\the\pfg@proc\pfg@info{#1}#2}%
+    \global\pfg@str=\expandafter{\the\pfg@str (#1)}}}
+\def\PSfragEnd\\{\pfg@filefalse}
+\ifpfg@compat
+  \def\psfragspecial#1#2#3#4#5#6{%
+    \PackageError{PSfrag}{\string\psfragspecial
+                          not implemented yet.}}
+\def\pfg@strip#1.#2\relax{#1}
+\def\pfg@scan#1{%
+  \pfg@foundfalse
+  \InputIfFileExists{#1frag}\relax{%
+    \edef\@tempa{\pfg@strip#1..\relax.frag}
+    \InputIfFileExists\@tempa\relax\relax}}
+\def\PsFragShowString#1{\ignorespaces}
+\def\PsFragInfo#1#2#3#4#5#6#7#8{%
+  \PSfragInfo{#1}(#2,#3)(#4,#5)(#6,#7){#8}{0}\\\ignorespaces}
+\def\PsFrag#1{\PSfragNext#1\\\ignorespaces}
+\def\pfg@put(#1)#2{\ignorespaces}
+\newenvironment{PSFragmentLocs}
+  {\let\put\pfg@put\let\psfrag\PsFrag\ignorespaces}
+  {\PSfragEnd\\\global\@ignoretrue}
+\fi
+\def\pfg@hidestart{%
+  \ifpfg@specs\else\pfg@dospecs\pfg@specstrue\fi
+  \pfg@rawps{PSfragShowDict begin PSfragDict begin
+             /fragStrings [\the\pfg@str] def end}}
+\def\pfg@hideend{\pfg@rawps{end}}
+\newif\ifpfg@specs \pfg@specsfalse
+\def\pfg@dospecs{\pfg@rawps{
+  userdict begin /PSfragShowDict 6 dict def end
+  PSfragShowDict begin /PSfragDict 30 dict def
+    PSfragDict begin
+      /BD { bind def } bind def /ED { exch def } BD
+      /LD { load def } BD /CHAR { /c ED ( ) dup 0 c put } BD
+      /Oshow /show LD /Oashow /ashow LD /Okshow /kshow LD
+      /Owidthshow /widthshow LD /Oawidthshow /awidthshow LD
+      /Sshow { stringwidth rmoveto } BD
+      /Sashow { dup Sshow length /m ED exch
+                m mul exch m mul rmoveto } BD
+      /Swshow { /by ED /bx ED /chr ED { chr eq
+                { bx by rmoveto } forall } } BD
+      /Swidthshow { dup 5 1 roll Sshow Swshow } BD
+      /Sawidthshow { dup 7 1 roll Sashow Swshow } BD
+      /Skshow { exch /kern exch BD { dup CHAR
+                stringwidth rmoveto kern } forall } BD
+      /condShow{ /pfrag ED /ptext ED /s ED
+                 s s (\string\\tex) anchorsearch { pop pop pfrag }{
+                   pop false fragStrings {
+                     s eq { pop true exit } if
+                   } forall { pfrag } { ptext } ifelse
+                 } ifelse flush } BD
+      /fragStrings [] def
+    end
+    /show { PSfragDict begin {Oshow} {Sshow} condShow end } bind def
+    /ashow { PSfragDict begin {Oashow} {Sashow} condShow end } bind def
+    /kshow { PSfragDict begin {Okshow} {Skshow} condShow end } bind def
+    /widthshow { PSfragDict begin {Owidthshow} {Swidthshow}
+                 condShow end } bind def
+    /awidthshow { PSfragDict begin {Oawidthshow} {Sawidthshow}
+                  condShow end } bind def
+  end}}
+\endinput
+%% 
+%% End of file `psfrag.sty'.

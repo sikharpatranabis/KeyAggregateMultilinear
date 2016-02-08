@@ -1,0 +1,71 @@
+\section{Extending the Generalized KAC for Efficient Pairings on Elliptic Curve Subgroups}
+\label{sec:extended}
+
+The encryption schemes proposed so far use the assumption that the elliptic curve pairing bilinear pairing $\hat{e'}:\mathbb{G}_1 \times \mathbb{G}_1\longrightarrow\mathbb{G}_T$ satisfies the property $\hat{e'}(P,P) \neq 1$, where $P$ is the generator for $G_1$. In this section, we propose an extension to the generalized $n_2$-scheme that allows using pairings of the form $\hat{e''}:\mathbb{G}_1 \times \mathbb{G}_2\longrightarrow\mathbb{G}_T$, where $G_1$ and $G_2$ are two elliptic curve subgroups of the same prime order. The motivation behind this extension is that many popular pairing algorithms such as the Tate \cite{frey1994remark}, Eta \cite{hess2006eta}, and Ate \cite{zhao2008note} pairings are defined over two distinct elliptic curve subgroups $G_1$ and $G_2$ of the same order. Many efficient implementations of such pairings on sensor nodes such as TinyTate \cite{oliveira2007tinytate} have been proposed in literature. This motivates us to modify our scheme in a manner that allows using such well-known pairings. The modified encryption scheme described below allows using a pairing $\hat{e''}:\mathbb{G}_1 \times \mathbb{G}_2\longrightarrow\mathbb{G}_T$ with $P$ generator of $G_1$ and $Q$ generator of $G_2$. 
+
+
+\subsection{Construction of the Extended KAC}
+\label{subsec:construction}
+
+\begin{enumerate}
+ \item \textbf{Setup}$(1^{\lambda},n_2)$: Randomly pick $\alpha \in \mathbb{Z}_q$. Compute $P_i$ = ${\alpha^{i}}P \in \mathbb{G}_1$ for $i = 1,\cdots,n_2,n_2+2,\cdots,2n_2$ and $Q_i$ = ${\alpha^{i}}Q \in \mathbb{G}_2$ for $i = 1,\cdots,n_2$. Output the system parameter as\\
+ $param$ = $(P,P_1,\cdots,P_{n_2},P_{n_2+2},\cdots,P_{2n_2}$,$Q,Q_1,\cdots,Q_{n_2})$. The system also randomly chooses secret parameters $t \in \mathbb{Z}_q$ which is not made public. It is only transferred through a secure channel to data owners with credentials to control client access rights.
+ \item \textbf{Keygen}(): Pick $\gamma_1,\gamma_2,\cdots,\gamma_{n_1} \in \mathbb{Z}_q$, output the public and master-secret key tuple:\\ $(PK^1$=$({pk^1}_1,{pk^1}_{2},\cdots,{pk^1}_{n_1})=(\gamma_1P,\gamma_2P,\cdots,\gamma_{n_1}P)$, $PK^2$=\\$({pk^2}_1,{pk^2}_{2},\cdots,{pk^2}_{n_1})=(\gamma_1Q,\gamma_2Q,\cdots,\gamma_{n_1}Q)$, $msk$=$(\gamma_1,\gamma_2,\cdots,\gamma_{n_1}))$.
+ 
+ \item \textbf{Encrypt}$(pk_{i_1},(i_1,i_2),m)$: For a message $m \in \mathbb{G}_T$ and an index $(i_1,i_2) \in \{1,2,\cdots,n_1\}\times\{1,2,\cdots,n_2\}$,randomly choose $r\in\mathbb{Z}_q$ and let $t'=t+r \in\mathbb{Z}_q$. Then compute the ciphertext as\\
+ $\mathcal{C}$=$(rQ,t'({pk^2}_{i_1}+Q_{i_2}),m.\hat{e''}(P_{n_2},t'Q_1))$ = $(c_1,c_2,c_3)$.
+ \item \textbf{Extract}$(msk=\gamma,\mathcal{S})$: For the set $\mathcal{S}$ of indices $(j_1,j_2)$ the aggregate key is computed as $K_{\mathcal{S}}$ = $(k^{1}_{\mathcal{S}},k^{2}_{\mathcal{S}},\cdots,k^{n_1}_{\mathcal{S}})$ =\\ $(\sum_{(1,j_2)\in\mathcal{S}}{\gamma_{1}}P_{n_2+1-j_2},\sum_{(2,j_2)\in\mathcal{S}}{\gamma_{2}}P_{n_2+1-j_2},\cdots,\sum_{(n_1,j_2)\in\mathcal{S}}{\gamma_{n_1}}P_{n_2+1-j_2})$\\ and the dynamic access control parameter $U$ is computed as $tQ$. Thus the net aggregate key is $(K_{\mathcal{S}},U)$ which is transmitted via a secure channel to users that have access rights to $\mathcal{S}$. Note that  $k^{j_1}_{\mathcal{S}}=\sum_{(j_1,j_2)\in\mathcal{S}}\alpha^{n+1-j_2}{pk^1}_{j_1}$ for $j_1=1,2,\cdots,n_1$. 
+ \item \textbf{Decrypt}$(K_{\mathcal{S}}, U, \mathcal{S},(i_1,i_2),\mathcal{C}=\{c_1,c_2,c_3\})$: If $(i_1,i_2)\notin\mathcal{S}$, output $\bot$. Otherwise return the message\\ $\hat{m}$ = $c_3\frac{\hat{e''}(k^{i_1}_{\mathcal{S}}+\sum_{(i_1,j_2)\in\mathcal{S},j_2\neq i_2}P_{n_2+1-j_2+i_2},U+c_1)}{\hat{e''}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2},c_2)}$. 
+\end{enumerate}
+
+The proof of correctness of this scheme is presented below.
+
+\begin{scriptsize}
+\begin{equation*}
+\begin{split}
+ \hat{m} &= c_3\frac{\hat{e''}(k^{i_1}_{\mathcal{S}}+\sum_{(i_1,j_2)\in\mathcal{S},j_2\neq i_2}P_{n_2+1-j_2+i_2},U+c_1)}{\hat{e''}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2},c_2)}\\
+%   &= c_3\frac{\hat{e''}(\sum_{(i_1,j_2)\in \mathcal{S}}{\gamma_{i_1}}P_{n_2+1-j_2} + \sum_{(i_1,j_2)\in\mathcal{S},j_2\neq i_2}P_{n_2+1-j_2+i_2},t'Q)}{\hat{e''}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2},t'({pk^2}_{i_1}+Q_{i_2}))}\\
+  &= c_3\frac{\hat{e''}(\sum_{(i_1,j_2)\in \mathcal{S}}{\gamma_{i_1}}P_{n_2+1-j_2},t'Q)\hat{e''}(\sum_{(i_1,j_2)\in\mathcal{S}}(P_{n_2+1-j_2+i_2})-P_{n_2+1},t'Q)}{\hat{e''}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2},\gamma_{i_1}(t'Q))\hat{e''}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2},\alpha^{i_2}(t'Q))}\\
+%   &= c_3\frac{\hat{e''}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2+i_2},t'Q)}{\hat{e''}(P_{n_2+1},t'Q)\hat{e''}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2},\alpha^{i_2}(t'Q))}\\
+  &= c_3\frac{\hat{e''}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2+i_2},t'Q)}{\hat{e''}(P_{n_2+1},t'Q)\hat{e''}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2+i_2},t'Q)}\\
+%   &= m\frac{\hat{e''}(P_{n_2},t'Q_1)}{\hat{e''}(P_{n_2+1},t'Q)}\\
+  &= m
+\end{split}  
+\end{equation*}
+\end{scriptsize}
+
+
+\subsection{Semantic Security of the Extended KAC}
+\label{subsec:proof_extended}
+
+The proof of security uses a reduced version of the extended KAC scheme, analogous to the reduced scheme used for proving the security of the generalized KAC. The adversarial model is also the assumed to be the same as for the generalized KAC. The proof uses the $(l,l)$-BDHE assumption proposed in \ref{subsubsec:asm_2}. Let $\mathbb{G}_1$ and $\mathbb{G}_2$ be additive elliptic curve subgroups of prime order $q$, and $G_T$ be a multiplicative group of order $q$. Let $\hat{e''}:\mathbb{G}_1 \times \mathbb{G}_2\longrightarrow\mathbb{G}_T$ be a bilinear non-degenerate pairing. We claim that for any pair of positive integers $n_2,n' (n'>n_2)$ our proposed extension to the $n_2$-generalized reduced key-aggregate encryption scheme over elliptic curve subgroups is $(\tau,\epsilon,n')$ semantically secure if the decision $(\tau,\epsilon,n_2,n_2)$-BDHE assumption holds in $(\mathbb{G}_1,\mathbb{G}_2)$. We prove the claim below.
+
+\textbf{\noindent{Proof:}} Let for a given input $n'$, $\mathcal{A}$ be a $\tau$-time adversary that has advantage greater than $\epsilon$ for the \emph{reduced scheme} parameterized with a given $n_2$. We build an algorithm $\mathcal{B}$ that has advantage at least $\epsilon$ in solving the $(n_2,n_2)$-BDHE problem in $\mathbb{G}$. Algorithm $\mathcal{B}$ takes as input a random $(n_2,n_2)$-BDHE challenge $(P,Q,H,Y_{(P,\alpha,n_2),Y'_{Q,\alpha,n_2}},Z)$ where $Z$ is either $\hat{e''}(P_{n_2+1},H)$ or a random value in $\mathbb{G}_T$. Algorithm $\mathcal{B}$ proceeds as follows.
+
+\begin{enumerate}
+ \item \textbf{Init:} Algorithm $\mathcal{B}$ runs $\mathcal{A}$ and receives the set $\mathcal{S}$ of ciphertext classes that $\mathcal{A}$ wishes to be challenged on. For each ciphertext class $(i_1,i_2)\in\mathcal{S}$, $\mathcal{B}$ performs the \textbf{SetUp}-$\mathbf{(i_1,i_2)}$, \textbf{Challenge}-$\mathbf{(i_1,i_2)}$ and \textbf{Guess}-$\mathbf{(i_1,i_2)}$ steps. Note that the number of iterations is polynomial in $|S|$. 
+ 
+ \item \textbf{SetUp}-$\mathbf{(i_1,i_2)}$: $\mathcal{B}$ should generate the public $param$, public keys $PK^1,PK^2$, the access parameter $U$, and the aggregate key $K_{\overline{\mathcal{S}}}$. For the iteration corresponding to ciphertext class $(i_1,i_2)$, they are generated as follows.
+ \begin{itemize}
+  \item $param$ is set as $(P,Q,Y_{P,\alpha,n_2},Y'_{Q,\alpha,n_2})$.
+  \item Randomly generate $u_1,u_2,\cdots,u_{n_1} \in \mathbb{Z}_q$. Then, set\\ $PK^1$=$({pk^1}_1,{pk^1}_2,\cdots,{pk^1}_{n_1})$, where ${pk^1}_{j_1}$ is set as $u_{j_1}P - P_{i_2}$ for $j_1=1,2,\cdots,n_1$, and set\\ $PK^2$=$({pk^2}_1,{pk^2}_2,\cdots,{pk^2}_{n_1})$, where ${pk^2}_{j_1}$ is set as $u_{j_1}Q - Q_{i_2}$ for $j_1=1,2,\cdots,n_1$
+  \item $K_{\overline{\mathcal{S}}}$ is set as $(k^{1}_{\overline{\mathcal{S}}},k^{2}_{\overline{\mathcal{S}}},\cdots,k^{n_1}_{\overline{\mathcal{S}}})$ where $k^{j_1}_{\overline{\mathcal{S}}}$\\ = $\sum_{(j_1,j_2)\notin\mathcal{S}}({u_{j_1}}P_{n_2+1-j_2}-(P_{n_2+1-j_2+i_2}))$ for $j_1=1,2,\cdots,n_1$. Note that this implies $k^{j_1}_{\overline{\mathcal{S}}}$ = $\sum_{(j_1,j_2)\notin\mathcal{S}}\alpha^{n_2+1-j_2}{pk^{1}}_{j_1}$, as is supposed to be as per the scheme specification. Note that $\mathcal{B}$ knows that $(i_1,i_2)\notin \overline{\mathcal{S}}$, and hence has all the resources to compute this aggregate key for $\overline{\mathcal{S}}$. 
+  \item $U$ is set as some random element in $\mathbb{G}_2$.
+ \end{itemize}
+ 
+ Note that since $P$, $Q$, $\alpha$, $U$ and the $u_{j_1}$ values are chosen uniformly at random, the public key has an identical distribution to that in the actual construction.
+ 
+ \item \textbf{Challenge}-$\mathbf{(i_1,i_2)}$: To generate the challenge for the ciphertext class $(i_1,i_2)$, $\mathcal{B}$ computes $(c_1,c_2)$ as $(H-U,u_{i_1}H)$. It then randomly chooses a bit $b\in{(0,1)}$ and sets $K_b$ as $Z$ and $K_{1-b}$ as a random element in $\mathbb{G}_T$. The challenge given to $\mathcal{A}$ is $((c_1,c_2),K_0,K_1)$. 
+ 
+ We claim that when $Z=\hat{e''}(P_{n_2+1},H)$ (i.e. the input to $\mathcal{B}$ is a $n_2$-BDHE tuple), then $((c_1,c_2),K_0,K_1)$ is a valid challenge to $A$. We prove this claim here. we point out that $Q$ is a generator of $\mathbb{G}_2$ and so $H=t'P$ for some $t'\in\mathbb{Z}_q$. Putting $H$ as $t'Q$ gives us the following:
+ \begin{itemize}
+  \item  $U=tQ$ for some $t\in\mathbb{Z}_q$
+  \item $c_1=H-U=(t'-t)Q=rQ$ where $r=t'-t$
+  \item $c_2=u_{i_1}H=(u_{i_1})t'Q=t'(u_{i_1}Q)=t'(u_{i_1}Q-Q_{i_2}+Q_{i_2})=t'({pk^2}_{i_1}+Q_{i_2})$
+  \item $K_b=Z=\hat{e'}(P_{n_2+1},H)=\hat{e'}(P_{n_2+1},t'Q)$
+ \end{itemize}
+ On the other hand, if $Z$ is a random element in $\mathbb{G}_T$ (i.e. the input to $\mathcal{B}$ is a random tuple), then $K_0$ and $K_1$ are just random independent elements of $\mathbb{G}_T$.
+ 
+ \item\textbf{Guess}-$\mathbf{(i_1,i_2)}$: The adversary $\mathcal{A}$ outputs a guess $b'$ of $b$. If $b' = b$, $\mathcal{B}$ outputs $0$ (indicating that $Z = \hat{e''}(P_{n+1},H)$), and terminates. Otherwise, it goes for the next ciphertext class in $\mathcal{S}$.
+\end{enumerate}
+If after $|\mathcal{S}|$ iterations, $b' \neq b$ for each ciphertext class $(i_1,i_2)\in\mathcal{S}$, the algorithm $\mathcal{B}$ outputs $1$ (indicating that $Z$ is random in $\mathbb{G}_T$). We now analyze the probability that $\mathcal{B}$ gives a correct output. If $(P,H,Y_{(P,\alpha,n_2)},Z)$ is sampled from $R'$-BDHE, $Pr[\mathcal{B}(G,H,Y_{(P,\alpha,n_2)},Z)=0]$ = $\frac{1}{2}$, while if $(P,H,Y_{(P,\alpha,n_2)},Z)$ is sampled from $L'$-BDHE, $|Pr[\mathcal{B}(G,H,Y_{(P,\alpha,n_2)},Z)]-\frac{1}{2}|$ $\geq$ $\epsilon$. So, the probability that $\mathcal{B}$ outputs correctly is at least $1-(\frac{1}{2}-\epsilon)^{|\mathcal{S}|} \geq \frac{1}{2}+\epsilon$. Thus $\mathcal{B}$ has advantage at least $\epsilon$ in solving the $(n_2,n_2)$-BDHE problem. This concludes the proof.

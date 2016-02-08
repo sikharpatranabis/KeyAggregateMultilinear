@@ -1,0 +1,4 @@
+\section{Conclusions}
+\label{sec:Conclusions}
+
+In this paper, we have proposed a secure and dynamic key aggregate encryption scheme for online data sharing in shared environments. Our scheme allows data owners to delegate users with access rights to multiple ciphertext classes using a single decryption key that combines the decrypting power of individual keys corresponding to each ciphertext class. Unlike existing key aggregate schemes that are static in their access right delegation policies, our scheme allows data owners to dynamically revoke one or more users' access rights without having to change either the public or the private parameters/keys. The use of bilinear pairings over additive elliptic curve subgroups in our scheme helps achieve massive reductions in key and ciphertext sizes over existing schemes that use multiplicative groups.    

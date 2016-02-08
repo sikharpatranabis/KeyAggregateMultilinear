@@ -1,0 +1,104 @@
+\section{A More General Construction for the Key Aggregate Scheme}
+\label{sec:general}
+
+In this section, we focus on building an efficiently extensible version of our proposed scheme that allows an user to economically increase the number of ciphertext classes while registering a new public key-private key pair. We adopt the idea presented in \cite{boneh2005collusion} to develop a hierarchical structure that has multiple instances (say $n_1$) of the original scheme running in parallel. Each such instance in turn provides \emph{locally aggregate keys} for $n_2$ ciphertext sub-classes. Each ciphertext class thus now has a double index $(i_1,i_2)$ where $1\leq i_1 \leq n_1$ and $1\leq i_2 \leq n_2$. This allows the overall setup to handle $n=n_1n_2$ classes. However, it is important to note that all the instances can use the same public parameters. This interaction among the instances helps to largely improve performance. We further point out that while in \cite{boneh2005collusion}, the generalized construction offers a trade-off between the public parameter size and the ciphertext size, our 
+generalized scheme actually reduces the public parameter size without compromising on the size of the ciphertext. Further, addition of a single new key increases the number of classes only by $n_2$ and not by $n$. Setting $n_2\ll n$ thus achieves significant improvement in performance over the existing proposal.
+\vspace{-2mm}
+
+\subsection{The Basic Construction}
+
+Let $n_2$ be a fixed positive integer. Our proposed $n_2$-generalized key-aggregate encryption scheme over elliptic curve subgroups is as described below. It may be noted that the bilinear additive elliptic curve sub-group $\mathbb{G}$ and the multiplicative group $\mathbb{G}_T$, as well as the pairing $\hat{e'}$ are the same as in the basic scheme. The algorithm sets up $n_1=\lfloor n/n_2\rfloor$ instances of the basic scheme, each of which handles $n_2$ ciphertext classes. The original scheme is thus a special case of the extended scheme with $n_1=1$ and $n_2=n$.
+
+
+\begin{enumerate}
+ \item \textbf{Setup}$(1^{\lambda},n_2)$: Randomly pick $\alpha \in \mathbb{Z}_q$. Compute $P_i$ = ${\alpha^{i}}P \in \mathbb{G}$ for $i = 1,\cdots,n_2,n_2+2,\cdots,2n_2$. Output the system parameter as\\
+ $param$ = $(P,P_1,\cdots,P_{n_2},P_{n_2+2},\cdots,P_{2n_2})$. The system also randomly chooses a secret parameter $t \in \mathbb{Z}_q$ which is not made public. It is only known to data owners with credentials to control client access rights.
+ \item \textbf{Keygen}(): Pick $\gamma_1,\gamma_2,\cdots,\gamma_{n_1} \in \mathbb{Z}_q$, output the public and master-secret key pair :\\ $(PK$=$({pk}_1,pk_{2},\cdots,pk_{n_1})=(\gamma_1P,\gamma_2P,\cdots,\gamma_{n_1}P)$,$msk$=$(\gamma_1,\gamma_2,\cdots,\gamma_{n_1}))$.
+ \item \textbf{Encrypt}$(pk_{i_1},(i_1,i_2),m)$: For a message $m \in \mathbb{G}_T$ and an index $(i_1,i_2) \in \{1,2,\cdots,n_1\}\times\{1,2,\cdots,n_2\}$, randomly choose $r\in\mathbb{Z}_q$ and let $t'=t+r \in\mathbb{Z}_q$. Then compute the ciphertext as\\
+ $\mathcal{C}$=$(rP,t'{(pk_{i_1}+P_{i_2})},m.\hat{e'}(P_{n_2},t'P_1))$ = $(c_1,c_2,c_3)$.
+ \item \textbf{Extract}$(msk=\gamma,\mathcal{S})$: For the set $\mathcal{S}$ of indices $(j_1,j_2)$ the aggregate key is computed as\\ $K_{\mathcal{S}}$ = $(k^{1}_{\mathcal{S}},k^{2}_{\mathcal{S}},\cdots,k^{n_1}_{\mathcal{S}})$\\ = $(\sum_{(1,j_2)\in\mathcal{S}}{\gamma_{1}}P_{n_2+1-j_2},\sum_{(2,j_2)\in\mathcal{S}}{\gamma_{2}}P_{n_2+1-j_2},\cdots,\sum_{(n_1,j_2)\in\mathcal{S}}{\gamma_{n_1}}P_{n_2+1-j_2})$\\ and the dynamic access control parameter $U$ is computed as $tP$. Thus the net aggregate key is $(K_{\mathcal{S}},U)$ which is transmitted via a secure channel to users that have access rights to $\mathbb{S}$. Note that  $k^{j_1}_{\mathcal{S}}=\sum_{(j_1,j_2)\in\mathcal{S}}\alpha^{n+1-j}pk_{j_1}$ for $j_1=1,2,\cdots,n_1$. 
+ \item \textbf{Decrypt}$(K_{\mathcal{S}}, U, \mathcal{S},(i_1,i_2),\mathcal{C}=\{c_1,c_2,c_3\})$: If $(i_1,i_2)\notin\mathcal{S}$, output $\bot$. Otherwise return the message\\ $m$ = $c_3\frac{\hat{e'}(k^{i_1}_{\mathcal{S}}+\sum_{(i_1,j_2)\in\mathcal{S},j_2\neq i_2}P_{n_2+1-j_2+i_2},U+c_1)}{\hat{e'}(\sum_{(i_1,j_2)\in\mathcal{S}}P_{n_2+1-j_2},c_2)}$. 
+\end{enumerate}
+
+% We next prove the correctness of the scheme.
+
+
+
+Appendix \ref{app_sec:correct_general} provides the proof of correctness for this scheme. \textbf{The generalized scheme is secure under the $l$-BDHE assumption discussed in Section \ref{subsubsec:asm_1}}. Due to space constraints, the detailed proof of security is presented in Appendix \ref{app_sec:proof_general}. We stress here that the proof of security for the generalized scheme is independent of the number of instances $n_1$ of the basic scheme that run in parallel. This implies that extending the scheme by registering new key pairs does not reduce the security of the scheme. As in the basic scheme, the data owner can change the value of $t$ and thus, the access control parameter $U$, to revoke the access of any user to a given subset.
+
+
+% \subsubsection{Dynamic Access Control:}
+
+\vspace{-2mm}
+\subsubsection{Performance Trade off with the Basic Scheme:} We compare the various parameter sizes for the proposed original and extended schemes in table \ref{tab:tradeoff}. We note that $SetUp$ and $KeyGen$ are both one-time operations, and for a given subset $\mathcal{S}$, the $Extract$ operation is also performed once to generate the corresponding aggregate key $K_{\mathcal{S}}$. The most important advantage that the generalized scheme provides is the user's ability to efficiently extend the number of ciphertext classes. As far as encryption and decryption are concerned, encryption should ideally take the same time for both schemes, while decryption is actually expected to be faster for the generalized construction as $n_2\leq n$.  
+
+\begin{table}[!t]
+\captionsetup{font=scriptsize}
+\caption{Comparison between the Basic and Generalized schemes}
+\label{tab:tradeoff}
+\begin{center}
+\scalebox{0.75}{
+\begin{tabular}{|c|c|c|c|}
+
+%Symbol & Fault Model \\
+%(MHz)&$\ $ &$\ $ & $\ $\\
+\hline
+\textbf{Item} & \textbf{Nature of Computation} & \textbf{Original scheme} & \textbf{Generalized scheme}\\\hline\hline
+
+$param$(SetUp) & One-time & $\mathcal{O}(n)$ & $\mathcal{O}(n_2)$\\\hline
+$PK$(KeyGen) & One-time &$\mathcal{O}(1)$ & $\mathcal{O}(n_1)$\\\hline
+$K_{\mathcal{S}}$(Extract) & One-time & $\mathcal{O}(1)$ & $\mathcal{O}(n_1)$\\\hline
+$\mathcal{C}$ & One per Message & $\mathcal{O}(1)$ & $\mathcal{O}(1)$\\\hline
+Encrypt & One Per Message & $\mathcal{O}(1)$ & $\mathcal{O}(1)$\\\hline
+Decrypt & One Per Message & $\mathcal{O}(|\mathcal{S}|)$ & $\mathcal{O}(|\mathcal{S}|)$\\\hline
+% Ciphertext Class Extension & Dynamic & Not Possible & $\mathcal{O}(n_2)$\\\hline
+\hline
+% OSB & Other Single Byte Faults (More than 4 bits in one byte affected)  \\
+% MB & Multiple Byte Faults  \\
+
+% \hline \hline
+\end{tabular}
+}
+
+\end{center}
+\end{table}
+
+% \subsubsection{Performance and Efficiency:}
+% 
+% The master private key size is now $n_1$ group elements, while the public size parameter is now $n_2$ group elements. The ciphertext size  remains constant unlike in \cite{} where the ciphertext size is linear in $n_2$. A suitable value of $n_2$ may be chosen depending on the application. The size of the aggregate key is $n_1$ but it needs to be computed only once for a given subset. Moreover, similar caching techniques as described in \ref{subsubsec:perf} may be used to fasten up the encryption and decryption operations. 
+\vspace{-2mm}
+\subsubsection{Flexible Extension Policy:}
+
+If a user needs to classify her ciphertexts into more that $n$ classes, she can register for additional key pairs\\ $(pk_{n_1+1},msk_{n_1+1}),(pk_{n_1+2},msk_{n_1+2}),\cdots,(pk_{n_1+l},msk_{n_1+l})$ as per her requirements. Each new key registration increases the number of classes by $n_2$, where $n_2\leq n$. The idea of under-utilization stems from the fact that registration of each public-private key pair increases the number of classes by $n_2$. However, it is not necessary that all the existing classes are utilized at any given point of time. For instance, a user may at any point of time want to register $l$ new private-public key pairs, however she will in all probability not use up all $ln_2$ additional classes of messages that could be encrypted using the newly registered keys. We stress here is that, unlike in the public key extension scheme proposed in \cite{chu2014key} where the values of $n_1$ and $n_2$ are fixed to $1$ and $n$ respectively, \emph{our generalized construction provides a choice 
+over several possible choices} of $n_1$ and $n_2$ so that the system administrator could choose pair of values suited to their requirements. 
+
+We propose a metric to quantify the under-utilization of ciphertext classes for a given configuration of the system. Let us assume that at some instance of time, there are $n_1+l$ private-public key pairs registered in the system, and $c_i$ classes corresponding to each key are being utilized. We define the utilization coefficient as $\frac{1}{1+\xi}$, where $\xi=-\frac{1}{n_1}\sum_{i=1\\c_i\neq0}^{n_1}\log(\frac{c_i}{n_2})$. An efficient scheme tries to minimize the value of $\xi$ to achieve good utilization of the existing set of classes. The value is maximum when $c_i=n_2 \forall i=1,2,\cdots,n_2$. Note that $c_i=0$ implies that no subclasses under the given key $pk_i$ are being utilized, which is equivalent to not registering the key at all.        
+
+
+To stress the importance of the flexible extension policy, we provide a simplified example here. We consider two possible configurations of the extended scheme. In the first configuration, $n_1=1$ and $n_2=n$, which is essentially identical to the public key extension scheme proposed in \cite{chu2014key}. The other configuration has $n_1>1$ and $n_2<n$. Now assume that before extension, both schemes utilized $c$ ciphertext classes out of the $n$ possible classes, equally distributed across all key pairs. Now suppose a situation arises where an user needs to register $l$ more key pairs, and utilizes $z<n_2$ classes corresponding to each key. In the first configuration, we have $\xi_1=-\frac{1}{l+1}(l\log(\frac{z}{n})+\log(\frac{c}{n}))$, while for the second configuration, $\xi_2=-\frac{1}{l+n_1}(l(\log(\frac{z}{n_2}))+n_1\log(\frac{c}{n}))$. Now for $l>(\frac{n_1}{\log n_1}-1)\log(\frac{z}{c})-1$, $\xi_2<\xi_1$. Thus for any value of $(n_1,n_2)$ other than $(1,n)$, there exists a value of $l$ for which the 
+scheme achieves better utilization coefficient. Since $l$ is expected to increase in a dynamic scenario, our public key extension scheme eventually performs better than the scheme suggested in \cite{chu2014key}. This is validated by the experimental results in Section \ref{subsec:util}.
+
+\vspace{-2mm}
+\subsubsection{Advantage over Hierarchical Encryption Based Schemes:}
+
+\begin{figure}[!t]
+\centering
+\captionsetup{font=scriptsize}
+\includegraphics[scale=0.4]{Figs/tree.png}
+\caption{A Practical Request Scenario in the Hierarchical Setting}
+\label{fig:agg}
+\end{figure}
+
+Although the generalized scheme has a two level hierarchy (with each of the $n_1$ parallely executing instances of the basic scheme representing a node in the top level and the actual ciphertext classes representing nodes in the lower level), it avoids the pitfalls of existing hierarchical encryption based schemes \cite{akl1983cryptographic,chick1990flexible,tzeng2002time,ateniese2012provably}. In standard tree based hierarchical systems, granting access to the key corresponding to any node implicitly grants access to all the keys in the subtree rooted at that node. This means granting access to a selected set of nodes in a given subtree would blow up the key-size to be the same as the number of nodes. This is avoided in our generalized scheme, since any number of nodes (ciphertext classes) that belong to the same instance may be aggregated into a single key. Figure \ref{fig:agg} summarizes this phenomenon. In the situation depicted, a tree-based hierarchy system would require $4$ decryption keys, while our 
+scheme would require only $2$. In this respect, our scheme has similar advantages to that of \cite{chu2014key}.
+
+
+
+
+
+
+
+
+
+
+

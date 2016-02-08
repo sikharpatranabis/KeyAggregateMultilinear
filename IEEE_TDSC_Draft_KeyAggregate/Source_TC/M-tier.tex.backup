@@ -1,0 +1,82 @@
+\section{M-tier KAC}
+\label{sec:Mtier}
+
+We have demonstrated that a two-tiered construction for the KAC achieves better space complexities than the basic construction, while also allowing flexible class extensions. In this section, we extend this construction to a generalized M-tiered hierarchical structure, and compare the space and time requirements across various levels of hierarchy.
+
+\subsection{The Construction of the M-tiered KAC}
+\label{subsec:constructionM}
+
+Let $n_1,n_1,\cdots,n_{M}$ be positive integers. Our proposed $M$-tier KAC, that can now accommodate $n=n_1n_M\cdots n_M$ ciphertext classes, is described below. The bilinear additive elliptic curve sub-group $\mathbb{G}$ and the multiplicative group $\mathbb{G}_T$, as well as the pairing $\hat{e'}$ are the same as described so far.
+
+\begin{enumerate}
+ \item \textbf{Setup}$(1^{\lambda},n_M)$: Randomly pick $\alpha \in \mathbb{Z}_q$. Compute $P_i$ = ${\alpha^{i}}P \in \mathbb{G}$ for $i = 1,\cdots,n_M,n_M+2,\cdots,2n_M$. Output the system parameter as $param$ = $(P,P_1,\cdots,P_{n_M},P_{n_M+2},\cdots,P_{2n_M})$. The system again randomly chooses a secret parameter $t \in \mathbb{Z}_q$ which is not made public. It is only known to data owners with credentials to control client access rights.
+ 
+ \item \textbf{Keygen}(): Define $\Gamma^{i}=\{{\gamma^{i}}_j|1\leq j \leq n_i\}$ for $i=1,\cdots,M-1$, where ${\gamma^{i}}_j \in \mathbb{Z}_q$. Also, let ${pk^{i}}_j={\gamma^{i}}_jP$ and $PK^{i}=\{pk^{i}_j|1\leq j \leq n_i\}$. Output the public and master-secret key pair $PK=(PK^{1},\cdots,PK^{M-1})$ and $msk=(\Gamma^{1},\cdots,\Gamma^{M-1})$.
+ 
+ \item \textbf{Encrypt}$(PK,(i_1,\cdots,i_M),m)$: For a message $m \in \mathbb{G}_T$ and an index $(i_1,\cdots,i_M) \in \{1,2,\cdots,n_1\}\times\cdots\times\{1,2,\cdots,n_M\}$, randomly choose $r\in\mathbb{Z}_q$ and let $t'=t+r \in\mathbb{Z}_q$. Then compute the ciphertext $\mathcal{C}$=$(rP,t'{(\sum_{j=1}^{M-1}pk^{j}_{i_j}+P_{i_M})},m.\hat{e'}(P_{n_M},t'P_1))$ = $(c_1,c_2,c_3)$.
+ 
+ \item \textbf{Extract}$(msk,\mathcal{S})$: For the set $\mathcal{S}$ of indices $(j_1,\cdots,j_M)$, let ${k^{j_1,\cdots,j_{M-1}}}_{\mathcal{S}}$ = $\sum_{(j_1,\cdots,j_{M-1},j_M)\in \mathcal{S}}\sum_{i=1}^{M-1}({\gamma^{i}}_{j_i}P_{n_M+1-j_{M}})$. Then the aggregate key is computed as $K_{\mathcal{S}}=({k^{1,\cdots,1}}_{\mathcal{S}},\cdots,k^{n_1,\cdots,n_{M-1}})$. Also, the dynamic access control parameter $U$ is computed as $tP$. Thus the net aggregate key is $(K_{\mathcal{S}},U)$ which is transmitted via a secure channel to users that have access rights to $\mathbb{S}$. Note that  $k^{j_1,\cdots,j_{M-1}}_{\mathcal{S}}=\sum_{(j_1,\cdots j_M)\in\mathcal{S}}\sum_{i=1}^{M-1}\alpha^{n+1-j_M}{pk^{i}}_{j_i}$ for $j_i=1,2,\cdots,n_i$ and $i=1,\cdots,M-1$. 
+ 
+ \item \textbf{Decrypt}$(K_{\mathcal{S}}, U, \mathcal{S},(i_1,\cdots,i_M),\mathcal{C}=\{c_1,c_2,c_3\})$: If $(i_1,\cdots,i_M)\notin\mathcal{S}$, output $\bot$. Otherwise return the message $\hat{m}$ = $c_3\frac{\hat{e'}(k^{i_1,\cdots,i_{M-1}}_{\mathcal{S}}+a_{\mathcal{S}},U+c_1)}{\hat{e'}(b_{\mathcal{S}},c_2)}$, where $a_{\mathcal{S}}$=$\sum_{(i_1,,\cdots,i_{M-1},j_M)\in\mathcal{S},j_M\neq i_M}P_{n_M+1-j_M+i_M}$ and $b_{\mathcal{S}}$=$\sum_{(i_1,\cdots,i_{M-1},j_M)\in\mathcal{S}}P_{n_M+1-j_M}$.
+ 
+ 
+\end{enumerate}
+
+
+The proof of correctness for the M-tiered scheme is very similar to that for two-tiered scheme. 
+
+\begin{scriptsize}
+\begin{equation}
+\begin{split}
+ \hat{m} &= c_3\frac{\hat{e'}({k^{i_1,\cdots,i_{M-1}}}_{\mathcal{S}}+a_{\mathcal{S}},U+c_1)}{\hat{e'}(b_{\mathcal{S}},c_2)}\\
+  &= c_3\frac{\hat{e'}(\sum_{(i_1,\cdots,i_{M-1},j_M)\in \mathcal{S}}\sum_{j=1}^{M-1}{\gamma_{i_j}}P_{n_M+1-j_M} + a_{\mathcal{S}},t'P)}{\hat{e'}(b_\mathcal{S},t'(\sum_{j=1}^{M-1}pk^{j}_{i_j}+P_{i_M})}\\
+%   &= c_3\frac{\hat{e'}(\sum_{(i_1,j_M)\in \mathcal{S}}{\gamma_{i_1}}P_{n_M+1-j_M},t'P)\hat{e'}(\sum_{(i_1,j_M)\in\mathcal{S}}(P_{n_M+1-j_M+i_M})-P_{n_M+1},t'P)}{\hat{e'}(\sum_{(i_1,j_M)\in\mathcal{S}}P_{n_M+1-j_M},t'pk_{i_1})\hat{e'}(\sum_{(i_1,j_M)\in\mathcal{S}}P_{n_M+1-j_M},t'P_{i_M})}\\
+  &= c_3\frac{\hat{e'}(\sum_{(i_1,\cdots,i_{M-1},j_M)\in\mathcal{S}}P_{n_M+1-j_M+i_M},t'P)}{\hat{e'}(P_{n_M+1},t'P)\hat{e'}(\sum_{(i_1,\cdots,i_{M-1},j_M)\in\mathcal{S}}P_{n_M+1-j_M},t'P_{i_M})}\\
+  &= c_3\frac{\hat{e'}(\sum_{(i_1,\cdots,i_{M-1},j_M)\in\mathcal{S}}P_{n_M+1-j_M+i_M},t'P)}{\hat{e'}(P_{n_M+1},t'P)\hat{e'}(\sum_{(i_1,\cdots,i_{M-1},j_M)\in\mathcal{S}}P_{n_M+1-j_M+i_M},t'P)}\\
+  &= m\frac{\hat{e'}(P_{n_M},t'P_1)}{\hat{e'}(P_{n_M+1},t'P)}\\
+  &= m
+\end{split} 
+\end{equation}
+\end{scriptsize}
+
+\subsection{Semantic Security of the M-tiered KAC}
+\label{subsec:proof_MTier}
+
+\subsubsection{The Reduced M-tiered Scheme:}
+
+The proof of security uses a reduced version of the extended KAC scheme, analogous to the reduced scheme used for proving the security of the two-tiered KAC. The adversarial model is also the assumed to be the same as for the two-tiered KAC. Once again, the security proof presented here uses the first complexity assumption stated in \ref{subsubsec:asm_1}. Let $\mathbb{G}$ be a bilinear elliptic curve subgroup of prime order $q$. For any pair of positive integers $n_M,n' (n'>n_M)$ our proposed $M$-tiered reduced key-aggregate encryption scheme over elliptic curve subgroups is $(\tau,\epsilon,n')$ semantically secure if the decision $(\tau,\epsilon,n_M)$-BDHE assumption holds in $\mathbb{G}$. We now prove this statement below.
+
+\textbf{\noindent{Proof:}} Let for a given input $n'$, $\mathcal{A}$ be a $\tau$-time adversary that has advantage greater than $\epsilon$ for the \emph{reduced scheme} parameterized with a given $M$-tuple $(n_1,\cdots,n_M)$. We build an algorithm $\mathcal{B}$ that has advantage at least $\epsilon$ in solving the $n_M$-BDHE problem in $\mathbb{G}$. Algorithm $\mathcal{B}$ takes as input a random $n_M$-BDHE challenge $(P,H,Y_{(P,\alpha,n_M)},Z)$ where $Z$ is either $\hat{e'}(P_{n_M+1},H)$ or a random value in $\mathbb{G}_T$. Algorithm $\mathcal{B}$ proceeds as follows.
+
+\begin{enumerate}
+ \item \textbf{Init:} Algorithm $\mathcal{B}$ runs $\mathcal{A}$ and receives the set $\mathcal{S}$ of ciphertext classes that $\mathcal{A}$ wishes to be challenged on. For each ciphertext class $(i_1,\cdots,i_M)\in\mathcal{S}$, $\mathcal{B}$ performs the \textbf{SetUp}-$\mathbf{(i_1,\cdots,i_M)}$, \textbf{Challenge}-$\mathbf{(i_1,\cdots,i_M)}$ and \textbf{Guess}-$\mathbf{(i_1,\cdots,i_M)}$ steps. Note that the number of iterations is polynomial in $|S|$. 
+ 
+ \item \textbf{SetUp}-$\mathbf{(i_1,\cdots,i_M)}$: $\mathcal{B}$ should generate the public $param$, public key $PK$, the access parameter $U$, and the aggregate key $K_{\overline{\mathcal{S}}}$. For the iteration corresponding to ciphertext class $(i_1,\cdots,i_M)$, they are generated as follows.
+ \begin{itemize}
+  \item $param$ is set as $(P,Y_{P,\alpha,n_M})$.
+  \item Let $u^{i}_1,\cdots,u^{i}_{n_i} \in \mathbb{Z}_q$ be randomly generated for $i=1,\cdots,M-1$. Also, let ${pk^{i}}_j={u^{i}}_jP-P_{i_M}$ and $PK^{i}=\{pk^{i}_j|1\leq j \leq n_i\}$. Then set $PK=(PK^{1},\cdots,PK^{M-1})$.  
+  \item Let $k^{j_1,\cdots,j_{M-1}}_{\overline{\mathcal{S}}}$ = \\$\sum_{(j_1,\cdots,j_M)\notin\mathcal{S}}((\sum_{i=1}^{M-1}u^{i}_{j_i}P_{n_M+1-j_M})$\\ - $P_{n_M+1-j_M+i_M})$.  
+  
+  
+%   Set $K_{\overline{\mathcal{S}}}$ = $(k^{1,\cdots,1}_{\overline{\mathcal{S}}},\cdots,k^{n_1,\cdots,n_{M-1}}_{\overline{\mathcal{S}}})$, where $k^{j_1,\cdots,j_{M-1}}_{\overline{\mathcal{S}}}$ = $\sum_{(j_1,\cdots,j_M)\notin\mathcal{S}}((sum_{i=1}^{M-1}u^{i}_{j_i}P_{n_M+1-j_M})-(P_{n_M+1-j_M+i_M}))$. Then, $k^{j_1,\cdots,j_{M-1}}_{\overline{\mathcal{S}}}$ = $\sum_{(j_1,\cdots j_M)\in\mathcal{S}}\sum_{i=1}^{M-1}\alpha^{n+1-j_M}{pk^{i}}_{j_i}$ for $j_i=1,2,\cdots,n_i$ and $i=1,\cdots,M-1$. This is in accordance with the scheme specification. Note that $\mathcal{B}$ knows that $(i_1,\cdots,i_M)\notin \overline{\mathcal{S}}$, and hence has all the resources to compute this aggregate key for $\overline{\mathcal{S}}$. 
+  \item $U$ is set as some random element in $\mathbb{G}$.
+ \end{itemize}
+ 
+ Note that since $P$, $\alpha$, $U$ and the $u^{i}_{j}$ values are chosen uniformly at random, the public key has an identical distribution to that in the actual construction.
+ 
+ \item \textbf{Challenge}-$\mathbf{(i_1,\cdots,i_M)}$: To generate the challenge for the ciphertext class $(i_1,\cdots,i_M)$, $\mathcal{B}$ computes $(c_1,c_2)$ as $(H-U,\sum_{j=1}^{M-1}u^{j}_{i_j}H)$. It then randomly chooses a bit $b\in{(0,1)}$ and sets $K_b$ as $Z$ and $K_{1-b}$ as a random element in $\mathbb{G}_T$. The challenge given to $\mathcal{A}$ is $((c_1,c_2),K_0,K_1)$. 
+ 
+ We claim that when $Z=\hat{e'}(P_{n_M+1},H)$ (i.e. the input to $\mathcal{B}$ is a $n_M$-BDHE tuple), then $((c_1,c_2),K_0,K_1)$ is a valid challenge to $A$. We prove this claim here. We point out that $P$ is a generator of $\mathbb{G}$ and so $H=t'P$ for some $t'\in\mathbb{Z}_q$. Putting $H$ as $t'P$ gives us the following:
+ \begin{itemize}
+  \item  $U=tP$ for some $t\in\mathbb{Z}_q$
+  \item $c_1=H-U=(t'-t)P=rP$ for $r=t'-t$
+  \item $c_2$=$\sum_{j=1}^{M-1}u^{j}_{i_j}H$=$(\sum_{j=1}^{M-1}u^{j}_{i_j})t'P$=$t'(\sum_{j=1}^{M-1}u^{j}_{i_j}P)$=$t'(\sum_{j=1}^{M-1}u^{j}_{i_j}P-P_{i_M}+P_{i_M})$=$t'(\sum_{j=1}^{M-1}pk^{j}_{i_j}+P_{i_M})$
+  \item $K_b=Z=\hat{e'}(P_{n_M+1},H)=\hat{e'}(P_{n_M+1},t'P)$
+ \end{itemize}
+ On the other hand, if $Z$ is a random element in $\mathbb{G}_T$ (i.e. the input to $\mathcal{B}$ is a random tuple), then $K_0$ and $K_1$ are just random independent elements of $\mathbb{G}_T$.
+ 
+ \item\textbf{Guess}-$\mathbf{(i_1,\cdots,i_M)}$: The adversary $\mathcal{A}$ outputs a guess $b'$ of $b$. If $b' = b$, $\mathcal{B}$ outputs $0$ (indicating that $Z = \hat{e'}(P_{n_M+1},H)$), and terminates. Otherwise, it goes for the next ciphertext class in $\mathcal{S}$.
+\end{enumerate}
+If after $|\mathcal{S}|$ iterations, $b' \neq b$ for each ciphertext class $(i_1,\cdots,i_M)\in\mathcal{S}$, the algorithm $\mathcal{B}$ outputs $1$ (indicating that $Z$ is random in $\mathbb{G}_T$). We now analyze the probability that $\mathcal{B}$ gives a correct output. If $(P,H,Y_{(P,\alpha,n_M)},Z)$ is sampled from $R$-BDHE, $Pr[\mathcal{B}(G,H,Y_{(P,\alpha,n_M)},Z)=0]$ = $\frac{1}{2}$, while if $(P,H,Y_{(P,\alpha,n_M)},Z)$ is sampled from $L$-BDHE, $|Pr[\mathcal{B}(G,H,Y_{(P,\alpha,n_M)},Z)]-\frac{1}{2}|$ $\geq$ $\epsilon$. So, the probability that $\mathcal{B}$ outputs correctly is at least $1-(\frac{1}{2}-\epsilon)^{|\mathcal{S}|} \geq \frac{1}{2}+\epsilon$. Thus $\mathcal{B}$ has advantage at least $\epsilon$ in solving the $n_M$-BDHE problem. This concludes the proof. 
+
+

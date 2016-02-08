@@ -1,0 +1,70 @@
+\section{Preliminaries}
+\label{sec:prelims}
+
+We begin by formally defining the Key Aggregate Cryptosystem (KAC), and stating the complexity assumptions used to prove the security of the encryption schemes proposed in this paper.
+
+\subsection{The Key Aggregate Cryptosystem (KAC)}
+\label{subsec:KAC}
+
+A key aggregate cryptosystem is an ensemble of the following randomized algorithms:
+
+\begin{enumerate}
+ \item \textbf{Setup}$(1^{\lambda},n)$: Takes as input the number of ciphertext classes $n$ and the group order parameter $\lambda$. Outputs the public parameter $PK$. Also computes a secret parameter $t$ used for encryption which is not made public. It is only known to data owners with credentials to control client access rights.  
+ 
+ \item \textbf{Keygen}(): Outputs the public and master-secret key pair :\\ $(PK={\gamma}P,msk=\gamma)$.
+ 
+ \item \textbf{Encrypt}$(PK,i,m)$: Takes as input the public key parameter $PK$, the ciphertext class $i$ and the message $m$. Outputs the ciphertext $\mathcal{C}$ corresponding to the message $m$ belonging to class $i$. 
+ 
+ \item \textbf{Extract}$(msk=\gamma,\mathcal{S})$: Takes as input the master secret key $\gamma$ and a subset $\mathcal{S} \subset\{1,2,\cdots,n\}$. Computes the aggregate key $K_{\mathcal{S}}$ and the dynamic access control parameter $U$. The tuple $(K_{\mathcal{S}},U)$ is transmitted via a secure channel to users that have access rights to $\mathcal{S}$.
+ 
+ \item \textbf{Decrypt}$(K_{\mathcal{S}}, U, \mathcal{S},i,\mathcal{C}=\{c_1,c_2,c_3\})$: Takes as input the aggregate key $K_{\mathcal{S}}$ corresponding to a subset $\mathcal{S} \subset\{1,2,\cdots,n\}$, the dynamic access parameter $U$, the ciphertext class $i$ and the ciphertext $\mathcal{C}$. Outputs the decrypted message $m$.
+\end{enumerate}
+
+\subsection{Semantic Security of KAC}
+\label{subsec:semanticsecurity}
+
+We now define the semantic security of a key-aggregate encryption system against an adversary using the following game between an attack algorithm $\mathcal{A}$ and a challenger $\mathcal{B}$. Both $\mathcal{A}$ and $\mathcal{B}$ are given $n$, the total number of ciphertext classes, as input. The game proceeds through the following stages.
+
+\begin{enumerate}
+ \item \textbf{Init:} Algorithm $\mathcal{A}$ begins by outputting a set $\mathcal{S} \subset \{1,2,\cdots,n\}$ of receivers that it wishes to attack. For each ciphertext class $i\in\mathcal{S}$, challenger $\mathcal{B}$ performs the \textbf{SetUp}-$\mathbf{i}$, \textbf{Challenge}-$\mathbf{i}$ and \textbf{Guess}-$\mathbf{i}$ steps. Note that the number of iterations is polynomial in $|S|$.
+
+ \item \textbf{SetUp}-$\mathbf{i}$: Challenger $\mathcal{B}$ generates the public $param$, public key $PK$, the access parameter $U$, and provides them to $\mathcal{A}$. In addition, $\mathcal{B}$ also generates and furnishes $\mathcal{A}$ with the aggregate key $K_{\overline{\mathcal{S}}}$ that allows $\mathcal{A}$ to decrypt any ciphertext class $j\notin\mathcal{S}$. 
+ \item \textbf{Challenge}-$\mathbf{i}$: Challenger $\mathcal{B}$ performs an encryption of the secret message $m_i$ belonging to the $i^{th}$ class to obtain the ciphertext $\mathcal{C}$. Next, $\mathcal{B}$ picks a random $b\in{(0,1)}$. It sets $K_b = m_i$ and picks a random $K_{1- b}$ from the set of possible plaintext messages. It then gives $(\mathcal{C}, K_0, K_1)$ to algorithm $\mathcal{A}$ as a challenge.
+ 
+ \item\textbf{Guess}-$\mathbf{i}$: The adversary $\mathcal{A}$ outputs a guess $b'$ of $b$. If $b' = b$, $\mathcal{A}$ wins and the challenger $\mathcal{B}$ loses. Otherwise, the game moves on to the next ciphertext class in $\mathcal{S}$ until all ciphertext classes in $\mathcal{S}$ are exhausted.
+\end{enumerate}
+% \vspace{-2mm}
+If the adversary $\mathcal{A}$ fails to predict correctly for all ciphertext classes in $\mathcal{S}$, only then $\mathcal{A}$ loses the game. Let $AdvKAC_{\mathcal{A},n}$ denote the probability that $\mathcal{A}$ wins the game when the challenger is given $n$ as input. We say that a key-aggregate encryption system is $(\tau,\epsilon,n)$ semantically secure if for all $\tau$-time algorithms $\mathcal{A}$ we have that $|AdvKAC_{\mathcal{A},n}-\frac{1}{2}| < \epsilon$ where $\epsilon$ is a very small quantity. Note that the adversary $\mathcal{A}$ is non-adaptive; it chooses $\mathcal{S}$, and obtains the aggregate decryption key for all ciphertext classes outside of $\mathcal{S}$, before it even sees the public parameters $param$ or the public key $PK$. 
+
+\subsection{The Complexity Assumptions}
+
+We now introduce the complexity assumptions used in this paper. In this section, we make several references to bilinear non-degenerate mappings on elliptic curve sub-groups, popularly known in literature as pairings. For a detailed descriptions on pairings and their properties, refer \cite{silverman1994advanced}.
+
+\subsubsection{The First Complexity Assumption:}
+\label{subsubsec:asm_1}
+
+Our first complexity assumption is the $l$-BDHE problem \cite{boneh2005collusion} in a bilinear elliptic curve subgroup $\mathbb{G}$, defined as follows. Given a vector of $2l+1$ elements $(H,P,\alpha P, {\alpha}^2P,\cdots,{\alpha}^{l}P,{\alpha}^{l+2}P\cdots,{\alpha}^{2l}P)$ $\in \mathbb{G}^{2l+1}$  as input, and a bilinear pairing $\hat{e'}:\mathbb{G}_1 \times \mathbb{G}_1\longrightarrow\mathbb{G}_T$ output $\hat{e'}(P,H)^{\alpha^{l+1}}\in\mathbb{G}_T$. Since ${\alpha}^{l+1}P$ is not an input, the bilinear pairing is of no real use in this regard. Using the shorthand $P_i = \alpha^{i}P$, an algorithm $\mathcal{A}$ is said to have an advantage $\epsilon$ in solving $l$-BDHE if \\$Pr[\mathcal{A}(H,P,P_1, P_2,\cdots,P_l,P_{l+2}\cdots,P_{2l}) =\hat{e'}(P_{l+1},H)]$ $\geq$ $\epsilon$, where the probability is over the random choice of $H,P \in \mathbb{G}$, random choice of $\alpha \in \mathbb{Z}_q$ and random bits used by $\mathcal{A}$. The decisional version of $l$-BDHE for elliptic curve subgroups may be analogously defined. Let $Y_{(P,\alpha,l)}=(P,P_1, P_2,\cdots,P_l,P_{l+2}\cdots,P_{2l})$. An algorithm $\mathcal{B}$ that outputs $b\in\{0,1\}$ has advantage $\epsilon$ in solving decisional $l$-BDHE in $\mathbb{G}$ if 
+$|Pr[\mathcal{B}(P,H,Y_{(P,\alpha,l)},\hat{e'}(P_{l+1},H))=0]$-$Pr[\mathcal{B}(G,H,Y_{(P,\alpha,l)},T)=0]|$ $\geq \epsilon$,
+where the probability is over the random choice of $H,P \in \mathbb{G}$, random choice of $\alpha \in \mathbb{Z}_q$, random choice of $T\in \mathbb{G}_T$ and random bits used by $\mathcal{B}$. We refer to the left and right probability distributions as $L$-BDHE and $R$-BDHE respectively. Thus, it can be said that the decision $(\tau,\epsilon,l)$-BDHE assumption for elliptic curves holds in $\mathbb{G}$ if no $\tau$-time algorithm has advantage $\epsilon$  in solving the decisional $l$-BDHE problem over elliptic curve subgroup $\mathbb{G}$. 
+
+\subsubsection{The Second Complexity Assumption:} 
+\label{subsubsec:asm_2}
+
+We next define the $(l,l)$-BDHE problem over a pair of equi-prime order bilinear elliptic curve subgroups $\mathbb{G}_1$ with generator $P$ and $\mathbb{G}_2$ with generator $Q$. Given a vector of $3l+2$ elements\\ $(H,P,Q, \alpha P, {\alpha}^2P,\cdots,{\alpha}^{l}P,{\alpha}^{l+2}P\cdots,{\alpha}^{2l}P,\alpha Q, {\alpha}^2Q,\cdots,{\alpha}^{l}Q)$ as input, where $P$ and ${\alpha}^iP \in \mathbb{G}_1$ and $H,Q,\alpha^iQ \in \mathbb{G}_2$ , along with a bilinear pairing $\hat{e''}:\mathbb{G}_1 \times \mathbb{G}_2\longrightarrow\mathbb{G}_T$, output $\hat{e'}(P,H)^{\alpha^{l+1}}\in\mathbb{G}_T$. Since ${\alpha}^{l+1}P$ is not an input, the bilinear pairing is of no real use in this regard. Using the shorthand $P_i = \alpha^{i}P$ and $Q_i=\alpha^{i}Q$, an algorithm $\mathcal{A}$ is said to have an advantage $\epsilon$ in solving $(l,l)$-BDHE if 
+$Pr[\mathcal{A}(H,P,Q,P_1, P_2,\cdots,P_l,P_{l+2}\cdots,P_{2l},Q_1,\cdots,Q_l)=\hat{e'}(P_{l+1},H)]$ $\geq \epsilon$
+where the probability is over the random choice of $P \in \mathbb{G}_1$, $H,Q \in \mathbb{G}_2$, random choice of $\alpha \in \mathbb{Z}_q$ and random bits used by $\mathcal{A}$. We may also define the decisional $(l,l)$-BDHE problem over elliptic curve subgroup pairs as follows. Let $Y_{(P,\alpha,l)}=(P,P_1, P_2,\cdots,P_l,P_{l+2}\cdots,P_{2l})$ and $Y'_{(Q,\alpha,l)}=(Q,Q_1, Q_2,\cdots,Q_l)$. Also let $H$ be a random element in $\mathbb{G}_2$. An algorithm $\mathcal{B}$ that outputs $b\in\{0,1\}$ has advantage $\epsilon$ in solving decisional $(l,l)$-BDHE if $|Pr[\mathcal{B}(P,Q,H,Y_{(P,\alpha,l)},Y'_{(Q,\alpha,l)},\hat{e'}(P_{l+1},H))\\=0]$-$Pr[\mathcal{B}(G,H,Y_{(P,\alpha,l)},Y'_{(Q,\alpha,l)},T)=0]|$ $\geq \epsilon$, where the probability is over the random choice of $P \in \mathbb{G}_1$, $H,Q \in \mathbb{G}_2$, random choice of $\alpha \in \mathbb{Z}_q$, random choice of $T\in \mathbb{G}_T$ and random bits used by $\mathcal{B}$. We refer to the left and right probability distributions as $L'$-BDHE and $R'$-BDHE respectively. Thus, it can be said that the decision $(\tau,\epsilon,l,l)$-BDHE assumption for elliptic curves holds in $(\mathbb{G}_1,\mathbb{G}_2)$ if no $\tau$-time algorithm has advantage $\epsilon$  in solving the decisional $(l,l)$-BDHE problem over elliptic curve subgroups $\mathbb{G}_1$ and $\mathbb{G}_2$. To the best of our knowledge, the $(l,l)$-BDHE problem has not been introduced in literature before.
+
+\subsubsection{Proving the Validity of the Second Complexity Assumption:}
+\label{app_sec:hardness}
+
+We prove here that the decision $(\tau,\epsilon,l,l)$-BDHE assumption for elliptic curves holds in equi-prime order subgroups $(\mathbb{G}_1,\mathbb{G}_2)$ if the decision $(\tau,\epsilon,l)$-BDHE assumption for elliptic curves holds in $\mathbb{G}_1$. Let $\hat{e'}:\mathbb{G}_1\times \mathbb{G}_1\longrightarrow\mathbb{G}_T$ and $\hat{e''}:\mathbb{G}_1\times \mathbb{G}_2\longrightarrow\mathbb{G}_T$ be bilinear pairings. Also, let $P$ and $Q$ are the generators for $\mathbb{G}_1$ and $\mathbb{G}_2$ respectively. We first make the following observation. 
+
+\noindent{\textbf{Observation 1:}} Since $G_1$ and $G_2$ have the same prime order (say $q$), there exists a bijection $\varphi:\mathbb{G}_1\longrightarrow\mathbb{G}_2$ such that $\varphi(aP)=aQ$ for all $a\in\mathbb{Z}_q$. Similarly, since $\mathbb{G}_T$ also has order $q$, there also exists a mapping $\phi:\mathbb{G}_T\longrightarrow\mathbb{G}_T$ such that $\phi(\hat{e'}(H_1,H_2))=\hat{e''}(H_1,\varphi(H_2))$ for all $H_1,H_2 \in \mathbb{G}_1$.
+
+Let $\mathcal{A}$ be a $\tau$-time adversary that has advantage greater than $\epsilon$ in solving the decision $(l,l)$-BDHE problem over equi-prime order subgroups $(\mathbb{G}_1,\mathbb{G}_2)$. We build an algorithm $\mathcal{B}$ that has advantage at least $\epsilon$ in solving the $l$-BDHE problem in $\mathbb{G}_1$. Algorithm $\mathcal{B}$ takes as input a random $l$-BDHE challenge $(P,H,Y_{(P,\alpha,l)},Z)$ where $Z$ is either $\hat{e'}(P_{l+1},H)$ or a random value in $\mathbb{G}_T$. $\mathcal{B}$ computes $Y'_{Q,\alpha,l}$ by setting $Q_i=\varphi(P_i)$ for $i=1,2,\cdots,l$. $\mathcal{B}$ also computes $H'=\varphi(H)\in\mathbb{G}_2$ and $Z'=\phi(Z)\in\mathbb{Z}$. then randomly chooses a bit $b\in{(0,1)}$ and sets $T_b$ as $Z'$ and $T_{1-b}$ as a random element in $\mathbb{G}_T$. The challenge given to $\mathcal{A}$ is 
+$((P,Q,H',Y_{(P,\alpha,l)},Y'_{Q,\alpha,l}),T_0,T_1)$. Quite evidently, when $Z=\hat{e'}(P_{l+1},H)$ (i.e. the input to $\mathcal{B}$ is a $l$-BDHE tuple), then $((P,Q,H',Y_{(P,\alpha,l)},Y'_{Q,\alpha,l}),T_0,T_1)$ is a valid challenge to $A$. This is because in such a case, $T_b=Z'=\phi(Z)=\phi(\hat{e'}(P_{l+1},H))=\hat{e''}(P_{l+1},H')$. On the other hand, if $Z$ is a random element in $\mathbb{G}_T$ (i.e. the input to $\mathcal{B}$ is a random tuple), then $T_0$ and $T_1$ are just random independent elements of $\mathbb{G}_T$.
+
+Now, $\mathcal{A}$ outputs a guess $b'$ of $b$. If $b' = b$, $\mathcal{B}$ outputs $0$ (indicating that $Z = \hat{e'}(P_{l+1},H)$). Otherwise, it outputs $1$ (indicating that $Z$ is random in $\mathbb{G}_T$). A simple analysis reveals that if $(P,H,Y_{(P,\alpha,l)},Z)$ is sampled from $R$-BDHE, $Pr[\mathcal{B}(G,H,Y_{(P,\alpha,l)},Z)=0]$ = $\frac{1}{2}$, while if $(P,H,Y_{(P,\alpha,l)},Z)$ is sampled from $L$-BDHE, $|Pr[\mathcal{B}(G,H,Y_{(P,\alpha,l)},Z)]-\frac{1}{2}|$ $\geq$ $\epsilon$. So, the probability that $\mathcal{B}$ outputs correctly is at least $\epsilon$, which in turn implies that $\mathcal{B}$ has advantage at least $\epsilon$ in solving the $l$-BDHE problem. This concludes the proof.
+
+
+

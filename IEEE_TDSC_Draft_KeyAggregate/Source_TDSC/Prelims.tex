@@ -1,0 +1,194 @@
+\section{Preliminaries}
+\label{sec:prelims}
+
+We begin by formally defining the framework key-aggregate cryptosystem (KAC). For clarity of presentation, we describe the framework in two parts. The basic framework focuses on generating the aggregate key for any arbitrary subset of data classes, while the extended framework aims to broadcast this aggregate key among arbitrarily large subsets of data users. We also outline the game based framework for formally proving the static security of these schemes. Finally, we state the complexity assumptions used for proving the security of these schemes.  
+
+
+\subsection{Key-Aggregate Cryptosystem (KAC) : The Basic Framework}
+\label{subsec:KACFramework}
+
+The basic KAC framework presented here is the same as that in \cite{chu2014key} and is presented for completeness. KAC is an ensemble of five randomized polynomial-time algorithms. The system administrator is responsible for setting up the public parameters via the \textbf{SetUp} operation. A data owner willing to share her data using this system registers to receive her own public and private key pairs, generated using the \textbf{KeyGen} operation. The data owner is responsible for classifying each of her data files/messages into a specific class $i$. Each message is accordingly encrypted by an \textbf{Encrypt} operation and stored online in the cloud. When delegating the decryption rights to a specific subset of message classes, the data owner uses the \textbf{Extract} operation to generate a constant-size \emph{aggregate decryption key} unique to that subset. Finally, an authorized data user can use this aggregate key to decrypt any message belonging to any class $i\in\mathcal{S}$. We now describe each of the five algorithms involved in KAC: 
+
+\begin{enumerate}
+ \item \textbf{SetUp}$(1^{\lambda},m)$: Takes as input the number of data classes $n$ and the security parameter $\lambda$. Outputs the public parameter $param$. 
+ 
+ \item \textbf{KeyGen}(): Outputs the public key $PK$ and the master-secret key $msk$ for a data owner registering in the system. 
+ 
+ \item \textbf{Encrypt}$(param,PK,i,\mathcal{M})$: Takes as input the public key parameter $PK$, the data class $i$ and the plaintext data $\mathcal{M}$. Outputs the corresponding ciphertext $\mathcal{C}$. 
+ 
+ \item \textbf{Extract}$(param,msk,\mathcal{S})$: Takes as input the master secret key and a subset of data classes $\mathcal{S} \subset\{1,2,\cdots,n\}$. Computes the aggregate key $K_{\mathcal{S}}$ for all encrypted messages belonging to these subset of classes.
+ 
+ \item \textbf{Decrypt}$(param,\mathcal{C},i,\mathcal{S},K_{\mathcal{S}})$: Takes as input the ciphertext $\mathcal{C}$, the data class $i$ the aggregate key $K_{\mathcal{S}}$ corresponding to the subset $\mathcal{S}$ such that $i\in\mathcal{S}$. Outputs the decrypted message.
+\end{enumerate}
+
+
+\subsection{Extension to Basic KAC : Broadcasting the Aggregate Key among Multiple Users}
+\label{subsec:extendedKAC}
+
+A major limitation of the basic KAC framework described in Section \ref{subsec:KACFramework} is that it does not address how the aggregate key may be distributed among multiple data users in a real-life data sharing environment. The authors of \cite{chu2014key} suggest using secure channels for key distribution. This is, however, not a very practical suggestion in view of the fact that the number of data users in the system may be arbitrarily large. We present here an extended framework that combines the basic KAC framework with public-key based broadcast encryption systems \cite{boneh2005collusion} to build a full-fledged public key based online data sharing scheme. The extended framework is parameterized by the number of users $m$ along with the number of data classes $n$. In addition to producing a single aggregate key for an arbitrarily large subset $S$ of data classes, this scheme also provides a way to securely broadcast it to an authorized subset $\hat{\mathcal{S}}\subseteq\{1,\cdots,m\}$ of users. 
+
+
+\begin{enumerate}
+ \item \textbf{SetUp}$(1^{\lambda},n,m)$: Takes as input the number of data classes $n$, the number of users $m$ and the security parameter $\lambda$. Outputs the public parameter $param$. 
+ 
+ \item \textbf{OwnerKeyGen}(): Outputs the public key $PK$, the master-secret key $msk$ and the broadcast secret key $bsk$ for a data owner registering in the system. 
+ 
+ \item \textbf{Encrypt}$(param,PK,bsk,i,\mathcal{M})$: Takes as input a data class $i\in\{1,\cdots,n\}$ and the plaintext data $\mathcal{M}$. Outputs the corresponding ciphertext $\mathcal{C}$. 
+ 
+ \item\textbf{UserKeyGen}$(param,msk,\hat{i})$: Takes as input the data user id $\hat{i}\in\{1,\cdots,m\}$ and outputs the corresponding secret key $d_{\hat{i}}$. 
+ 
+ \item \textbf{Extract}$(param,msk,\mathcal{S})$: Takes as input the master secret key $msk$ and a subset of data classes $\mathcal{S} \subseteq\{1,\cdots,n\}$. Computes the aggregate key $K_{\mathcal{S}}$ for all encrypted messages belonging to these subset of classes.
+ 
+ \item\textbf{Broadcast}$(param,K_{\mathcal{S}},\hat{\mathcal{S}},PK,bsk)$: Takes as input the aggregate key $K_{\mathcal{S}}$ and the target subset of users $\hat{\mathcal{S}}\subseteq\{1,\cdots,m\}$. Outputs a single \emph{broadcast aggregate key} $K_{\left(\mathcal{S},\hat{\mathcal{S}}\right)}$ that allows any user $\hat{i}\in\hat{\mathcal{S}}$ to decrypt all encrypted data/messages classified into any class $i\in\mathcal{S}$.
+
+ \item\textbf{Decrypt}$(param,\mathcal{C},K_{\left(\mathcal{S},\hat{\mathcal{S}}\right)},i,\hat{i},d_{\hat{i}},\mathcal{S},\hat{\mathcal{S}})$: The decryption algorithm now takes, besides the ciphertext $\mathcal{C}$ and the corresponding data class $i\in\mathcal{S}$, a valid user id $\hat{i}\in\hat{\mathcal{S}}$. It also takes as input the broadcast aggregate key $K_{\left(\mathcal{S},\hat{\mathcal{S}}\right)}$ and the secret key $d_{\hat{i}}$. The algorithm outputs the decrypted message.
+
+\end{enumerate}
+
+
+\subsection{Security of Basic KAC : A Game Based Framework}
+\label{subsec:gamebasic}
+
+In this paper, we propose a formal framework for proving the security of the basic KAC introduced in Section \ref{subsec:KACFramework}. We introduce a game between an attack algorithm $\mathcal{A}$ and a challenger $\mathcal{B}$, both of whom are given $n$, the total number of ciphertext classes, as input. The game proceeds through the following stages:
+
+\begin{enumerate}
+ \item \textbf{Init}: Algorithm $\mathcal{A}$ begins by outputting a set ${\mathcal{S}}^{*} \subset \{1,2,\cdots,n\}$ of data classes that it wishes to attack. Challenger $\mathcal{B}$ randomly chooses a ciphertext class $i\in{\mathcal{S}}^{*}$.
+ 
+ \item \textbf{SetUp}: Challenger $\mathcal{B}$ sets up the KAC system by generating the public parameter $param$, the public key $PK$ and the master secret key $msk$. Since collusion attacks are allowed in our framework, $\mathcal{B}$ furnishes $\mathcal{A}$ with the aggregate key $K_{\overline{\mathcal{S}}^{*}}$ that allows $\mathcal{A}$ to decrypt any ciphertext class $j\notin{\mathcal{S}}^{*}$. 
+ 
+ \item \textbf{Query Phase 1}: Algorithm $\mathcal{A}$ adaptively issues decryption queries $q_1,\cdots,q_v$ where a decryption query comprises of the tuple $(j,\mathcal{C})$, where $j\in{\mathcal{S}}^{*}$. The challenger responds with \textbf{Decrypt}$(\mathcal{C},j,\mathcal{S},K_{\mathcal{S}})$ for some subset $\mathcal{S}\subseteq\{1,\cdots,n\}$ such that $j\in\mathcal{S}$. 
+ 
+ \item \textbf{Challenge}: $\mathcal{A}$ picks at random two messages $\mathcal{M}_0$ and $\mathcal{M}_1$ from the set of possible plaintext messages belonging to class $i$ and provides them to $\mathcal{B}$. To generate the challenge, $\mathcal{B}$ randomly picks $b\in\{0,1\}$, and sets the challenge to $\mathcal{A}$ as $(\mathcal{C}^{*},\mathcal{M}_0,\mathcal{M}_1)$, where ${\mathcal{C}}^{*}$ = \textbf{Encrypt}($param,PK,i,\mathcal{M}_b$).
+ 
+ \item \textbf{Query Phase 2}: Algorithm $\mathcal{A}$ continues to adaptively issue decryption queries $q_{v+1},\cdots,q_{Q_D}$ where a decryption query now comprises of the tuple $(j,\mathcal{C})$ under the restriction that $\mathcal{C}\neq {\mathcal{C}}^{*}$. The challenger responds as in phase 1. 
+ 
+ 
+ \item\textbf{Guess}: The adversary $\mathcal{A}$ outputs a guess $b'$ of $b$. If $b' = b$, $\mathcal{A}$ wins the game.
+\end{enumerate}
+% \vspace{-2mm}
+
+% Our framework takes into account collusion attacks where multiple rogue users may collude together by compromising the knowledge of the aggregate key for different subsets of data classes.
+The game above models an attack in the real world setting where users who do not have authorized access to the subset ${\mathcal{S}}^{*}$ collude (by compromising the knowledge of the aggregate key for different subsets) to try and expose a message in this subset. Note that the adversary $\mathcal{A}$ is non-adaptive; it chooses $\mathcal{S}$, and obtains the aggregate decryption key for all ciphertext classes outside of $\mathcal{S}$, before it even sees the public parameters $param$ or the public key $PK$. Let $Adv_{\mathcal{A},n}$ denote the probability that $\mathcal{A}$ wins the game when the challenger is given $n$ as input. We next define the security of KAC against chosen ciphertext attacks (CCA) and chosen plaintext attacks (CPA) as follows:
+
+\begin{itemize}
+ \item \textbf{CCA Security:} We say that a key-aggregate encryption system is $(\tau,\epsilon,n,q_D)$ CCA secure if for all non-adaptive $\tau$-time algorithms $\mathcal{A}$ that can make a total of $q_D$ decryption queries, we have that $|Adv_{\mathcal{A},n}-\frac{1}{2}| < \epsilon$. 
+ 
+ \item \textbf{CPA Security:} We say that a key-aggregate encryption system is $(\tau,\epsilon,n)$ CPA secure if it is $(\tau,\epsilon,n,0)$ CCA secure.
+ 
+\end{itemize}
+
+\subsection{Security of Extended KAC: A Game Based Framework}
+\label{subsec:gameextended}
+
+We also define the formal framework for proving the security of the extended KAC proposed in Section \ref{subsec:extendedKAC} via the following game between an attack algorithm $\mathcal{A}$ and a challenger $\mathcal{B}$:
+
+\begin{enumerate}
+ \item \textbf{Init}: Algorithm $\mathcal{A}$ begins by outputting a set ${\mathcal{S}}^{*} \subset \{1,2,\cdots,n\}$ of data classes and a set $\hat{{\mathcal{S}}}^{*} \subset \{1,2,\cdots,m\}$ of users that it wishes to attack. Challenger $\mathcal{B}$ randomly chooses a ciphertext class $i\in{\mathcal{S}}^{*}$.
+ 
+ \item \textbf{SetUp}: $\mathcal{B}$ sets up the KAC system by generating the public parameter $param$, the public key $PK$ and the master secret key $msk$ and the broadcast secret key $bsk$. Since collusion attacks are allowed in our framework, $\mathcal{B}$ furnishes $\mathcal{A}$ with all the private user keys $d_{\hat{j}}$ for $\hat{j}\notin\hat{{\mathcal{S}}}^{*}$. In addition, $\mathcal{A}$ also gets the aggregate key $K_{\left(\overline{\mathcal{S}}^{*},\hat{\mathcal{S}}^{*}\right)}$ that allows any user in $\hat{{\mathcal{S}}}^{*}$ to decrypt any ciphertext class $j\notin{\mathcal{S}}^{*}$. 
+ 
+ \item \textbf{Query Phase 1}:$\mathcal{A}$ adaptively issues decryption queries $q_1,\cdots,q_v$ where a decryption query comprises of the tuple $(j,\mathcal{C})$, where $j\in{\mathcal{S}}^{*}$. The challenger responds with a valid decryption of $\mathcal{C}$.
+ 
+ \item \textbf{Challenge}: $\mathcal{A}$ picks at random two messages $\mathcal{M}_0$ and $\mathcal{M}_1$ from the set of possible plaintext messages belonging to class $i$ and provides them to $\mathcal{B}$. To generate the challenge, $\mathcal{B}$ randomly picks $b\in\{0,1\}$, and sets the challenge to $\mathcal{A}$ as $(\mathcal{C}^{*},\mathcal{M}_0,\mathcal{M}_1)$, where ${\mathcal{C}}^{*}$ = \textbf{Encrypt}($param,PK,i,\mathcal{M}_b$).
+ 
+ \item \textbf{Query Phase 2}: $\mathcal{A}$ continues to adaptively issue decryption queries $q_{v+1},\cdots,q_{Q_D}$ where a decryption query now comprises of the tuple $(j,\mathcal{C})$ under the restriction that $\mathcal{C}\neq {\mathcal{C}}^{*}$. $\mathcal{B}$ responds as in phase 1. 
+ 
+ \item\textbf{Guess}: The adversary $\mathcal{A}$ outputs a guess $b'$ of $b$. If $b' = b$, $\mathcal{A}$ wins the game.
+\end{enumerate}
+
+The game above models an attack involving two different kinds of collusion. The first collusion is by all users not in $\hat{{\mathcal{S}}}^{*}$ who collude to try and expose an aggregate key that is broadcast for users in $\hat{{\mathcal{S}}}^{*}$ only. The second collusion is by users in $\hat{{\mathcal{S}}}^{*}$ who collude (by compromising the knowledge of the aggregate key for different subsets) to try and expose a message class in ${{\mathcal{S}}}^{*}$. The CPA and CCA security definitions of the extended scheme are similar to that for the basic scheme described earlier. 
+% \subsection{Chosen Ciphertext Security of KAC}
+% \label{subsec:ccasecurity}
+% 
+% We next define the chosen ciphertext security of a key-aggregate encryption system against an adversary using the following game between an attack algorithm $\mathcal{A}$ and a challenger $\mathcal{B}$. Both $\mathcal{A}$ and $\mathcal{B}$ are given $n$, the total number of ciphertext classes, as input. The game proceeds through the following stages.
+% 
+% \begin{enumerate}
+%  \item \textbf{Init:} Algorithm $\mathcal{A}$ begins by outputting a set ${\mathcal{S}}^{*} \subset \{1,2,\cdots,n\}$ of receivers that it wishes to attack. For each ciphertext class $i\in\mathcal{S}$, challenger $\mathcal{B}$ performs the \textbf{SetUp}, \textbf{Query Phase 1}, \textbf{Challenge}, \textbf{Query Phase 2} and \textbf{Guess} steps. Note that the number of iterations is polynomial in $|{\mathcal{S}}^{*}|$.
+% 
+%  \item \textbf{SetUp}: Challenger $\mathcal{B}$ generates the public $param$, public key $PK$, the access parameter $U$, and provides them to $\mathcal{A}$. In addition, $\mathcal{B}$ also generates and furnishes $\mathcal{A}$ with the aggregate key $K_{\overline{{\mathcal{S}}^{*}}}$ that allows $\mathcal{A}$ to decrypt any ciphertext class $j\notin{\mathcal{S}}^{*}$.
+%  
+%  \item \textbf{Query Phase 1}: Algorithm $\mathcal{A}$ adaptively issues decryption queries $q_1,\cdots,q_m$ where a decryption query comprises of the tuple $(j,\mathcal{S},\mathcal{C})$. Here $S\subseteq{\mathcal{S}}^{*}$ and $j\in\mathcal{S}$. The challenger responds with \textbf{Decrypt}$(K_{\mathcal{S}}, U, \mathcal{S},j,\mathcal{C})$. 
+%  
+%  \item \textbf{Challenge}: Challenger $\mathcal{B}$ performs an encryption of the secret message $\mathcal{M}_i$ belonging to the $i^{th}$ class to obtain the ciphertext ${\mathcal{C}}^{*}$. Next, $\mathcal{B}$ picks a random $b\in{(0,1)}$. It sets $K_b = \mathcal{M}_i$ and picks a random $K_{1- b}$ from the set of possible plaintext messages. It then gives $(\mathcal{C}, K_0, K_1)$ to algorithm $\mathcal{A}$ as a challenge.
+%  
+%  \item \textbf{Query Phase 2}: Algorithm $\mathcal{A}$ continues to adaptively issue decryption queries $q_{m+1},\cdots,q_{q_D}$ where a decryption query comprises of the tuple $(j,\mathcal{S},\mathcal{C})$. Here, again $S\subseteq{\mathcal{S}}^{*}$ and $j\in\mathcal{S}$, but $\mathcal{C}\neq {\mathcal{C}}^{*}$. The challenger responds as in phase 1. 
+%  
+%  \item\textbf{Guess}: The adversary $\mathcal{A}$ outputs a guess $b'$ of $b$. If $b' = b$, $\mathcal{A}$ wins. Otherwise, the game moves on to the next ciphertext class in $\mathcal{S}$ until all ciphertext classes in $\mathcal{S}$ are exhausted.
+% \end{enumerate}
+% % \vspace{-2mm}
+% If the adversary $\mathcal{A}$ fails to predict correctly for all ciphertext classes in $\mathcal{S}$, only then $\mathcal{A}$ loses the game. Let $AdvKAC_{\mathcal{A},n}$ denote the probability that $\mathcal{A}$ wins the game when the challenger is given $n$ as input. We say that a key-aggregate encryption system is $(\tau,\epsilon,n,q_D)$ CCA secure if for all $\tau$-time algorithms $\mathcal{A}$ that can make a total of $q_D$ decryption queries, we have that $|AdvKAC_{\mathcal{A},n}-\frac{1}{2}| < \epsilon$. Note that once again, the adversary $\mathcal{A}$ is non-adaptive
+
+\subsection{Bilinear Pairings}
+\label{subsec:pairings}
+
+In this paper, we make several references to bilinear non-degenerate mappings on elliptic curve sub-groups, popularly known in literature as \emph{pairings}. Hence we begin by providing a brief background on bilinear pairing based schemes on elliptic curve subgroups. A pairing is a bilinear map defined over elliptic curve subgroups. Let $\mathbb{G}_{1}$ and $\mathbb{G}_{2}$ be two (additive) cyclic elliptic curve subgroups of the same prime order $q$. Let $\mathbb{G}_{T}$ be a multiplicative group, also of order $q$ with identity element $1$. Also, let $P$ and $Q$ be points on the elliptic curve that generate the groups $\mathbb{G}_1$ and $\mathbb{G}_2$ respectively. A mapping ${e}:\mathbb{G}_1 \times \mathbb{G}_2\longrightarrow\mathbb{G}_T$ is said to be a bilinear ma[ if it satisfies the following properties: 
+
+\begin{itemize}
+ \item Bilinear: For all $P_1 \in \mathbb{G}_1, Q_1\in\mathbb{G}_2$, and $a,b\in\mathbb{Z_q}$, we have ${e}(aP_1,bQ_1) = {e}(P_1,Q_1)^{ab}$.
+ \item Non-degeneracy: If $P$ and $Q$ be the generators for $\mathbb{G}_1$ and $\mathbb{G}_2$ respectively where neither group only contains the point at infinity, then $\hat{e'}(P,Q)\neq1$ 
+ \item Computability: There exists an efficient algorithm to compute $\hat{e'}(P_1,Q_1)\forall P_1 \in \mathbb{G}_1, Q_1\in\mathbb{G}_2$
+\end{itemize}
+
+From a cryptographic standpoint, pairings can be broadly classified into three categories as follows (for more details refer \cite{galbraith2008pairings}):
+
+\begin{itemize}
+ \item \emph{Type-1 symmetric pairings}: In such pairings $\mathbb{G}_1 = \mathbb{G}_2$. These pairings are defined exlusively over supersingular curves and require subgroups of extremely large order. 
+ \item \emph{Type-2 asymmetric pairings}: In such pairings $\mathbb{G}_1 \neq \mathbb{G}_2$, but there exists an efficiently computable homomorphism from $\mathbb{G}_2$ to $\mathbb{G}_1$.
+ \item \emph{Type-3 asymmetric pairings}: In such pairings $\mathbb{G}_1 \neq \mathbb{G}_2$, and there exists no efficiently computable homomorphism between $\mathbb{G}_1$ and $\mathbb{G}_2$.
+\end{itemize}
+
+The case where $\mathbb{G}_1 \neq \mathbb{G}_2$ but there exists efficiently computable homomorphisms in either direction is equivalent to type one pairings. There also exist Type-4 pairings over non-cyclic subgroups \cite{galbraith2008pairings}, but they are not pertinent to our discussions on KAC. The original proposal for KAC in \cite{chu2014key} is based on Type-1 symmetric pairings. However, from a practical deployment perspective on the cloud, Type-1 pairings are usually not efficient enough to be deployed due to their specific curve requirements and large group size demands. So, in this paper, we focus on the use of efficiently implementable Type-2 and Type-3 pairings such as the Tate pairing \cite{frey1999tate}, the Eta pairing \cite{hess2006eta}, the Ate pairing \cite{beuchat2010high} and even advanced pairings that are extremely efficient such as the R-Ate pairing \cite{beuchat2010high}. We next state the complexity assumptions that allow us to formally prove the security of our proposed KAC schemes based on such pairings.
+
+\subsection{Notations Used}
+\label{subsec:notations}
+
+This section introduces some notations that are used throughout this paper. We assume the existence of equi-prime order ($q$) elliptic curve subgroups $\mathbb{G}_1$ and $\mathbb{G}_2$, along with their generators $P$ and $Q$. We also assume the existence of a multiplicative cyclic group $\mathbb{G}_{T}$, also of order $q$ with identity element $1$. Let $\alpha$ be a randomly chosen element in $\mathbb{Z}_q$. For any point $R$ in either $\mathbb{G}_1$ or $\mathbb{G}_2$, let $R_x=\alpha^xR$, where $x$ is an integer. We denote by $Y_{R,\alpha,l}$ the set of $2l-1$ points $(R_1,R_2,\cdots,R_{l},R_{l+2},\cdots,R_{2l})$. Note that the term $R_{l+1}$ is missing. Finally, we assume the existence of an efficiently computable asymmetric bilinear pairing ${e}:\mathbb{G}_1 \times \mathbb{G}_2\longrightarrow\mathbb{G}_T$. Finally, for two independent randomly chosen $\alpha_1,\alpha_2\in\mathbb{Z}_q$, we denote by $R_x$ the term $\alpha^x_1R$ and by $\hat{R}_x$ the term $\alpha^x_2R$. 
+
+
+\subsection{The Complexity Assumptions}
+\label{subsec:complexity}
+
+In this section, we introduce some complexity assumptions used to prove the security of our KAC constructions in this paper. We propose two complexity assumptions, both of which are extended versions of the generalized bilinear Diffie Hellman exponent (BDHE) assumption introduced in \cite{boneh2005collusion}:
+
+\begin{itemize}
+ 
+ \item \emph{The asymmetric decision $l$-BDHE problem}: Given an input $(I=(H,P,Q,Y_{P,\alpha,l},Y_{Q,\alpha,l}),Z)$, where $H\in\mathbb{G}_2$ and $Z\in\mathbb{G}_T$, and the bilinear pairing ${e}$, decide if $Z={e}(P_{l+1},H)$.
+ 
+ \item \emph{The asymmetric decision $(l_1,l_2)$-BDHE problem}: Given an input $((I_1,I_2),(Z_1,Z_2))$, where $I_1=(H_1,P,Q,Y_{P,\alpha_1,l_1},Y_{Q,\alpha_1,l_1})$ and $I_2=(H_2,P,Q,Y_{P,\alpha_2,l_2},Y_{Q,\alpha_2,l_2})$, and the bilinear pairing ${e}$, decide if $(Z_1,Z_2)=\left({e}(P_{l_1+1},H_1),{e}(\hat{P}_{l_2+1},H_2)\right)$.
+\end{itemize}
+
+Let $\mathcal{A}$ be a $\tau$-time algorithm that takes an input challenge for asymmetric $l$-BDHE and outputs a decision bit $b\in\{0,1\}$. We say that $\mathcal{A}$ has advantage $\epsilon$ in solving the asymmetric decision $l$-BDHE problem if 
+
+\begin{equation}
+|Pr[\mathcal{A}(I,e(P_{l+1},H))=0]-Pr[\mathcal{A}(I,T)=0]| \geq \epsilon\nonumber
+\end{equation}
+
+\noindent where the probability is over random choice of $H\in\mathbb{G}_2$, $T\in\mathbb{G}_T$ and $\alpha\in\mathbb{Z}_q$, and random bits used by $\mathcal{A}$. We refer to the distribution on the left as ${\mathcal{L}}_{\text{BDHE}}$ and the distribution on the right as ${\mathcal{R}}_{\text{BDHE}}$. 
+
+Again, let $\mathcal{B}$ be a $\tau$-time algorithm that takes an input challenge for the asymmetric $(l_1,l_2)$-BDHE and outputs a decision bit $b\in\{0,1\}$. We say that $\mathcal{B}$ has advantage $\epsilon$ in solving the asymmetric decision $(l_1,l_2)$-BDHE problem if 
+
+\begin{equation}
+\begin{split}
+|Pr[\mathcal{B}\left((I_1,I_2),\left({e}(P_{l_1+1},H_1),{e}(\hat{P}_{l_2+1},H_2)\right)\right)=0]\\
+-Pr[\mathcal{B}((I_1,I_2),(T_1,T_2))=0]| \geq \epsilon\nonumber
+\end{split}
+\end{equation}
+
+\noindent where the probability is over random choice of $H_1,H_2\in\mathbb{G}_2$, $T_1,T_2\in\mathbb{G}_T$ and $\alpha_1,\alpha_2\in\mathbb{Z}_q$, and random bits used by $\mathcal{B}$. We now refer to the distribution on the left as ${\mathcal{L}'}_{\text{BDHE}}$ and the distribution on the right as ${\mathcal{R}'}_{\text{BDHE}}$. We next state the following definitions.
+
+\begin{Definition}
+ The asymmetric decision $(\tau,\epsilon,l)$-BDHE assumption holds in $(\mathbb{G}_1,\mathbb{G}_2)$ if no $\tau$-time algorithm has advantage at least $\epsilon$ in solving the asymmetric decision $l$-BDHE problem in $(\mathbb{G}_1,\mathbb{G}_2)$.
+\end{Definition}
+  
+\begin{Definition}
+ The asymmetric decision $(\tau,\epsilon,l_1,l_2)$-BDHE assumption holds in $(\mathbb{G}_1,\mathbb{G}_2)$ if no $\tau$-time algorithm has advantage at least $\epsilon$ in solving the asymmetric decision $(l_1,l_2)$-BDHE problem in $(\mathbb{G}_1,\mathbb{G}_2)$.
+\end{Definition}
+
+
+% We relate the two complexity assumptions by claiming that decision $(\tau,\epsilon,l,l)$-BDHE assumption holds in $(\mathbb{G}_1,\mathbb{G}_2)$ if the decision $(\tau,\epsilon,l)$-BDHE assumption for elliptic curves holds in $\mathbb{G}_2$. It can be easily proved as follows. Let $\mathcal{B}$ be a $\tau$-time adversary that has advantage greater than $\epsilon$ in solving the decision $(l,l)$-BDHE problem in $(\mathbb{G}_1,\mathbb{G}_2)$. We build a $\tau$-time algorithm $\mathcal{A}$ that has advantage at least $\epsilon$ in solving the $l$-BDHE problem in $\mathbb{G}_1$. Algorithm $A$ takes as input a random $l$-BDHE challenge $(I=(H,Q,Y_{Q,\alpha,l}),Z)$, where $H\in\mathbb{G}_2$ and $Z\in\mathbb{G}_T$. It computes $(P,Y_{P,\alpha,l})$ from $Q,(Q,\alpha,l)$ using the efficiently computable isomorphism $\psi$. It also computes $Z'=\phi(Z)$. It then passes on the challenge $(I'=(H,P,Q,Y_{P,\alpha,l},Y_{Q,\alpha,l}),Z')$ to $\mathcal{B}$, who outputs $b\in\{0,1\}$. Algorithm $\mathcal{A}$ returns $b$. It is easy to see that $(I',Z')$ is a valid $(l,l)$-BDHE challenge whenever $(I,Z)$ is a valid $l$-BDHE challenge. This completes the proof. Note that we have assumed here that $\phi$ is an efficiently computable mapping. In reality, it may be as difficult to compute $\phi$ as the discrete log problem in $\mathbb{G}_2$ \cite{chatterjee2010efficiency}. But since we have used a stronger assumption, the $(l,l)$-BDHE assumption is at least as strong as the $l$-BDHE assumption.   
+% 
+% We finish this section by referring to a standard result widely presented in the cryptographic literature on pairings \cite{chatterjee2010efficiency}. Given any protocol Protocol-$2$ described using a Type-2 pairing, and with a security proof for the same with respect to some problem $\mathcal{P}$-2, there exists a natural transformation of Protocol-$2$ to a Protocol-$3$ that uses a Type-3 pairing, a natural transformation of $\mathcal{P}$-2 to a problem $\mathcal{P}$-3, and a natural transformation of the security proof to one for Protocol-$3$ with respect to $\mathcal{P}$-3. Moreover, Protocol-$3$ is at least as efficient as Protocol-$2$, and $\mathcal{P}$-3 is equally as hard as $\mathcal{P}$-2 (for appropriately chosen parameters). In other words, as long as the efficiently computable homomorphism $\psi$ does not have an explicit use in the protocol, both Protocol-$2$ and Protocol-$3$ can be used without any compromise on the security. In our description of KAC, we use precisely this result to argue that it is efficiently implementable. While the security proofs presented use the $(l,l)$-BDHE assumption that seems to be inherently specific to Type-2 pairings, in reality the proposed KAC scheme can use efficiently implementable Type-3 pairings as well. In the forthcoming discussions, we refer simply to asymmetric pairings without specifying whether they are Type-2 or Type-3.
+
+
+
+

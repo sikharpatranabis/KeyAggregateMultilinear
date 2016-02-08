@@ -1,0 +1,128 @@
+\section{Chosen Ciphertext Secure Basic KAC}
+\label{sec:CCA}
+
+We now demonstrate how to modify the basic KAC proposed in Section \ref{subsec:construction1} to obtain chosen ciphertext security. The resulting KAC system is proven to be CCA secure in the standard model without using random oracles. To the best of our knowledge, this is the first CCA secure KAC proposed in the cryptographic literature.
+
+\subsection{Additional Requirements for CCA Security}
+\label{subsec:additional}
+
+We have the following additional requirements for the CCA secure basic KAC:
+
+\begin{itemize}
+ \item A signature scheme $(SigKeyGen,Sign,Verify)$. 
+ \item A collision resistant hash function for mapping verification keys to $\mathbb{Z}_q$. 
+\end{itemize}
+
+For simplicity of presentation, we assume here that the signature verification keys are encoded as elements of $\mathbb{Z}_q$. We avoid any further mention of the hash function in the forthcoming discussion, since it is implicitly assumed that any signature value we refer to is essentially the hash value corresponding to the original signature.
+
+\subsection{Construction}
+\label{subsec:construction_CCA}
+
+We will demonstrate in the following section that the security of CCA-secure Dynamic KAC for $n$ data classes is based on the asymmetric $(n+1)$-BDHE assumption, instead of the asymmetric $n$-BDHE assumption as for the basic scheme. For consistency of notation, we describe here the CCA-secure dynamic KAC for $n-1$ users, such that the security assumption is still the asymmetric $n$-BDHE assumption as before. \\
+
+% \begin{enumerate}
+ \noindent \textbf{SetUp}$(1^{\lambda},n-1)$: Randomly pick $\alpha \in \mathbb{Z}_q$. Output the system parameter as $param = (P,Q,Y_{P,\alpha,n},Y_{Q,\alpha,n}))$. Discard $\alpha$.
+ 
+ \noindent \textbf{KeyGen}(): Same as in the basic scheme of Section \ref{subsec:construction1}.\\
+ 
+ \noindent \textbf{Encrypt}$(PK,i,\mathcal{M})$: Run the $SigKeyGen$ algorithm to obtain a signature signing key $K_{SIG}$ and a verification key $V_{SIG} \in \mathbb{Z}_q$. Then, randomly choose $t\in\mathbb{Z}_q$ and set 
+ \begin{eqnarray}
+ c_0=tQ&\text{and}& c_1 = t{(PK_2+Q_i+V_{SIG}Q_n)}\nonumber\\
+ c_2 &=& \mathcal{M}.{e}(P_n,tQ_1)\nonumber\\
+ \mathcal{C}&=&((c_0,c_1,c_2),Sign(\mathcal{C}',K_{SIG}),V_{SIG}) \nonumber
+ \end{eqnarray}
+ \noindent Output the ciphertext $\mathcal{C}$.\\
+ 
+ \noindent \textbf{Extract}$(msk,\mathcal{S})$: Same as in Section \ref{subsec:construction1}.\\
+ 
+ \noindent \textbf{Decrypt}$(\mathcal{C},i,\mathcal{S},K_{\mathcal{S}})$: Let $\mathcal{C}=(\mathcal{C}',\sigma,V_{SIG})$. Verify that $\sigma$ is a valid signature of $\mathcal{C}'$ under the key $V_{SIG}$. If not, output $\bot$. Also, if $i\notin\mathcal{S}$, output $\bot$. Otherwise, pick a random $w\in \mathbb{Z}_q$ and set 
+ \begin{eqnarray}
+  SIG_{\mathcal{S}} &=& \sum_{j\in\mathcal{S}}V_{SIG}P_{2n+1-j}\nonumber\\
+  a_{\mathcal{S}} &=& \sum_{j\in\mathcal{S},j\neq i}P_{n+1-j+i}\nonumber\\
+  b_{\mathcal{S}} &=& \sum_{j\in\mathcal{S}}P_{n+1-j}\nonumber  
+ \end{eqnarray}
+ \noindent Note that these can be computed as $1\leq i,j \leq n-1$. Next, set two entities $\hat{h_1}$ and $\hat{h_2}$ as
+ \begin{eqnarray}
+  \hat{h_1} &=& K_{\mathcal{S}} + SIG_{\mathcal{S}} + a_{\mathcal{S}} + w(PK_1+P_i+V_{SIG}P_n)\nonumber\\
+  \hat{h_2} &=& b_{\mathcal{S}}+wP \nonumber
+ \end{eqnarray}
+ \noindent Output the decrypted message 
+ \begin{equation}
+  \hat{\mathcal{M}} = c_2\frac{{e}(\hat{h_1},c_0)}{{e}(\hat{h_2},c_1)}\nonumber
+ \end{equation}
+\noindent The proof of correctness of this scheme is very similar to the proof for the basic dynamic KAC scheme presented in Section \ref{subsec:construction1}. Note that the ciphertext size is still constant and everything else, including the public and private parameters, as well as the aggregate key, remains unchanged. The main change from the original scheme is in the fact that decryption requires a randomization value $w\in\mathbb{Z}_q$. This randomization makes sure that that the pair $(\hat{h_1},\hat{h_2})$ is chosen from the following distribution 
+\begin{equation}
+(x(PK_1+P_i+V_{SIG}P_n)-P_{n+1},xP) \noindent
+\end{equation}
+\noindent where $x$ is chosen uniformly from $\mathbb{Z}_q$. To verify this claim, set $x=w+\sum_{j\in\mathcal{S}}\alpha^{n+1-j}$. Moreover, since $w$ is uniformly random in $\mathbb{Z}_q$, so is $x$. \emph{This randomization is a vital aspect from the point of view of CCA-security}. Note that the distribution $(\hat{h_1},\hat{h_2})$ depends on the ciphertext class $i$ for the message $m$ to be decrypted. 
+
+
+
+ 
+\subsection{Proof of CCA-Security}
+\label{subsec:proof_cca}
+
+We begin by recalling that a signature scheme $(SigKeyGen,Sign,Verify)$ is said to be $(\tau,\epsilon,q_S)$ strongly existentially unforgeable if no $\tau$-time adversary, making at most $q_{S}$ signature signature queries, fails to produce some new message-signature pair with probability at least $\epsilon$. For a more complete description, refer \cite{canetti2004chosen}.
+
+\begin{Theorem}
+\label{th:basicCCA}
+Let $\mathbb{G}_1$ and $\mathbb{G}_2$ be bilinear elliptic curve subgroups of prime order $q$. For any positive integer $n$, the modified basic KAC is $(\tau,\epsilon_1+\epsilon_2,n-1,q_D)$ CCA-secure if the decision $(\tau,\epsilon,n,n)$-BDHE assumption holds in $(\mathbb{G}_1,\mathbb{G}_2)$ and the signature scheme is $(t,\epsilon_2,1)$ strongly existentially unforgeable.
+\end{Theorem}
+
+\noindent{\textit{Proof:}} Let $\mathcal{A}$ be a $\tau$-time adversary such that $|Adv_{\mathcal{A},n-1}-\frac{1}{2}|$ $>$  $\epsilon_1+\epsilon_2$. We build an algorithm $\mathcal{B}$ that has advantage at least $\epsilon_1$ in solving the asymmetric $n$-BDHE problem in $\mathbb{G}$. Algorithm $\mathcal{B}$ takes as input a random asymmetric $n$-BDHE challenge $(I=(H,P,Q,Y_{P,\alpha,l},Y_{Q,\alpha,l}),Z)$ (where $Z$ is either ${e}(P_{n+1},H)$ or a random value in $\mathbb{G}_T$), and proceeds as follows.\\
+
+\noindent\textbf{Init:} $\mathcal{B}$ runs $\mathcal{A}$ and receives the set ${\mathcal{S}}^{*}$ of ciphertext classes that $\mathcal{A}$ wishes to be challenged on. $\mathcal{B}$ then randomly chooses a ciphertext class $i\in{\mathcal{S}}^{*}$.\\
+ 
+\noindent\textbf{SetUp}: $\mathcal{B}$ should generate the public $param$, public key $PK$, the authentication key $U$, and the aggregate key $K_{\overline{{\mathcal{S}}^{*}}}$, and provide them to $\mathcal{A}$. Algorithm $\mathcal{B}$ first runs the $SigKeyGen$ algorithm to obtain a signature signing key ${K^{*}}_{SIG}$ and a corresponding verification key ${V^{*}}_{SIG} \in \mathbb{Z}_q$. $\mathcal{B}$ generates the following:
+%  \vspace{-0.6mm}
+ \begin{itemize}
+  \item $param$ is set as $((P,Q,Y_{P,\alpha,n},Y_{Q,\alpha,n}))$.
+  \item Set $PK=(PK_1,PK_2)$, where $PK_1$ and $PK_2$ are computed as $\gamma P - {V^{*}}_{SIG}P_n - P_i$ and $\gamma Q - {V^{*}}_{SIG}Q_n - Q_i$ respectively. Note that this is equivalent to setting $msk=\gamma-\alpha^{i}-\alpha^{n}{V^{*}}_{SIG}$.
+  \end{itemize}
+  \noindent $\mathcal{B}$ computes the collusion aggregate key $K_{\overline{{\mathcal{S}}^{*}}}$ as 
+  \begin{equation}
+   K_{\overline{{\mathcal{S}}^{*}}} = \sum_{j\notin{\mathcal{S}}^{*}}({u}P_{n+1-j}- {V^{*}}_{SIG}P_{2n+1-j} -P_{n+1-j+i}) \nonumber
+  \end{equation}  
+\noindent Note that $K_{\overline{{\mathcal{S}}^{*}}}$ is equal to $\sum_{j\notin{\mathcal{S}}^{*}}\alpha^{n+1-j}PK_1$, in accordance with the specification provided by the scheme. Moreover, $\mathcal{B}$ is aware that $i\notin \overline{{\mathcal{S}}^{*}}$ (implying $i\neq j$). Also, $j\neq n$ as $1\leq j \leq n-1$. Hence, $\mathcal{B}$ has all the resources to compute $K_{\overline{{\mathcal{S}}^{*}}}$.
+
+Since $P$, $Q$, $\alpha$, and $\gamma$ are chosen uniformly at random, \emph{the public parameters and the public key have an identical distribution to that in the actual construction}.\\
+ 
+\noindent\textbf{Query Phase 1}: Algorithm $\mathcal{A}$ now issues decryption queries. Let $(j,\mathcal{C})$ be a decryption query where $j\in{\mathcal{S}}^{*}$. Let $\mathcal{C}=((c_0,c_1,c_2),\sigma,V_{SIG})$. Algorithm $\mathcal{B}$ first runs $Verify$ to check if the signature $\sigma$ is valid on $(c_0,c_1,c_2)$ using $V_{SIG}$. If invalid, $\mathcal{B}$ returns $\bot$. If $V_{SIG} = {V^{*}}_{SIG}$, $\mathcal{B}$ outputs a random bit $b\in\{0,1\}$ and \emph{aborts} the simulation. Otherwise, the challenger picks a random $x\in\mathbb{Z}_q$. It then sets
+\begin{eqnarray}
+ \hat{h_0}&=&(V_{SIG}-{V^{*}}_{SIG})P_n+P_j-P_i\nonumber\\
+ \hat{d'_0}&=&{(V_{SIG}-{V^{*}}_{SIG})}^{-1}(P_{j+1}-P_{i+1})\nonumber \\
+ \hat{h_2}&=&xP+{(V_{SIG}-{V^{*}}_{SIG})}^{-1}P_1\nonumber\\
+ \hat{h_1}&=&u\hat{h_2} + xd_0 + d'_0 \nonumber 
+\end{eqnarray}
+\noindent $\mathcal{B}$ responds with $K=c_2\frac{{e}(\hat{h_1},c_0)}{{e}(\hat{h_2},c_1)}$. To see that this response is as in a real attack game, set $x'=x+\alpha{(V_{SIG}-{V^{*}}_{SIG})}^{-1}$ and observe that $\hat{h_2}$ = $x'P$ and $\hat{h_1}$ = $x'(PK_1+P_i+V_{SIG}P_n)-P_{n+1}$. Furthermore, since $x$ is uniform in $\mathbb{Z}_q$, $x'$ is also uniform in $\mathbb{Z}_q$. Thus, $\mathcal{B}$'s response is a valid decryption as required.\\
+ 
+\noindent\textbf{Challenge}:To generate the challenge, $\mathcal{B}$ picks at random two messages $\mathcal{M}_0$ and $\mathcal{M}_1$ from the set of possible plaintext messages belonging to class $i$. She randomly picks $b\in\{0,1\}$, and sets 
+\begin{eqnarray}
+ \mathcal{C}&=&(H,\gamma H,\mathcal{M}_b.Z)\nonumber\\
+ \mathcal{C}^{*}&=&(\mathcal{C},Sign(\mathcal{C},{K^{*}}_{SIG}),{V^{*}}_{SIG})\nonumber
+\end{eqnarray}
+\noindent The challenge posed to $\mathcal{A}$ is $(\mathcal{C}^{*},\mathcal{M}_0,\mathcal{M}_1)$. We claim that when $Z={e}(P_{n+1},H)$, $({\mathcal{C}}^{*},\mathcal{M}_0,\mathcal{M}_1)$ is a valid challenge to $\mathcal{A}$ as in a real attack. To see this, we write $H=tP$ for some unknown $t\in\mathbb{Z}_q$, and let $r=t-t$. Then we have 
+\begin{eqnarray}
+ H-U&=&rP\nonumber\\
+ uH&=&t(PK_2+Q_i+{V^{*}}_{SIG}Q_n)\nonumber\\
+ \mathcal{M}_b.Z&=&\mathcal{M}_b{e}(P_{n+1},tQ)\nonumber
+\end{eqnarray}
+\noindent Thus, by definition, $\mathcal{C}^{*}$ is a valid encryption of $\mathcal{M}_b$ in class $i$ and hence, $(\mathcal{C}^{*},\mathcal{M}_0,\mathcal{M}_1)$ is a valid challenge to algorithm $\mathcal{A}$. \\
+ 
+\noindent\textbf{Query Phase 2}: Same as in Query Phase 1.\\ 
+ 
+\noindent\textbf{Guess}: The adversary $\mathcal{A}$ outputs a guess $b'$ of $b$. If $b' = b$, $\mathcal{B}$ outputs $0$. Otherwise, it outputs $1$.\\
+
+\noindent Quite evidently, if $(I,Z)$ is sampled from ${\mathcal{R}'}_{\text{BDHE}}$, $Pr[\mathcal{B}(I,Z)=0]$ = $\frac{1}{2}$. Let \textbf{abort} be the event that $\mathcal{B}$ aborted the simulation. Now when $(I,Z)$ is sampled from ${\mathcal{L}'}_{\text{BDHE}}$, we have 
+\begin{equation}
+ |Pr[\mathcal{B}(I,Z)]-\frac{1}{2}|>(\epsilon_1+\epsilon_2)-Pr[\textbf{abort}] \nonumber
+\end{equation}
+\noindent This essentially implies that $\mathcal{B}$ has advantage at least $\epsilon_1+\epsilon_2-Pr[\text{\textbf{abort}}]$ in solving the asymmetric $n$-BDHE problem in $(\mathbb{G}_1,\mathbb{G}_2)$.\\
+
+
+\noindent We now bound the probability that $\mathcal{B}$ aborts the simulation as a result of one of the decryption queries by $\mathcal{A}$. We claim that $Pr[\textbf{abort}]<\epsilon_2$; otherwise one can use $\mathcal{A}$ to forge signatures with probability at least $\epsilon_2$. A very brief proof of this may be stated as follows. We may construct a simulator that knows the master secret key $u$ and receives ${K^{*}}_{SIG}$ as a challenge in an existential forgery game. $\mathcal{A}$ can then cause an abort by producing a query that leads to an existential forgery under ${K^{*}}_{SIG}$ on some ciphertext. Our simulator uses this forgery to win the existential forgery game. Only one chosen message query is made by the adversary during the game to generate the signature corresponding to the challenge ciphertext. Thus, $Pr[\text{abort}]<\epsilon_2$, implying $\mathcal{B}$ has advantage at least $\epsilon_1$ in solving the asymmetric $n$-BDHE problem in $(\mathbb{G}_1,\mathbb{G}_2)$. This completes the proof of Theorem \ref{th:basicCCA}.\hfill\qed 
+
+
+
+
+
